@@ -1,0 +1,25 @@
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: clientserver-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_APP_API_URL=http://localhost:3000/api #change this url with actual backend api
+    command: npm run dev -- --host 0.0.0.0
+
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clientserver
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
