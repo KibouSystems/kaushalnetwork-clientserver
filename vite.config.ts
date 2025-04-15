@@ -11,6 +11,12 @@ export default defineConfig({
         },
         host: '0.0.0.0',
         strictPort: true,
-        port: 5173
+        port: 5173,
+        hmr: {
+            protocol: 'ws',
+        },
+        // Add shutdown handler
+        middlewareMode: false,
+        force: true
     }
 })
