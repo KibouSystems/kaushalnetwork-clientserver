@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import RegisterCompany from "./pages/RegisterCompany";
 import Register from "./pages/Register";
+import Buzz from "./pages/Buzz";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/signup" element={<CompanyUserSignup/>}/>
                 <Route path="/register-company" element={<RegisterCompany/>}/>
                 <Route path="/register" element={<Register/>}/>
+                <Route path="/buzz" element={<Buzz/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
         </>

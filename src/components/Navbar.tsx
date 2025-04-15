@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import logoImage from "../logo/image.png";  // Update import
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,10 @@ const Navbar: React.FC = () => {
   return (
     <header className="bg-white shadow px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex justify-between items-center py-4">
-        <Link to="/" className="text-2xl font-bold text-blue-600">Kaushal Network</Link>
+        <Link to="/" className="flex items-center space-x-2">
+          <img src={logoImage} alt="Kaushal Network" className="h-12 w-12 object-contain" />
+          <span className="text-2xl font-bold text-blue-600">Kaushal Network</span>
+        </Link>
 
         {/* Hamburger for mobile */}
         <div className="md:hidden">
@@ -28,7 +32,9 @@ const Navbar: React.FC = () => {
           <Button variant="ghost">Corporates</Button>
           <Button variant="ghost">Banks</Button>
           <Button variant="ghost">Network</Button>
-          <Button variant="ghost">BUZZ</Button>
+          <Button variant="ghost"
+          onClick={() => navigate('/buzz')}
+          >BUZZ</Button>
           <Button variant="outline" onClick={() => navigate('/login')}>Login</Button>
           <Button 
             className="bg-blue-600 text-white"
@@ -47,7 +53,9 @@ const Navbar: React.FC = () => {
           <Button variant="ghost" className="w-full text-left">Corporates</Button>
           <Button variant="ghost" className="w-full text-left">Banks</Button>
           <Button variant="ghost" className="w-full text-left">Network</Button>
-          <Button variant="ghost" className="w-full text-left">BUZZ</Button>
+          <Button variant="ghost" className="w-full text-left"
+          onClick={() => navigate('/buzz')}
+          >BUZZ</Button>
           <Button 
             variant="outline" 
             className="w-full text-left"

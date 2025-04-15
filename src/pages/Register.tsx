@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "../components/ui/button";
+import logoImage from "../logo/image.png";
 
 const Register = () => {
   const [page, setPage] = useState(1);
@@ -222,7 +223,7 @@ const Register = () => {
             <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
               Begin your Growth Journey
             </h2>
-            <img src="/logo.png" alt="Logo" className="h-12" />
+            <img src={logoImage} alt="Logo" className="h-12" />
           </div>
           
           {/* Progress Steps */}
