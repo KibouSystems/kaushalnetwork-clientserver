@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logoImage from '../logo/image.png';
 
 export default function RegisterCompany() {
   const [formData, setFormData] = useState({
@@ -70,6 +71,12 @@ export default function RegisterCompany() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 p-8">
+      {/* Add Logo and Title */}
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-bold">Begin your Growth Journey</h2>
+        <img src={logoImage} alt="Kaushal Network" className="h-16 w-16 object-contain" />
+      </div>
+
       <h2 className="text-2xl font-bold">Basic Information</h2>
 
       <div className="grid grid-cols-2 gap-4">

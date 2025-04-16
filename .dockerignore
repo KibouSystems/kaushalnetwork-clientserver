@@ -1,10 +1,13 @@
 node_modules
 dist
 .git
+.gitignore
+.env
+*.md
+.cache
 .github
 .vscode
 .idea
 coverage
-.env
 .env.*
 *.log
