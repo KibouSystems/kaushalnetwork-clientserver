@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: clientserver-dev
     ports:
-      - "5173:5173"
+      - '5173:5173'
     volumes:
       - ./:/app
       - /app/node_modules
@@ -20,6 +20,6 @@ services:
       dockerfile: Dockerfile
     container_name: clientserver
     ports:
-      - "80:80"
+      - '80:80'
     environment:
       - NODE_ENV=production

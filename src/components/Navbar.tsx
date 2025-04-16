@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
+import React, { useState } from 'react';
+import { Button } from './ui/button';
+import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,13 +35,27 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden flex flex-col items-start space-y-2 px-4 pb-4">
-          <Button variant="ghost" className="w-full text-left">MSMEs</Button>
-          <Button variant="ghost" className="w-full text-left">Service Providers</Button>
-          <Button variant="ghost" className="w-full text-left">Corporates</Button>
-          <Button variant="ghost" className="w-full text-left">Banks</Button>
-          <Button variant="ghost" className="w-full text-left">Network</Button>
-          <Button variant="ghost" className="w-full text-left">BUZZ</Button>
-          <Button variant="outline" className="w-full text-left">Login</Button>
+          <Button variant="ghost" className="w-full text-left">
+            MSMEs
+          </Button>
+          <Button variant="ghost" className="w-full text-left">
+            Service Providers
+          </Button>
+          <Button variant="ghost" className="w-full text-left">
+            Corporates
+          </Button>
+          <Button variant="ghost" className="w-full text-left">
+            Banks
+          </Button>
+          <Button variant="ghost" className="w-full text-left">
+            Network
+          </Button>
+          <Button variant="ghost" className="w-full text-left">
+            BUZZ
+          </Button>
+          <Button variant="outline" className="w-full text-left">
+            Login
+          </Button>
           <Button className="bg-blue-600 text-white w-full text-left">Register</Button>
         </div>
       )}
@@ -50,7 +64,6 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-
 
 // import {Link} from "react-router-dom"; // (make sure it's react-router-dom)
 
