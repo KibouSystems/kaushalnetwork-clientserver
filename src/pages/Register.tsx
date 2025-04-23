@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Button } from "../components/ui/button";
 import logoImage from "../logo/image.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Register = () => {
+  const navigate = useNavigate(); // Add this line at the top of component
+  
   const [page, setPage] = useState(1);
   const [formProgress, setFormProgress] = useState(40);
   const [formData, setFormData] = useState({
@@ -25,8 +30,8 @@ const Register = () => {
       branchAddress: "",
       websiteLink: "",
       involveInBusiness: [],
-      nameOfGoods: [],
-      nameOfServices: [],
+      nameOfGoods: "", // Change from array to string
+      nameOfServices: "", // Change from array to string
       sector: "",
       industry: "",
       numberOfEmployees: "",
@@ -77,13 +82,20 @@ const Register = () => {
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, section?: string) => {
     const { name, files } = e.target;
     if (files && files[0]) {
-      setFormData(prev => ({
-        ...prev,
-        [name]: files[0]
-      }));
+      if (section === 'statutory') {
+        setFormData(prev => ({
+          ...prev,
+          statutory: { ...prev.statutory, [name]: files[0] }
+        }));
+      } else if (section === 'details') {
+        setFormData(prev => ({
+          ...prev,
+          details: { ...prev.details, [name]: files[0] }
+        }));
+      }
     }
   };
 
@@ -107,111 +119,162 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = (data: any) => {
+    const errors: string[] = [];
+    
+    // Required fields validation
+    if (!data.enterprise.business_name) errors.push("Business name is required");
+    if (!data.enterprise.email) errors.push("Email is required");
+    if (!data.enterprise.password) errors.push("Password is required");
+    
+    // URL validation
+    if (data.company_details.website_link && 
+        !data.company_details.website_link.startsWith('http')) {
+      data.company_details.website_link = `https://${data.company_details.website_link}`;
+    }
+
+    return errors;
+  };
+
+  const validateRequiredFiles = () => {
+    if (!formData.details.logo) {
+      toast.error("Logo is required");
+      return false;
+    }
+    if (!formData.statutory.msmeDoc) {
+      toast.error("MSME registration document is required");
+      return false;
+    }
+    if (!formData.statutory.cinDoc) {
+      toast.error("CIN document is required");
+      return false;
+    }
+    if (!formData.statutory.panDoc) {
+      toast.error("PAN document is required");
+      return false;
+    }
+    if (!formData.statutory.gstinDoc) {
+      toast.error("GSTIN document is required");
+      return false;
+    }
+    if (!formData.statutory.aadharDoc) {
+      toast.error("Aadhar document is required");
+      return false;
+    }
+    return true;
+  };
+
+  const formatWebsiteUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Development only - log API structure
-    if (process.env.NODE_ENV === 'development') {
-      console.log('=== API Request Structure ===');
-      console.log(JSON.stringify({
-        api_endpoint: '/api/register',
-        method: 'POST',
-        request_body: {
-          enterprise: {
-            type: formData.enterpriseType,
-            business_name: formData.businessName,
-            email: formData.email,
-            password: formData.password,
-          },
-          contact_details: formData.contacts.map(contact => ({
-            name: contact.name,
-            designation: contact.designation,
-            email: contact.email,
-            contact_no: contact.contactNo
-          })),
-          company_details: {
-            trade_name: formData.details.tradeName,
-            legal_name: formData.details.legalName,
-            entity_type: formData.details.entityType,
-            incorporation_year: formData.details.incorporationYear,
-            registered_office: formData.details.registeredOffice,
-            branch_address: formData.details.branchAddress,
-            website_link: formData.details.websiteLink,
-            brand_names: formData.details.brandNames,
-            involve_in_business: formData.details.involveInBusiness,
-            name_of_goods: formData.details.nameOfGoods,
-            name_of_services: formData.details.nameOfServices,
-            sector: formData.details.sector,
-            industry: formData.details.industry,
-            number_of_employees: formData.details.numberOfEmployees,
-            experience: formData.details.experience,
-            logo_file: formData.details.logo ? {
-              name: formData.details.logo.name,
-              type: formData.details.logo.type,
-              size: formData.details.logo.size
-            } : null
-          },
-          statutory_details: {
-            msme: {
-              registration_number: formData.statutory.msmeRegNo,
-              document: formData.statutory.msmeDoc ? {
-                name: formData.statutory.msmeDoc.name,
-                type: formData.statutory.msmeDoc.type,
-                size: formData.statutory.msmeDoc.size
-              } : null
-            },
-            cin: {
-              number: formData.statutory.cinNumber,
-              document: formData.statutory.cinDoc ? {
-                name: formData.statutory.cinDoc.name,
-                type: formData.statutory.cinDoc.type,
-                size: formData.statutory.cinDoc.size
-              } : null
-            },
-            pan: {
-              number: formData.statutory.panNumber,
-              document: formData.statutory.panDoc ? {
-                name: formData.statutory.panDoc.name,
-                type: formData.statutory.panDoc.type,
-                size: formData.statutory.panDoc.size
-              } : null
-            },
-            gstin: {
-              number: formData.statutory.gstinNo,
-              document: formData.statutory.gstinDoc ? {
-                name: formData.statutory.gstinDoc.name,
-                type: formData.statutory.gstinDoc.type,
-                size: formData.statutory.gstinDoc.size
-              } : null
-            },
-            trade_license: {
-              number: formData.statutory.tradeLicenseNo,
-              document: formData.statutory.tradeLicenseDoc ? {
-                name: formData.statutory.tradeLicenseDoc.name,
-                type: formData.statutory.tradeLicenseDoc.type,
-                size: formData.statutory.tradeLicenseDoc.size
-              } : null
-            },
-            iec: {
-              number: formData.statutory.iecNo,
-              document: formData.statutory.iecDoc ? {
-                name: formData.statutory.iecDoc.name,
-                type: formData.statutory.iecDoc.type,
-                size: formData.statutory.iecDoc.size
-              } : null
-            },
-            aadhar: {
-              number: formData.statutory.aadharNo,
-              document: formData.statutory.aadharDoc ? {
-                name: formData.statutory.aadharDoc.name,
-                type: formData.statutory.aadharDoc.type,
-                size: formData.statutory.aadharDoc.size
-              } : null
-            }
-          }
-        }
-      }, null, 2));
+    if (!validateRequiredFiles()) {
+      return;
     }
+
+    try {
+      const formDataToSend = new FormData();
+
+      // Format employee count
+      const [minCount = '1', maxCount = '10'] = (formData.details.numberOfEmployees || '').split('-');
+      const minEmployees = parseInt(minCount.trim()) || 1;
+      const maxEmployees = parseInt(maxCount.trim()) || 10;
+
+      // Company basic details
+      formDataToSend.append('companyType', formData.enterpriseType || 'MSME');
+      formDataToSend.append('companyName', formData.businessName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('password', formData.password);
+      formDataToSend.append('countryCode', '+91');
+      formDataToSend.append('contactNumber', formData.contacts[0]?.contactNo || '');
+      formDataToSend.append('tradeName', formData.details.tradeName);
+      formDataToSend.append('legalName', formData.details.legalName);
+      formDataToSend.append('entityType', formData.details.entityType || 'Company');
+      formDataToSend.append('brandNames', formData.details.brandNames.join(','));
+      formDataToSend.append('incorporationYear', formData.details.incorporationYear);
+      formDataToSend.append('registeredOfficeAddress', formData.details.registeredOffice);
+      formDataToSend.append('branchAddress', formData.details.branchAddress || '');
+      // Format website URL before sending
+      formDataToSend.append('websiteUrl', formatWebsiteUrl(formData.details.websiteLink));
+      formDataToSend.append('businessType', formData.details.involveInBusiness[0] || 'GOODS');
+      formDataToSend.append('deliverableNames', `${formData.details.nameOfGoods},${formData.details.nameOfServices}`);
+      formDataToSend.append('sector', formData.details.sector);
+      formDataToSend.append('industry', formData.details.industry);
+      formDataToSend.append('minEmployeeCount', minEmployees.toString());
+      formDataToSend.append('maxEmployeeCount', maxEmployees.toString());
+
+      // Statutory details
+      formDataToSend.append('msmeRegistrationNumber', formData.statutory.msmeRegNo);
+      formDataToSend.append('cin', formData.statutory.cinNumber);
+      formDataToSend.append('pan', formData.statutory.panNumber);
+      formDataToSend.append('gstin', formData.statutory.gstinNo);
+      formDataToSend.append('tradeLicenseNumber', formData.statutory.tradeLicenseNo);
+      formDataToSend.append('iecNumber', formData.statutory.iecNo);
+      formDataToSend.append('aadharNumber', formData.statutory.aadharNo);
+
+      // File uploads
+      if (formData.details.logo) formDataToSend.append('logo', formData.details.logo);
+      if (formData.statutory.msmeDoc) formDataToSend.append('msmeRegistrationDocument', formData.statutory.msmeDoc);
+      if (formData.statutory.cinDoc) formDataToSend.append('cinDocument', formData.statutory.cinDoc);
+      if (formData.statutory.panDoc) formDataToSend.append('panDocument', formData.statutory.panDoc);
+      if (formData.statutory.gstinDoc) formDataToSend.append('gstinDocument', formData.statutory.gstinDoc);
+      if (formData.statutory.tradeLicenseDoc) formDataToSend.append('tradeLicenseDocument', formData.statutory.tradeLicenseDoc);
+      if (formData.statutory.iecDoc) formDataToSend.append('iecDocument', formData.statutory.iecDoc);
+      if (formData.statutory.aadharDoc) formDataToSend.append('aadhar', formData.statutory.aadharDoc);
+
+      const response = await axios.post(
+        'http://localhost:3000/api/v0/company',
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true
+        }
+      );
+
+      if (response.status === 201) {
+        toast.success('Registration successful!');
+        navigate('/login');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Registration error:', error.response?.data);
+        toast.error(error.response?.data?.message || 'Registration failed');
+      } else {
+        toast.error('An unexpected error occurred');
+        console.error('Registration error:', error);
+      }
+    }
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission
+    
+    // Validate first page
+    if (page === 1) {
+      if (!formData.businessName || !formData.email || !formData.password) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Passwords do not match!");
+        return;
+      }
+      if (!formData.contacts[0].name || !formData.contacts[0].email) {
+        toast.error("Please provide at least one contact person's details");
+        return;
+      }
+    }
+    
+    setPage(2);
   };
 
   return (
@@ -414,7 +477,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="logo"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'details')}
                         accept=".png,.jpg" 
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
                       />
@@ -591,7 +654,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="msmeDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -608,7 +671,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="cinDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -625,7 +688,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="panDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf,.jpg,.png" 
                         className="mt-2" 
                       />
@@ -642,7 +705,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="gstinDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -659,7 +722,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="tradeLicenseDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -676,7 +739,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="iecDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -693,7 +756,7 @@ const Register = () => {
                       <input 
                         type="file" 
                         name="aadharDoc"
-                        onChange={handleFileChange}
+                        onChange={(e) => handleFileChange(e, 'statutory')}
                         accept=".pdf" 
                         className="mt-2" 
                       />
@@ -717,7 +780,7 @@ const Register = () => {
               {page === 1 ? (
                 <Button
                   type="button"
-                  onClick={() => setPage(2)}
+                  onClick={handleNext}
                   className="ml-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
                 >
                   Next

@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import RegisterCompany from "./pages/RegisterCompany";
 import Register from "./pages/Register";
 import Buzz from "./pages/Buzz";
+import { Toaster } from "react-hot-toast";
 
 function App() {
     return (
@@ -21,6 +22,16 @@ function App() {
                 <Route path="/buzz" element={<Buzz/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
+            <Toaster 
+                position="top-right"
+                toastOptions={{
+                    duration: 4000,
+                    style: {
+                        background: '#363636',
+                        color: '#fff',
+                    },
+                }}
+            />
         </>
     );
 }
