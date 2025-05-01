@@ -1,11 +1,11 @@
 import {Route, Routes} from "react-router-dom";
-import CompanyUserLogin from "./pages/CompanyUserLogin";
+import CompanyUserLogin from "./pages/Auth/CompanyUserLogin";
 import NotFoundPage from "./pages/NotFoundPage";
 import CompanyUserSignup from "./pages/CompanyUserSignup";
 import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
 import RegisterCompany from "./pages/RegisterCompany";
-import Register from "./pages/Register";
+import Register from "./pages/Auth/Register";
 import Buzz from "./pages/Buzz";
 import { Toaster } from "react-hot-toast";
 

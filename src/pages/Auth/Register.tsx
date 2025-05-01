@@ -1,34 +1,36 @@
 import React, { useState } from "react";
-import { Button } from "../components/ui/button";
-import logoImage from "../logo/image.png";
+import { Button } from "../../components/ui/button";
+import logoImage from "../../logo/image.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import FileUpload from '../../components/FileUpload';
 
 const Register = () => {
   const navigate = useNavigate(); // Add this line at the top of component
   
   const [page, setPage] = useState(1);
-  const [formProgress, setFormProgress] = useState(40);
+  // Below state was not in use if needed uncomment it
+  // const [formProgress, setFormProgress] = useState(40);
   const [formData, setFormData] = useState({
     // First page data
-    enterpriseType: "",
-    businessName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    
+    enterpriseType: '',
+    businessName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+
     // Second page data
     details: {
-      tradeName: "",
-      legalName: "",
+      tradeName: '',
+      legalName: '',
       logo: null,
       brandNames: [],
-      entityType: "",
-      incorporationYear: "",
-      registeredOffice: "",
-      branchAddress: "",
-      websiteLink: "",
+      entityType: '',
+      incorporationYear: '',
+      registeredOffice: '',
+      branchAddress: '',
+      websiteLink: '',
       involveInBusiness: [],
       nameOfGoods: "", // Change from array to string
       nameOfServices: "", // Change from array to string
@@ -39,34 +41,38 @@ const Register = () => {
     },
     contacts: [
       {
-        name: "",
-        designation: "",
-        email: "",
-        contactNo: ""
-      }
+        name: '',
+        designation: '',
+        email: '',
+        contactNo: '',
+      },
     ],
     statutory: {
-      msmeRegNo: "",
+      msmeRegNo: '',
       msmeDoc: null,
-      cinNumber: "",
+      cinNumber: '',
       cinDoc: null,
-      panNumber: "",
+      panNumber: '',
       panDoc: null,
-      gstinNo: "",
+      gstinNo: '',
       gstinDoc: null,
-      tradeLicenseNo: "",
+      tradeLicenseNo: '',
       tradeLicenseDoc: null,
-      iecNo: "",
+      iecNo: '',
       iecDoc: null,
-      aadharNo: "",
-      aadharDoc: null
-    }
+      aadharNo: '',
+      aadharDoc: null,
+    },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, section?: string, index?: number) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    section?: string,
+    index?: number,
+  ) => {
     const { name, value } = e.target;
-    
-    setFormData(prev => {
+
+    setFormData((prev) => {
       if (section) {
         if (section === 'contacts' && typeof index !== 'undefined') {
           const newContacts = [...prev.contacts];
@@ -75,7 +81,7 @@ const Register = () => {
         }
         return {
           ...prev,
-          [section]: { ...prev[section as keyof typeof prev], [name]: value }
+          [section]: { ...prev[section as keyof typeof prev], [name]: value },
         };
       }
       return { ...prev, [name]: value };
@@ -100,21 +106,21 @@ const Register = () => {
   };
 
   const addPerson = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      contacts: [...prev.contacts, { name: "", designation: "", email: "", contactNo: "" }]
+      contacts: [...prev.contacts, { name: '', designation: '', email: '', contactNo: '' }],
     }));
   };
 
   const addBrandName = () => {
-    const brandName = prompt("Enter brand name");
+    const brandName = prompt('Enter brand name');
     if (brandName) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         details: {
           ...prev.details,
-          brandNames: [...prev.details.brandNames, brandName]
-        }
+          brandNames: [...prev.details.brandNames, brandName],
+        },
       }));
     }
   };
@@ -182,14 +188,9 @@ const Register = () => {
     try {
       const formDataToSend = new FormData();
 
-      // Format employee count
-      const [minCount = '1', maxCount = '10'] = (formData.details.numberOfEmployees || '').split('-');
-      const minEmployees = parseInt(minCount.trim()) || 1;
-      const maxEmployees = parseInt(maxCount.trim()) || 10;
-
-      // Company basic details
-      formDataToSend.append('companyType', formData.enterpriseType || 'MSME');
+      // Required fields only
       formDataToSend.append('companyName', formData.businessName);
+      formDataToSend.append('companyType', formData.enterpriseType || 'MSME');
       formDataToSend.append('email', formData.email);
       formDataToSend.append('password', formData.password);
       formDataToSend.append('countryCode', '+91');
@@ -200,34 +201,49 @@ const Register = () => {
       formDataToSend.append('brandNames', formData.details.brandNames.join(','));
       formDataToSend.append('incorporationYear', formData.details.incorporationYear);
       formDataToSend.append('registeredOfficeAddress', formData.details.registeredOffice);
-      formDataToSend.append('branchAddress', formData.details.branchAddress || '');
-      // Format website URL before sending
-      formDataToSend.append('websiteUrl', formatWebsiteUrl(formData.details.websiteLink));
       formDataToSend.append('businessType', formData.details.involveInBusiness[0] || 'GOODS');
       formDataToSend.append('deliverableNames', `${formData.details.nameOfGoods},${formData.details.nameOfServices}`);
       formDataToSend.append('sector', formData.details.sector);
       formDataToSend.append('industry', formData.details.industry);
-      formDataToSend.append('minEmployeeCount', minEmployees.toString());
-      formDataToSend.append('maxEmployeeCount', maxEmployees.toString());
-
-      // Statutory details
+      formDataToSend.append('minEmployeeCount', '1');
+      formDataToSend.append('maxEmployeeCount', '10');
+      
+      // Required statutory numbers
       formDataToSend.append('msmeRegistrationNumber', formData.statutory.msmeRegNo);
       formDataToSend.append('cin', formData.statutory.cinNumber);
       formDataToSend.append('pan', formData.statutory.panNumber);
       formDataToSend.append('gstin', formData.statutory.gstinNo);
-      formDataToSend.append('tradeLicenseNumber', formData.statutory.tradeLicenseNo);
-      formDataToSend.append('iecNumber', formData.statutory.iecNo);
       formDataToSend.append('aadharNumber', formData.statutory.aadharNo);
 
-      // File uploads
+      // Optional fields
+      if (formData.details.branchAddress) {
+        formDataToSend.append('branchAddress', formData.details.branchAddress);
+      }
+      if (formData.details.websiteLink) {
+        formDataToSend.append('websiteUrl', formatWebsiteUrl(formData.details.websiteLink));
+      }
+      if (formData.statutory.tradeLicenseNo) {
+        formDataToSend.append('tradeLicenseNumber', formData.statutory.tradeLicenseNo);
+      }
+      if (formData.statutory.iecNo) {
+        formDataToSend.append('iecNumber', formData.statutory.iecNo);
+      }
+
+      // Required files
       if (formData.details.logo) formDataToSend.append('logo', formData.details.logo);
       if (formData.statutory.msmeDoc) formDataToSend.append('msmeRegistrationDocument', formData.statutory.msmeDoc);
       if (formData.statutory.cinDoc) formDataToSend.append('cinDocument', formData.statutory.cinDoc);
       if (formData.statutory.panDoc) formDataToSend.append('panDocument', formData.statutory.panDoc);
       if (formData.statutory.gstinDoc) formDataToSend.append('gstinDocument', formData.statutory.gstinDoc);
-      if (formData.statutory.tradeLicenseDoc) formDataToSend.append('tradeLicenseDocument', formData.statutory.tradeLicenseDoc);
-      if (formData.statutory.iecDoc) formDataToSend.append('iecDocument', formData.statutory.iecDoc);
       if (formData.statutory.aadharDoc) formDataToSend.append('aadhar', formData.statutory.aadharDoc);
+
+      // Optional files
+      if (formData.statutory.tradeLicenseDoc) {
+        formDataToSend.append('tradeLicenseDocument', formData.statutory.tradeLicenseDoc);
+      }
+      if (formData.statutory.iecDoc) {
+        formDataToSend.append('iecDocument', formData.statutory.iecDoc);
+      }
 
       const response = await axios.post(
         'http://localhost:3000/api/v0/company',
@@ -278,33 +294,47 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container max-w-4xl mx-auto px-4">
-        {/* Header with Progress */}
-        <div className="bg-white rounded-t-2xl shadow-sm p-6 mb-1">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              Begin your Growth Journey
-            </h2>
-            <img src={logoImage} alt="Logo" className="h-12" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <img src={logoImage} alt="Logo" className="h-10 w-auto" />
+              <div className="ml-4">
+                <h1 className="text-2xl font-bold text-gray-900">Business Registration</h1>
+                <p className="text-sm text-gray-500">Join the network of growing businesses</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-500">Already registered?</span>
+              <Button
+                onClick={() => navigate('/login')}
+                className="bg-white text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Sign in
+              </Button>
+            </div>
           </div>
-          
-          {/* Progress Steps */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex-1">
-              <div className={`h-2 rounded-full ${page === 1 ? 'bg-blue-500' : 'bg-blue-200'}`}></div>
-              <p className={`mt-2 text-sm ${page === 1 ? 'text-blue-500 font-medium' : 'text-gray-500'}`}>Basic Details</p>
-            </div>
-            <div className="w-4"></div>
-            <div className="flex-1">
-              <div className={`h-2 rounded-full ${page === 2 ? 'bg-blue-500' : 'bg-blue-200'}`}></div>
-              <p className={`mt-2 text-sm ${page === 2 ? 'text-blue-500 font-medium' : 'text-gray-500'}`}>Company Information</p>
-            </div>
+        </div>
+      </header>
+
+      {/* Progress Steps */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex-1">
+            <div className={`h-2 rounded-full transition-all duration-300 ${page >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`} />
+            <p className={`mt-2 text-sm font-medium ${page >= 1 ? 'text-blue-600' : 'text-gray-500'}`}>Basic Information</p>
+          </div>
+          <div className="w-4" />
+          <div className="flex-1">
+            <div className={`h-2 rounded-full transition-all duration-300 ${page >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
+            <p className={`mt-2 text-sm font-medium ${page >= 2 ? 'text-blue-600' : 'text-gray-500'}`}>Company Details</p>
           </div>
         </div>
 
         {/* Form Container */}
-        <div className="bg-white rounded-b-2xl shadow-sm p-6">
+        <div className="bg-white rounded-xl shadow-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {page === 1 && (
               <div className="space-y-6 transition-all duration-300">
@@ -312,7 +342,7 @@ const Register = () => {
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Type of Enterprise</label>
-                    <select 
+                    <select
                       name="enterpriseType"
                       value={formData.enterpriseType}
                       onChange={handleInputChange}
@@ -348,7 +378,9 @@ const Register = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Create Your Password</label>
+                    <label className="text-sm font-medium text-gray-700">
+                      Create Your Password
+                    </label>
                     <input
                       type="password"
                       name="password"
@@ -359,7 +391,9 @@ const Register = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Confirm Your Password</label>
+                    <label className="text-sm font-medium text-gray-700">
+                      Confirm Your Password
+                    </label>
                     <input
                       type="password"
                       name="confirmPassword"
@@ -375,13 +409,18 @@ const Register = () => {
                 <div className="border-t pt-6 mt-8">
                   <h4 className="text-lg font-semibold text-gray-800 mb-4">Contact Details</h4>
                   {formData.contacts.map((contact, index) => (
-                    <div key={index} className="p-6 border border-gray-200 rounded-lg mb-4 bg-gray-50">
+                    <div
+                      key={index}
+                      className="p-6 border border-gray-200 rounded-lg mb-4 bg-gray-50"
+                    >
                       <div className="flex justify-between items-center mb-4">
                         <h5 className="font-medium text-gray-700">Person {index + 1}</h5>
                         {index > 0 && (
                           <button
                             type="button"
-                            onClick={() => {/* Add remove person logic */}}
+                            onClick={() => {
+                              /* Add remove person logic */
+                            }}
                             className="text-red-500 hover:text-red-700"
                           >
                             Remove
@@ -437,8 +476,18 @@ const Register = () => {
                     onClick={addPerson}
                     className="mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center"
                   >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
                     </svg>
                     Add Person
                   </Button>
@@ -450,41 +499,43 @@ const Register = () => {
               <div className="space-y-8 transition-all duration-300">
                 {/* Enterprise Details Section */}
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-800 mb-6">Details of Enterprise</h4>
+                  <h4 className="text-lg font-semibold text-gray-800 mb-6">
+                    Details of Enterprise
+                  </h4>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Trade Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="tradeName"
                         value={formData.details.tradeName}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Legal Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="legalName"
                         value={formData.details.legalName}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Logo</label>
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="Logo"
                         name="logo"
                         onChange={(e) => handleFileChange(e, 'details')}
-                        accept=".png,.jpg" 
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        accept=".png,.jpg,.jpeg"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Type of Entity</label>
-                      <select 
+                      <select
                         name="entityType"
                         value={formData.details.entityType}
                         onChange={(e) => handleInputChange(e, 'details')}
@@ -498,43 +549,45 @@ const Register = () => {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Incorporation Year</label>
-                      <input 
-                        type="text" 
+                      <label className="text-sm font-medium text-gray-700">
+                        Incorporation Year
+                      </label>
+                      <input
+                        type="text"
                         name="incorporationYear"
                         value={formData.details.incorporationYear}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Registered Office</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="registeredOffice"
                         value={formData.details.registeredOffice}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Branch Address</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="branchAddress"
                         value={formData.details.branchAddress}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Website Link</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="websiteLink"
                         value={formData.details.websiteLink}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
@@ -555,9 +608,18 @@ const Register = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Involve in Business of</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Involve in Business of
+                      </label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['Goods', 'Services', 'Trade', 'Securities', 'Investments', 'E-Commerce'].map(item => (
+                        {[
+                          'Goods',
+                          'Services',
+                          'Trade',
+                          'Securities',
+                          'Investments',
+                          'E-Commerce',
+                        ].map((item) => (
                           <label key={item} className="flex items-center">
                             <input
                               type="checkbox"
@@ -565,8 +627,11 @@ const Register = () => {
                               onChange={(e) => {
                                 const newValue = e.target.checked
                                   ? [...formData.details.involveInBusiness, item]
-                                  : formData.details.involveInBusiness.filter(x => x !== item);
-                                handleInputChange({ target: { name: 'involveInBusiness', value: newValue } }, 'details');
+                                  : formData.details.involveInBusiness.filter((x) => x !== item);
+                                handleInputChange(
+                                  { target: { name: 'involveInBusiness', value: newValue } },
+                                  'details',
+                                );
                               }}
                               className="mr-2"
                             />
@@ -577,62 +642,64 @@ const Register = () => {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Name of Goods</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="nameOfGoods"
                         value={formData.details.nameOfGoods}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Name of Services</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="nameOfServices"
                         value={formData.details.nameOfServices}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Sector</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="sector"
                         value={formData.details.sector}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Industry</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="industry"
                         value={formData.details.industry}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Number of Employees</label>
-                      <input 
-                        type="text" 
+                      <label className="text-sm font-medium text-gray-700">
+                        Number of Employees
+                      </label>
+                      <input
+                        type="text"
                         name="numberOfEmployees"
                         value={formData.details.numberOfEmployees}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Experience</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="experience"
                         value={formData.details.experience}
                         onChange={(e) => handleInputChange(e, 'details')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
                   </div>
@@ -644,121 +711,114 @@ const Register = () => {
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">MSME Reg. No.</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="msmeRegNo"
                         value={formData.statutory.msmeRegNo}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="MSME Document"
                         name="msmeDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">CIN/LLP-CIN</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="cinNumber"
                         value={formData.statutory.cinNumber}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="CIN Document"
                         name="cinDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">PAN</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="panNumber"
                         value={formData.statutory.panNumber}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="PAN Document"
                         name="panDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf,.jpg,.png" 
-                        className="mt-2" 
+                        accept=".pdf,.jpg,.png"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">GSTIN No.</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="gstinNo"
                         value={formData.statutory.gstinNo}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="GSTIN Document"
                         name="gstinDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Trade License No.</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="tradeLicenseNo"
                         value={formData.statutory.tradeLicenseNo}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="Trade License Document"
                         name="tradeLicenseDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">IEC No.</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="iecNo"
                         value={formData.statutory.iecNo}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="IEC Document"
                         name="iecDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-gray-700">Aadhar No.</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         name="aadharNo"
                         value={formData.statutory.aadharNo}
                         onChange={(e) => handleInputChange(e, 'statutory')}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
-                      <input 
-                        type="file" 
+                      <FileUpload
+                        label="Aadhar Document"
                         name="aadharDoc"
                         onChange={(e) => handleFileChange(e, 'statutory')}
-                        accept=".pdf" 
-                        className="mt-2" 
+                        accept=".pdf"
                       />
                     </div>
                   </div>

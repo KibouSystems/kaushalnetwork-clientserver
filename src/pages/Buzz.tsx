@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button } from "../components/ui/button";
+import React, { useState } from 'react';
+import { Button } from '../components/ui/button';
 
 interface BuzzPost {
   postId?: string;
@@ -19,34 +19,34 @@ const Buzz = () => {
   const [posts, setPosts] = useState<BuzzPost[]>([]);
   const [currentPost, setCurrentPost] = useState<BuzzPost>({
     identity: {
-      personName: "",
-      position: "",
-      company: ""
+      personName: '',
+      position: '',
+      company: '',
     },
     content: {
-      text: "",
-      media: null
-    }
+      text: '',
+      media: null,
+    },
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name.startsWith("identity.")) {
-      const field = name.split(".")[1];
-      setCurrentPost(prev => ({
+    if (name.startsWith('identity.')) {
+      const field = name.split('.')[1];
+      setCurrentPost((prev) => ({
         ...prev,
         identity: {
           ...prev.identity,
-          [field]: value
-        }
+          [field]: value,
+        },
       }));
     } else {
-      setCurrentPost(prev => ({
+      setCurrentPost((prev) => ({
         ...prev,
         content: {
           ...prev.content,
-          [name]: value
-        }
+          [name]: value,
+        },
       }));
     }
   };
@@ -54,66 +54,74 @@ const Buzz = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setCurrentPost(prev => ({
+      setCurrentPost((prev) => ({
         ...prev,
         content: {
           ...prev.content,
-          media: Array.from(files)
-        }
+          media: Array.from(files),
+        },
       }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Add timestamp and ID
     const newPost: BuzzPost = {
       ...currentPost,
       postId: `post_${Date.now()}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
+
     // Development only - log post structure
     if (process.env.NODE_ENV === 'development') {
       console.log('=== New Buzz Post Structure ===');
-      console.log(JSON.stringify({
-        api_endpoint: '/api/buzz/post',
-        method: 'POST',
-        request_body: {
-          post_id: newPost.postId,
-          posted_at: newPost.timestamp?.toISOString(),
-          author: {
-            name: newPost.identity.personName,
-            position: newPost.identity.position,
-            company: newPost.identity.company
+      console.log(
+        JSON.stringify(
+          {
+            api_endpoint: '/api/buzz/post',
+            method: 'POST',
+            request_body: {
+              post_id: newPost.postId,
+              posted_at: newPost.timestamp?.toISOString(),
+              author: {
+                name: newPost.identity.personName,
+                position: newPost.identity.position,
+                company: newPost.identity.company,
+              },
+              content: {
+                text: newPost.content.text,
+                media: newPost.content.media
+                  ? newPost.content.media.map((file) => ({
+                      name: file.name,
+                      type: file.type,
+                      size: file.size,
+                      lastModified: file.lastModified,
+                    }))
+                  : null,
+              },
+            },
           },
-          content: {
-            text: newPost.content.text,
-            media: newPost.content.media ? newPost.content.media.map(file => ({
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              lastModified: file.lastModified
-            })) : null
-          }
-        }
-      }, null, 2));
+          null,
+          2,
+        ),
+      );
     }
 
-    setPosts(prev => [newPost, ...prev]);
-    
+    setPosts((prev) => [newPost, ...prev]);
+
     // Reset form
     setCurrentPost({
       identity: {
-        personName: "",
-        position: "",
-        company: ""
+        personName: '',
+        position: '',
+        company: '',
       },
       content: {
-        text: "",
-        media: null
-      }
+        text: '',
+        media: null,
+      },
     });
   };
 
@@ -191,7 +199,7 @@ const Buzz = () => {
 
         {/* Posts List */}
         <div className="space-y-6">
-          {posts.map(post => (
+          {posts.map((post) => (
             <div key={post.postId} className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center mb-4">
                 <div>
@@ -199,9 +207,7 @@ const Buzz = () => {
                   <p className="text-sm text-gray-600">
                     {post.identity.position} at {post.identity.company}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {post.timestamp?.toLocaleString()}
-                  </p>
+                  <p className="text-xs text-gray-500">{post.timestamp?.toLocaleString()}</p>
                 </div>
               </div>
               <p className="mb-4">{post.content.text}</p>
