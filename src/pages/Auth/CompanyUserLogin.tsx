@@ -29,9 +29,9 @@ export default function CompanyUserLogin() {
         const token = resultAction.payload.token;
         
         if (token) {
-          localStorage.setItem('token', token);
+          // localStorage.setItem('token', token);
           // Also log the stored token
-          console.log('Stored token:', localStorage.getItem('token'));
+          // console.log('Stored token:', localStorage.getItem('token'));
           toast.success('Login successful!');
           navigate('/dashboard');
         } else {

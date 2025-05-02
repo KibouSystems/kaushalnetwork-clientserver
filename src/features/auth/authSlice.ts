@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosConfig';
+import { tokenManager } from '../../utils/tokenManager';
 
 interface AuthState {
   user: any;
@@ -11,60 +12,70 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
-  isAuthenticated: !!localStorage.getItem('token'),
+  token: tokenManager.getToken(),
+  isAuthenticated: tokenManager.isAuthenticated(),
   isLoading: false,
   error: null,
 };
 
-
-
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  async (credentials: { email: string; password: string }, { dispatch }) => {
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v0/company/login',
-        credentials,
-        { 
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true  // Important for receiving cookies
-        }
-      );
-
+      const response = await axiosInstance.post('/company-user/login', credentials);
       const { token, user } = response.data;
       
       if (token) {
-        localStorage.setItem('token', token);
-        sessionStorage.setItem('token', token);
+        tokenManager.setToken(token);
+        await dispatch(getMe());
       }
 
       return { token, user };
     } catch (error: any) {
       console.error('Login error:', error);
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      throw error;
+    }
+  }
+);
+
+export const getMe = createAsyncThunk(
+  'auth/getMe',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get('/company-user/me');
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user details');
+    }
+  }
+);
+
+export const checkAuth = createAsyncThunk(
+  'auth/check',
+  async (_, { dispatch }) => {
+    if (tokenManager.isAuthenticated()) {
+      await dispatch(getMe());
     }
   }
 );
 
 export const logoutUser = createAsyncThunk(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
-    try {
-      await axios.post(
-        'http://localhost:3000/api/v0/company-user/logout',
-        {},
-        { withCredentials: true }
-      );
-      // Clear all storage
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('token');
-      return null;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Logout failed');
-    }
+  async () => {
+    // Clear auth_token cookie
+    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    // Clear localStorage if needed
+    localStorage.removeItem('auth_token');
+    return null;
   }
 );
+
+// Add a check auth helper
+export const checkAuthToken = () => {
+  const cookies = document.cookie.split(';');
+  const authToken = cookies.find(cookie => cookie.trim().startsWith('auth_token='));
+  return !!authToken;
+};
 
 const authSlice = createSlice({
   name: 'auth',
@@ -85,8 +96,11 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.error.message;
         state.isAuthenticated = false;
+      })
+      .addCase(getMe.fulfilled, (state, action) => {
+        state.user = action.payload;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;

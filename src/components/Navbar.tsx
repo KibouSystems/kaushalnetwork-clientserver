@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Menu, X } from 'lucide-react';
+import { Cookie, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logoImage from '../logo/image.png'; // Update import
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../features/auth/authSlice';
+import { logoutUser, checkAuthToken } from '../features/auth/authSlice';
 import { RootState, AppDispatch } from '../app/store';
 import { toast } from 'react-hot-toast';
 
@@ -16,15 +16,27 @@ const Navbar: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+console.warn(isAuthenticated, 'isAuthenticated');
+
+ 
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser());
+      // No need to manually set isAuthenticated as it's handled by the reducer
       toast.success('Logged out successfully');
       navigate('/login');
     } catch (error) {
       toast.error('Error during logout');
     }
   };
+
+  // Add effect to check auth token
+  useEffect(() => {
+    const isAuth = checkAuthToken();
+    if (!isAuth && isAuthenticated) {
+      dispatch(logoutUser());
+    }
+  }, []);
 
   return (
     <header className="bg-white shadow px-4 sm:px-6 lg:px-8">
@@ -46,7 +58,12 @@ const Navbar: React.FC = () => {
           <Button variant="ghost">MSMEs</Button>
           <Button variant="ghost">Service Providers</Button>
           <Button variant="ghost">Corporates</Button>
-          <Button variant="ghost">Banks</Button>
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/admin-view')}
+          >
+            TA6
+          </Button>
           <Button variant="ghost" onClick={() => navigate('/network')}>Network</Button>
           <Button variant="ghost" onClick={() => navigate('/buzz')}>
             BUZZ
@@ -80,8 +97,12 @@ const Navbar: React.FC = () => {
           <Button variant="ghost" className="w-full text-left">
             Corporates
           </Button>
-          <Button variant="ghost" className="w-full text-left">
-            Banks
+          <Button 
+            variant="ghost" 
+            className="w-full text-left" 
+            onClick={() => navigate('/admin-view')}
+          >
+            TA6
           </Button>
           <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/network')}>
             Network

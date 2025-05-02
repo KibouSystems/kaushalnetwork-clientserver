@@ -207,7 +207,12 @@ const Register = () => {
       formDataToSend.append('industry', formData.details.industry);
       formDataToSend.append('minEmployeeCount', '1');
       formDataToSend.append('maxEmployeeCount', '10');
-      
+
+      // Add required user fields for admin user
+      formDataToSend.append('username', formData.contacts[0]?.email || formData.email || '');
+      formDataToSend.append('name', formData.contacts[0]?.name || '');
+      formDataToSend.append('designation', formData.contacts[0]?.designation || '');
+
       // Required statutory numbers
       formDataToSend.append('msmeRegistrationNumber', formData.statutory.msmeRegNo);
       formDataToSend.append('cin', formData.statutory.cinNumber);
