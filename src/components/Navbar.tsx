@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
           <Button variant="ghost">Service Providers</Button>
           <Button variant="ghost">Corporates</Button>
           <Button variant="ghost">Banks</Button>
-          <Button variant="ghost">Network</Button>
+          <Button variant="ghost" onClick={() => navigate('/network')}>Network</Button>
           <Button variant="ghost" onClick={() => navigate('/buzz')}>
             BUZZ
           </Button>
@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
           <Button variant="ghost" className="w-full text-left">
             Banks
           </Button>
-          <Button variant="ghost" className="w-full text-left">
+          <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/network')}>
             Network
           </Button>
           <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/buzz')}>

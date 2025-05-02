@@ -8,6 +8,7 @@ import RegisterCompany from "./pages/RegisterCompany";
 import Register from "./pages/Auth/Register";
 import Buzz from "./pages/Buzz";
 import { Toaster } from "react-hot-toast";
+import NetworkPage from "./pages/Naviation_pages/Network_Page";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/register-company" element={<RegisterCompany/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/buzz" element={<Buzz/>}/>
+                <Route path="/network" element={<NetworkPage/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
             <Toaster 
