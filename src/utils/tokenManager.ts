@@ -13,6 +13,10 @@ export const tokenManager = {
     return Cookies.get(TOKEN_KEY) 
   },
 
+  
+  getadmin(): string | null {
+    return Cookies.get('admin') 
+  },
   removeToken() {
     Cookies.remove(TOKEN_KEY);
     localStorage.removeItem(TOKEN_KEY);
@@ -31,4 +35,6 @@ export const tokenManager = {
     return !!this.getToken();
   }
 };
+  
+ 
 
