@@ -44,8 +44,15 @@ console.warn(isAuthenticated, 'isAuthenticated');
     console.warn(" is admin view",Cookies.get('admin_view') );
     
     const adminView = Cookies.get('admin_view') === 'true';
+    const authToken = Cookies.get('auth_token');
     setIsAdminView(adminView);
-  }, []);
+
+    // Check for user view conditions
+    if (!adminView && authToken) {
+      // Add User View button to nav
+      navigate('/company-view'); // or wherever your user view route is
+    }
+  }, [navigate]);
 
   const handleAdminNavigation = () => {
     const isAdmin = Cookies.get('admin_view') === 'true';
@@ -85,12 +92,19 @@ console.warn(isAuthenticated, 'isAuthenticated');
           >
             Super Admin
           </Button>
-          {isAdminView && (
+          {isAdminView ? (
             <Button 
               variant="ghost" 
               onClick={handleAdminNavigation}
             >
               Admin view
+            </Button>
+          ) : Cookies.get('auth_token') && (
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/company-view')}
+            >
+              User View
             </Button>
           )}
           <Button variant="ghost" onClick={() => navigate('/network')}>Network</Button>
@@ -130,13 +144,21 @@ console.warn(isAuthenticated, 'isAuthenticated');
           >
             Super Admin
           </Button>
-          {isAdminView && (
+          {isAdminView ? (
             <Button 
               variant="ghost" 
               className="w-full text-left" 
               onClick={handleAdminNavigation}
             >
               Admin view
+            </Button>
+          ) : Cookies.get('auth_token') && (
+            <Button 
+              variant="ghost" 
+              className="w-full text-left"
+              onClick={() => navigate('/company-view')}
+            >
+              User View
             </Button>
           )}
           <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/network')}>

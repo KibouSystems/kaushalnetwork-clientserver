@@ -17,9 +17,10 @@ import NetworkPage from "./pages/Naviation_pages/Network_Page";
 import CompanyDetails from "./pages/CompanyDetails";
 import AdminView from "./pages/Admin/AdminView";
 import SuperadminLogin from "./pages/Admin/Superadmin/SuperadminLogin";
-import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
+import AdminDashboard from "./pages/Admin/Dashboard/SuperAdminDashboard";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import TenderForm from './components/tender/TenderForm';
+import CompanyView from "./pages/CompanyView";
 
 // Redux slice
 import { checkAuth } from "./features/auth/authSlice";
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/network" element={<NetworkPage />} />
                 <Route path="/company/:id" element={<CompanyDetails />} />
                 <Route path="/tender/create" element={<TenderForm />} />
+                <Route path="/company-view" element={<CompanyView />} />
 
                 {/* Admin routes */}
                 <Route
