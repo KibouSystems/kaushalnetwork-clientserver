@@ -84,8 +84,6 @@ console.warn(isAuthenticated, 'isAuthenticated');
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-2 lg:space-x-4 items-center">
-          <Button variant="ghost">MSMEs</Button>
-          <Button variant="ghost">Service Providers</Button>
           <Button 
             variant="ghost" 
             onClick={handleSuperAdminNavigation}
@@ -131,12 +129,6 @@ console.warn(isAuthenticated, 'isAuthenticated');
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden flex flex-col items-start space-y-2 px-4 pb-4">
-          <Button variant="ghost" className="w-full text-left">
-            MSMEs
-          </Button>
-          <Button variant="ghost" className="w-full text-left">
-            Service Providers
-          </Button>
           <Button 
             variant="ghost" 
             className="w-full text-left"
