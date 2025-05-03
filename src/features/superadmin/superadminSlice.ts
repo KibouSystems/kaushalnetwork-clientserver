@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axiosConfig';
+import Cookies from 'js-cookie';
 
 interface SuperadminState {
   user: any;
@@ -9,10 +10,12 @@ interface SuperadminState {
   error: string | null;
 }
 
+const initialToken = Cookies.get('admin_token') || null;
+
 const initialState: SuperadminState = {
   user: null,
-  token: localStorage.getItem('admin_token'),
-  isAuthenticated: !!localStorage.getItem('admin_token'),
+  token: initialToken,
+  isAuthenticated: !!initialToken,
   isLoading: false,
   error: null,
 };
@@ -20,15 +23,30 @@ const initialState: SuperadminState = {
 export const loginSuperadmin = createAsyncThunk(
   'superadmin/login',
   async (credentials: { username: string; password: string }) => {
-    const response = await axiosInstance.post('/admin/login', credentials);
-    const { token, user } = response.data;
-    
-    if (token) {
-      localStorage.setItem('admin_token', token);
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    try {
+      // Log request for debugging
+      console.log('Sending request to:', '/admin/login', credentials);
+      
+      const response = await axiosInstance.post('/admin/login', credentials, {
+        baseURL: 'http://localhost:3000/api/v0',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const { token, user } = response.data;
+      console.log('Login response:', response.data);
+
+      if (token) {
+        Cookies.set('admin_token', token, { expires: 7 }); 
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
+
+      return { token, user };
+    } catch (error: any) {
+      console.error('Login error:', error.response || error);
+      throw error;
     }
-    
-    return { token, user };
   }
 );
 
@@ -48,7 +66,7 @@ const superadminSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('admin_token');
+      Cookies.remove('admin_token');
       delete axiosInstance.defaults.headers.common['Authorization'];
     }
   },

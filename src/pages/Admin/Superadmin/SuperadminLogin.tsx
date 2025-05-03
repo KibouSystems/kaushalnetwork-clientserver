@@ -1,23 +1,33 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginSuperadmin } from '../../../features/superadmin/superadminSlice';
+import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { AppDispatch } from '../../../app/store';
+import Cookies from 'js-cookie';
 
-export default function SuperadminLogin() {
+interface Props {
+  onLoginSuccess?: () => void;
+}
+
+export default function SuperadminLogin({ onLoginSuccess }: Props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await dispatch(loginSuperadmin({ username, password })).unwrap();
-      if (result.token) {
+      const response = await axios.post('http://localhost:3000/api/v0/admin/login', {
+        username,
+        password
+      });
+
+      const { token } = response.data;
+      
+      if (token) {
+        Cookies.set('admin_token', token);
         toast.success('Login successful');
-        navigate('/admin/dashboard');
+        if (onLoginSuccess) onLoginSuccess();
+        navigate('/admin/dashboard', { replace: true });
       }
     } catch (error) {
       toast.error('Login failed');

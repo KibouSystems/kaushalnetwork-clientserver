@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axiosConfig';
 import { tokenManager } from '../../utils/tokenManager';
+import Cookies from 'js-cookie';
 
 interface AuthState {
   user: any;
@@ -27,6 +28,8 @@ export const loginUser = createAsyncThunk(
       
       if (token) {
         tokenManager.setToken(token);
+        // Set admin status in cookie
+        Cookies.set('admin_view', user.admin.toString(), { expires: 7 }); // expires in 7 days
         await dispatch(getMe());
       }
 
@@ -64,6 +67,8 @@ export const logoutUser = createAsyncThunk(
   async () => {
     // Clear auth_token cookie
     document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    // Clear admin_view cookie
+    Cookies.remove('admin_view');
     // Clear localStorage if needed
     localStorage.removeItem('auth_token');
     return null;

@@ -7,12 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, checkAuthToken } from '../features/auth/authSlice';
 import { RootState, AppDispatch } from '../app/store';
 import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdminView, setIsAdminView] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -38,6 +40,26 @@ console.warn(isAuthenticated, 'isAuthenticated');
     }
   }, []);
 
+  useEffect(() => {
+    console.warn(" is admin view",Cookies.get('admin_view') );
+    
+    const adminView = Cookies.get('admin_view') === 'true';
+    setIsAdminView(adminView);
+  }, []);
+
+  const handleAdminNavigation = () => {
+    const isAdmin = Cookies.get('admin_view') === 'true';
+    if (!isAdmin) {
+      toast.error('Access denied: Admin privileges required');
+      return;
+    }
+    navigate('/admin-view');
+  };
+
+  const handleSuperAdminNavigation = () => {
+    window.open('/admin/dashboard', '_blank');
+  };
+
   return (
     <header className="bg-white shadow px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex justify-between items-center py-4">
@@ -57,13 +79,20 @@ console.warn(isAuthenticated, 'isAuthenticated');
         <nav className="hidden md:flex space-x-2 lg:space-x-4 items-center">
           <Button variant="ghost">MSMEs</Button>
           <Button variant="ghost">Service Providers</Button>
-          <Button variant="ghost">Corporates</Button>
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/admin-view')}
+            onClick={handleSuperAdminNavigation}
           >
-            TA6
+            Super Admin
           </Button>
+          {isAdminView && (
+            <Button 
+              variant="ghost" 
+              onClick={handleAdminNavigation}
+            >
+              Admin view
+            </Button>
+          )}
           <Button variant="ghost" onClick={() => navigate('/network')}>Network</Button>
           <Button variant="ghost" onClick={() => navigate('/buzz')}>
             BUZZ
@@ -94,16 +123,22 @@ console.warn(isAuthenticated, 'isAuthenticated');
           <Button variant="ghost" className="w-full text-left">
             Service Providers
           </Button>
-          <Button variant="ghost" className="w-full text-left">
-            Corporates
-          </Button>
           <Button 
             variant="ghost" 
-            className="w-full text-left" 
-            onClick={() => navigate('/admin-view')}
+            className="w-full text-left"
+            onClick={handleSuperAdminNavigation}
           >
-            TA6
+            Super Admin
           </Button>
+          {isAdminView && (
+            <Button 
+              variant="ghost" 
+              className="w-full text-left" 
+              onClick={handleAdminNavigation}
+            >
+              Admin view
+            </Button>
+          )}
           <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/network')}>
             Network
           </Button>

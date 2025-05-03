@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
 import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
 import { 
   CheckCircle, 
   XCircle, 
@@ -16,6 +18,7 @@ import {
   Tag 
 } from 'lucide-react';
 import axios from 'axios';
+import SuperadminLogin from '../Superadmin/SuperadminLogin';
 
 interface Company {
   id: number;
@@ -44,6 +47,7 @@ interface Company {
 }
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,10 +55,17 @@ export default function AdminDashboard() {
   const [expandedCompanyId, setExpandedCompanyId] = useState<number | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'verified' | 'unverified'>('all');
   const [refreshing, setRefreshing] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const token = Cookies.get('admin_token');
+    if (!token) {
+      navigate('/admin/login');
+      return;
+    }
+    setIsAuthenticated(true);
     fetchCompanies();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     filterCompanies();
@@ -110,12 +121,12 @@ export default function AdminDashboard() {
 
   const handleVerify = async (companyId: number, e: React.MouseEvent) => {
     e.stopPropagation();
+  
     try {
-      const adminToken = localStorage.getItem('admin_token');
-      
-      // Show loading toast
+      const adminToken = Cookies.get('admin_token'); // Get token from cookies
+  
       const loadingToastId = toast.loading('Verifying company...');
-      
+  
       await axios.put(
         `http://localhost:3000/api/v0/company/verify?companyId=${companyId}`,
         {},
@@ -125,14 +136,13 @@ export default function AdminDashboard() {
           },
         }
       );
-      
-      // Dismiss loading toast and show success
+  
       toast.dismiss(loadingToastId);
       toast.success('Company verified successfully');
-      
-      // Update local state instead of refetching all companies
-      setCompanies(prev => 
-        prev.map(company => 
+  
+      // Update state locally
+      setCompanies(prev =>
+        prev.map(company =>
           company.id === companyId ? { ...company, verified: true } : company
         )
       );
@@ -152,6 +162,22 @@ export default function AdminDashboard() {
     return path.startsWith('http') ? path : `http://localhost:3000/${path.replace(/\\/g, '/')}`;
   };
 
+  const handleLogout = () => {
+    Cookies.remove('admin_token');
+    setIsAuthenticated(false);
+    toast.success('Logged out successfully');
+  };
+
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+        <SuperadminLogin onLoginSuccess={() => setIsAuthenticated(true)} />
+        <p className="mt-4 text-sm text-gray-600">Please log in as admin to access the dashboard.</p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -166,21 +192,30 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header with logout */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600">
               {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'} found
             </p>
           </div>
-          <button
-            onClick={refreshCompanies}
-            disabled={refreshing}
-            className="flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={refreshCompanies}
+              disabled={refreshing}
+              className="flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Search and Filters */}

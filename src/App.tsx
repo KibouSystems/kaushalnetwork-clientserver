@@ -1,4 +1,10 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { Toaster } from "react-hot-toast";
+
+// Pages and Components
 import CompanyUserLogin from "./pages/Auth/CompanyUserLogin";
 import NotFoundPage from "./pages/NotFoundPage";
 import CompanyUserSignup from "./pages/CompanyUserSignup";
@@ -7,33 +13,32 @@ import Navbar from "./components/Navbar";
 import RegisterCompany from "./pages/RegisterCompany";
 import Register from "./pages/Auth/Register";
 import Buzz from "./pages/Naviation_pages/Buzz";
-import { Toaster } from "react-hot-toast";
 import NetworkPage from "./pages/Naviation_pages/Network_Page";
 import CompanyDetails from "./pages/CompanyDetails";
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { checkAuth } from './features/auth/authSlice';
 import AdminView from "./pages/Admin/AdminView";
-import Cookies from 'js-cookie';
 import SuperadminLogin from "./pages/Admin/Superadmin/SuperadminLogin";
 import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import TenderForm from './components/tender/TenderForm';
+
+// Redux slice
+import { checkAuth } from "./features/auth/authSlice";
 
 function App() {
     const dispatch = useDispatch();
+    const location = useLocation();
 
     useEffect(() => {
         dispatch(checkAuth());
     }, [dispatch]);
 
-    const adminInfo = Cookies.get('admin'); // returns a string like 'true' or 'false'
-
-    const isAdmin = adminInfo === 'true'; // Convert string to boolean
-
-    console.warn('isAdmin:', isAdmin);
+    // Only hide the navbar on the exact /admin/dashboard route
+    const hideNavbar = location.pathname === "/admin/dashboard";
 
     return (
         <>
-            <Navbar />
+            {!hideNavbar && <Navbar />}
+
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<CompanyUserLogin />} />
@@ -43,11 +48,24 @@ function App() {
                 <Route path="/buzz" element={<Buzz />} />
                 <Route path="/network" element={<NetworkPage />} />
                 <Route path="/company/:id" element={<CompanyDetails />} />
-                <Route path="/admin-view" element={<AdminView />} />
-                <Route path="/admin/login" element={<SuperadminLogin />} />
+                <Route path="/tender/create" element={<TenderForm />} />
+
+                {/* Admin routes */}
+                <Route
+                    path="/admin-view"
+                    element={
+                        <ProtectedAdminRoute>
+                            <AdminView />
+                        </ProtectedAdminRoute>
+                    }
+                />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/login" element={<SuperadminLogin />} />
+
+                {/* Catch-all */}
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
+
             <Toaster
                 position="top-right"
                 toastOptions={{

@@ -3,6 +3,11 @@ import { motion } from 'framer-motion';
 import axiosInstance from '../../utils/axiosConfig';
 import axios from 'axios';
 import { tokenManager } from '../../utils/tokenManager';
+import UsersTab from '../../components/admin/UsersTab';
+import CompanyUserList from '../../components/admin/CompanyUserList';
+import CompanyBuzzList from '../../components/admin/CompanyBuzzList';
+import CompanyDetailsTab from '../../components/admin/CompanyDetailsTab';
+import TenderListTab from '../../components/admin/TenderListTab';
 
 interface CompanyData {
   id: number;
@@ -49,6 +54,7 @@ interface CompanyData {
 export default function AdminView() {
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'company' | 'users' | 'allusers' | 'buzz' | 'tenders'>('company');
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -87,106 +93,51 @@ export default function AdminView() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-10">
-      <div className="max-w-5xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8"
-        >
-          <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
-            <img
-              src={`http://localhost:3000/${company.logoUrl}`}
-              alt={company.companyName}
-              className="w-32 h-32 rounded-2xl object-cover border-4 border-blue-100 shadow"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740";
-              }}
-            />
-            <div className="flex-1">
-              <h1 className="text-4xl font-extrabold text-blue-900 mb-2">{company.companyName}</h1>
-              <p className="text-lg text-blue-600 mb-1">{company.tradeName}</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">{company.companyType}</span>
-                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">{company.entityType}</span>
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">{company.sector}</span>
-                <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">{company.industry}</span>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Tab Navigation */}
+      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex space-x-2 md:space-x-8 pt-2">
+            {[
+              { key: 'company', label: 'Company Details' },
+              { key: 'users', label: 'Create User' },
+              { key: 'allusers', label: 'All Users' },
+              { key: 'buzz', label: 'Buzz Posts' },
+              { key: 'tenders', label: 'Tenders' }
+            ].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as any)}
+                className={`relative py-3 px-4 md:px-8 rounded-t-lg font-semibold text-sm md:text-base transition-all duration-200
+                  ${activeTab === tab.key
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow'
+                    : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700'}
+                `}
+                style={{ outline: 'none' }}
+              >
+                {tab.label}
+                {activeTab === tab.key && (
+                  <span className="absolute left-0 bottom-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-b-lg"></span>
+                )}
+              </button>
+            ))}
           </div>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {/* Registration Details */}
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-blue-800">Registration</h3>
-              <InfoItem label="MSME Number" value={company.msmeRegistrationNumber} />
-              <DocumentLink label="MSME Doc" url={company.msmeRegistrationDocumentUrl} />
-              <InfoItem label="CIN" value={company.cin} />
-              <DocumentLink label="CIN Doc" url={company.cinDocumentUrl} />
-              <InfoItem label="PAN" value={company.pan} />
-              <DocumentLink label="PAN Doc" url={company.panUrl} />
-              <InfoItem label="GSTIN" value={company.gstin} />
-              <DocumentLink label="GSTIN Doc" url={company.gstinDocumentUrl} />
-            </div>
-            {/* Company Info */}
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-blue-800">Company Info</h3>
-              <InfoItem label="Legal Name" value={company.legalName} />
-              <InfoItem label="Email" value={company.email} />
-              <InfoItem label="Website" value={company.websiteUrl} isLink />
-              <InfoItem label="Employees" value={`${company.minEmployeeCount} - ${company.maxEmployeeCount}`} />
-              <InfoItem label="Incorporation Year" value={company.incorporationYear?.toString()} />
-              <InfoItem label="Business Type" value={company.businessType} />
-              <InfoItem label="Address" value={company.registeredOfficeAddress} />
-            </div>
-            {/* Products & Brands */}
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-blue-800">Products & Brands</h3>
-              <div className="mb-2">
-                <span className="block text-gray-600 font-medium mb-1">Products/Services:</span>
-                <div className="flex flex-wrap gap-2">
-                  {company.deliverableNames.split(',').map((item, idx) => (
-                    <span key={idx} className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs">{item.trim()}</span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className="block text-gray-600 font-medium mb-1">Brands:</span>
-                <div className="flex flex-wrap gap-2">
-                  {company.brands && company.brands.length > 0 ? (
-                    company.brands.map((brand) => (
-                      <span key={brand.id} className="bg-purple-50 text-purple-700 px-2 py-1 rounded text-xs">{brand.brandName}</span>
-                    ))
-                  ) : (
-                    <span className="text-gray-400 text-xs">No brands</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Branches */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-lg mb-3 text-blue-800">Branches</h3>
-            <div className="flex flex-wrap gap-4">
-              {company.branches && company.branches.length > 0 ? (
-                company.branches.map((branch) => (
-                  <div key={branch.id} className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-700 shadow-sm">
-                    {branch.branchAddress}
-                  </div>
-                ))
-              ) : (
-                <span className="text-gray-400 text-sm">No branches</span>
-              )}
-            </div>
-          </div>
-
-          {/* About/Description */}
-          <div className="mb-4">
-            <h3 className="font-semibold text-lg mb-2 text-blue-800">About Company</h3>
-            <p className="text-gray-700">{company.aboutCompany || <span className="italic text-gray-400">No description available.</span>}</p>
-          </div>
-        </motion.div>
+      {/* Tab Content */}
+      <div className="max-w-7xl mx-auto px-2 md:px-4 py-8">
+        {activeTab === 'company' ? (
+          <CompanyDetailsTab company={company} />
+        ) : activeTab === 'users' ? (
+          <UsersTab />
+        ) : activeTab === 'allusers' ? (
+          <CompanyUserList />
+        ) : activeTab === 'buzz' ? (
+          <CompanyBuzzList />
+        ) : (
+          <TenderListTab />
+        )}
       </div>
     </div>
   );

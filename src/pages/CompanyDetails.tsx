@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { 
   Building2, Users, MapPin, Globe, Calendar, BadgeCheck, 
   Mail, Phone, Award, BriefcaseIcon, FileText, TrendingUp,
-  Users2, Boxes, Clock, BookOpen
+  Users2, Boxes, Clock, BookOpen, Package
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import axios from 'axios';
+import { TenderCard } from '../components/company/TenderCard';
+import { TenderDetailsModal } from '../components/company/TenderDetailsModal';
 
 interface CompanyDetails {
   id: number;
@@ -95,6 +97,33 @@ interface MissingFields {
 
 interface ExtendedCompanyDetails extends CompanyDetails, MissingFields {}
 
+interface Tender {
+  id: number;
+  tenderName: string;
+  objective: string;
+  description: string;
+  productsAndServicesRequired: string;
+  aboutProductsAndServices: string;
+  nomenclature: string;
+  pricingCategory: string;
+  totalPrice: string;
+  locationOfService: string;
+  deliveryTerms: string;
+  paymentTerms: string;
+  otherConditions: string;
+  company: {
+    id: number;
+    verified: boolean;
+    companyName: string;
+    companyType: string;
+    logoUrl: string;
+    entityType: string;
+    businessType: string;
+    sector: string;
+    industry: string;
+  };
+}
+
 // Helper for missing fields in red
 const MissingField = ({ text }: { text: string }) => (
   <span className="text-red-500 italic text-sm">🔴 {text} (missing)</span>
@@ -105,22 +134,28 @@ export default function CompanyDetails() {
   const navigate = useNavigate();
   const [company, setCompany] = useState<ExtendedCompanyDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tenders, setTenders] = useState<Tender[]>([]);
+  const [selectedTender, setSelectedTender] = useState<Tender | null>(null);
 
   useEffect(() => {
-    const fetchCompanyDetails = async () => {
+    const fetchData = async () => {
       try {
-        // const response = await axios.get(`http://localhost:3000/api/v0/company/${id}`);
-        const response = await axios.get(`http://localhost:3000/api/v0/company/user-view?id=${id}`);
-        setCompany(response.data);
+        const [companyResponse, tendersResponse] = await Promise.all([
+          axios.get(`http://localhost:3000/api/v0/company/user-view?id=${id}`),
+          axios.get(`http://localhost:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`)
+        ]);
+        
+        setCompany(companyResponse.data);
+        setTenders(tendersResponse.data);
       } catch (error) {
-        console.error('Error fetching company details:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCompanyDetails();
-  }, [id]);
+    fetchData();
+  }, [id, company?.companyName]);
 
   if (loading) {
     return (
@@ -312,14 +347,46 @@ export default function CompanyDetails() {
             </motion.div>
 
             {/* Tenders */}
-            <motion.div className="bg-white rounded-xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Active Tenders <MissingField text="(missing)" /></h2>
-              <div className="space-y-4">
-                <div className="border rounded-lg p-4 text-red-500">
-                  <p className="font-medium">No active tenders (missing)</p>
+            <motion.div 
+              className="bg-white rounded-xl p-8 shadow-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Active Tenders</h2>
+                  <p className="text-gray-500 mt-1">Browse and respond to available opportunities</p>
                 </div>
+                <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                  {tenders.length} {tenders.length === 1 ? 'tender' : 'tenders'}
+                </span>
               </div>
+
+              {tenders.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {tenders.map((tender) => (
+                    <TenderCard
+                      key={tender.id}
+                      tender={tender}
+                      onViewDetails={(tender) => setSelectedTender(tender)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                  <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900">No active tenders</h3>
+                  <p className="text-gray-500 mt-2">This company hasn't posted any tenders yet.</p>
+                </div>
+              )}
             </motion.div>
+
+            {/* Add Modal */}
+            <TenderDetailsModal
+              tender={selectedTender}
+              isOpen={!!selectedTender}
+              onClose={() => setSelectedTender(null)}
+            />
           </div>
 
           {/* Sidebar */}

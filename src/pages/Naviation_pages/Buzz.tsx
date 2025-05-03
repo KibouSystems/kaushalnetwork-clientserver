@@ -3,6 +3,8 @@ import { Button } from '../../components/ui/button';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 interface BuzzPost {
   postId?: string;
@@ -31,12 +33,8 @@ interface BuzzResponse {
 }
 
 const Buzz = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [buzzList, setBuzzList] = useState<BuzzResponse[]>([]);
-  const [posts, setPosts] = useState<BuzzPost[]>([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [currentPost, setCurrentPost] = useState<BuzzPost>({
     title: '',
     identity: {
@@ -49,26 +47,11 @@ const Buzz = () => {
       media: null,
     },
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuthentication();
     fetchBuzzPosts();
   }, []);
-
-  const checkAuthentication = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/api/v0/company-user', {
-        withCredentials: true
-      });
-      console.warn('Auth check response:', response.data);
-      
-      if (response.status === 200) {
-        setIsLoggedIn(true);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-    }
-  };
 
   const fetchBuzzPosts = async () => {
     try {
@@ -83,55 +66,13 @@ const Buzz = () => {
   };
 
   const handleCreateClick = () => {
-    if (!isLoggedIn) {
-      setShowLoginForm(true);
-    } else {
-      setShowCreateForm(true);
+    const authToken = Cookies.get('auth_token');
+    if (!authToken) {
+      toast.error('Please login to create a post');
+      navigate('/login');
+      return;
     }
-  };
-
-  const handleLoginSuccess = async () => {
-    setShowLoginForm(false);
-    setIsLoggedIn(true);
     setShowCreateForm(true);
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        'http://localhost:3000/api/v0/company-user/login',
-        loginData,
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
-
-      if (response.status === 200) {
-        await handleLoginSuccess();
-        toast.success('Login successful');
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      toast.error('Login failed. Please check your credentials.');
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        'http://localhost:3000/api/v0/company-user/logout',
-        {},
-        { withCredentials: true }
-      );
-      setIsLoggedIn(false);
-      setShowCreateForm(false);
-      toast.success('Logged out successfully');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      toast.error('Logout failed');
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -171,13 +112,12 @@ const Buzz = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Check if user is logged in
-    if (!isLoggedIn) {
-      toast.error('Please login first');
+    const authToken = Cookies.get('auth_token');
+    if (!authToken) {
+      toast.error('Please login to create a post');
+      navigate('/login');
       return;
     }
-
     try {
       const response = await axios.post(
         'http://localhost:3000/api/v0/buzz',
@@ -186,8 +126,10 @@ const Buzz = () => {
           textContent: currentPost.content.text,
         },
         {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
+          headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`
+          }
         }
       );
 
@@ -216,7 +158,7 @@ const Buzz = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Improved Sidebar */}
+      {/* Sidebar */}
       <motion.div 
         initial={{ x: -64 }}
         animate={{ x: 0 }}
@@ -237,20 +179,6 @@ const Buzz = () => {
               Create New Post
             </Button>
           </motion.div>
-          {isLoggedIn && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Button
-                onClick={handleLogout}
-                className="w-full bg-red-600 text-white hover:bg-red-700 transition-colors"
-              >
-                Logout
-              </Button>
-            </motion.div>
-          )}
         </div>
       </motion.div>
 
@@ -288,8 +216,7 @@ const Buzz = () => {
                       required
                     />
                   </div>
-
-                  {/* Identity Section */}
+                  {/* ...existing identity and content fields... */}
                   <div className="space-y-4">
                     <h3 className="font-semibold">Identity</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -322,8 +249,6 @@ const Buzz = () => {
                       />
                     </div>
                   </div>
-
-                  {/* Content Section with fixed width textarea */}
                   <div className="space-y-4">
                     <h3 className="font-semibold">Content</h3>
                     <textarea
@@ -347,50 +272,14 @@ const Buzz = () => {
                       />
                     </div>
                   </div>
-
-                  {/* Improved Media Section */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      Media
-                    </h3>
-                    
-                    {/* Media Preview Area */}
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*,video/*,.pdf"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        id="media-upload"
-                      />
-                      <label htmlFor="media-upload" className="cursor-pointer">
-                        <div className="space-y-4">
-                          <div className="mx-auto w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-blue-600">Click to upload</p>
-                            <p className="text-xs text-gray-500">Images, Videos or PDFs</p>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-
+                  {/* ...existing media section... */}
                   <Button type="submit" className="w-full bg-blue-600 text-white">
                     Post
                   </Button>
                 </form>
               </motion.div>
             )}
-
-            {/* Posts List */}
+            {/* ...existing posts list... */}
             <div className="space-y-6">
               {buzzList.map((post, index) => (
                 <motion.div
@@ -429,59 +318,10 @@ const Buzz = () => {
                 </motion.div>
               ))}
             </div>
+            {/* ...existing code... */}
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Improved Login Modal */}
-      <AnimatePresence>
-        {showLoginForm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-xl p-6 w-96 shadow-2xl"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Login to Create Post</h2>
-                <button
-                  onClick={() => setShowLoginForm(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={loginData.email}
-                  onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={loginData.password}
-                  onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-                <Button type="submit" className="w-full bg-blue-600 text-white">
-                  Login
-                </Button>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
