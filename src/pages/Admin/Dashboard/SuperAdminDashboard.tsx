@@ -47,7 +47,7 @@ interface Company {
   expertise: string | null;
 }
 
-export default function AdminDashboard() {
+export default function SuperAdminDashboard() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = Cookies.get('admin_token');
     if (!token) {
-      navigate('/admin/login');
+      navigate('/superadmin/login');
       return;
     }
     setIsAuthenticated(true);
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
           {/* Header with logout */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900"> Super Admin Dashboard</h1>
               <p className="text-gray-600">
                 {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'} found
               </p>

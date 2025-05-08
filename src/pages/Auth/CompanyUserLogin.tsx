@@ -33,7 +33,7 @@ export default function CompanyUserLogin() {
           // Also log the stored token
           // console.log('Stored token:', localStorage.getItem('token'));
           toast.success('Login successful!');
-          navigate('/dashboard');
+          navigate('/admin-view');
         } else {
           console.error('No token received');
           toast.error('Login successful but no token received');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Cookie, Menu, X } from 'lucide-react';
+import { Cookie, Menu, X, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logoImage from '../logo/image.png'; // Update import
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import { logoutUser, checkAuthToken } from '../features/auth/authSlice';
 import { RootState, AppDispatch } from '../app/store';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,6 +16,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -54,6 +56,24 @@ console.warn(isAuthenticated, 'isAuthenticated');
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const checkVerification = async () => {
+      const token = Cookies.get('auth_token');
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:3000/api/v0/company/company-user-view', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setIsVerified(response.data.verified);
+        } catch (error) {
+          console.error('Error checking verification:', error);
+        }
+      }
+    };
+
+    checkVerification();
+  }, []);
+
   const handleAdminNavigation = () => {
     const isAdmin = Cookies.get('admin_view') === 'true';
     if (!isAdmin) {
@@ -65,6 +85,14 @@ console.warn(isAuthenticated, 'isAuthenticated');
 
   const handleSuperAdminNavigation = () => {
     window.open('/admin/dashboard', '_blank');
+  };
+
+  const handleUnverifiedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast.error('Your account needs to be verified to access this feature', {
+      icon: '🔒',
+      duration: 4000,
+    });
   };
 
   return (
@@ -84,12 +112,7 @@ console.warn(isAuthenticated, 'isAuthenticated');
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-2 lg:space-x-4 items-center">
-          <Button 
-            variant="ghost" 
-            onClick={handleSuperAdminNavigation}
-          >
-            Super Admin
-          </Button>
+        
           {isAdminView ? (
             <Button 
               variant="ghost" 
@@ -105,10 +128,49 @@ console.warn(isAuthenticated, 'isAuthenticated');
               User View
             </Button>
           )}
-          <Button variant="ghost" onClick={() => navigate('/network')}>Network</Button>
-          <Button variant="ghost" onClick={() => navigate('/buzz')}>
-            BUZZ
-          </Button>
+          
+          {/* Network Button */}
+          <div className="relative group">
+            <Button 
+              variant="ghost" 
+              onClick={isVerified ? () => navigate('/network') : handleUnverifiedClick}
+              className={!isVerified ? 'opacity-50 cursor-not-allowed' : ''}
+            >
+              Network
+              {!isVerified && (
+                <div className="absolute -top-1 -right-1">
+                  <AlertCircle className="w-4 h-4 text-amber-500" />
+                </div>
+              )}
+            </Button>
+            {!isVerified && (
+              <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
+                Account verification required
+              </div>
+            )}
+          </div>
+
+          {/* Buzz Button */}
+          <div className="relative group">
+            <Button 
+              variant="ghost" 
+              onClick={isVerified ? () => navigate('/buzz') : handleUnverifiedClick}
+              className={!isVerified ? 'opacity-50 cursor-not-allowed' : ''}
+            >
+              BUZZ
+              {!isVerified && (
+                <div className="absolute -top-1 -right-1">
+                  <AlertCircle className="w-4 h-4 text-amber-500" />
+                </div>
+              )}
+            </Button>
+            {!isVerified && (
+              <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
+                Account verification required
+              </div>
+            )}
+          </div>
+
           {isAuthenticated ? (
             <Button variant="outline" onClick={handleLogout}>
               Logout
@@ -153,12 +215,31 @@ console.warn(isAuthenticated, 'isAuthenticated');
               User View
             </Button>
           )}
-          <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/network')}>
+          
+          <Button 
+            variant="ghost" 
+            className="w-full text-left relative"
+            onClick={isVerified ? () => navigate('/network') : handleUnverifiedClick}
+            disabled={!isVerified}
+          >
             Network
+            {!isVerified && (
+              <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
+            )}
           </Button>
-          <Button variant="ghost" className="w-full text-left" onClick={() => navigate('/buzz')}>
+          
+          <Button 
+            variant="ghost" 
+            className="w-full text-left relative"
+            onClick={isVerified ? () => navigate('/buzz') : handleUnverifiedClick}
+            disabled={!isVerified}
+          >
             BUZZ
+            {!isVerified && (
+              <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
+            )}
           </Button>
+
           {isAuthenticated ? (
             <Button variant="outline" className="w-full text-left" onClick={handleLogout}>
               Logout
@@ -176,6 +257,15 @@ console.warn(isAuthenticated, 'isAuthenticated');
               </Button>
             </>
           )}
+        </div>
+      )}
+
+      {!isVerified && isAuthenticated && (
+        <div className="bg-amber-50 border-t border-amber-200">
+          <div className="max-w-7xl mx-auto px-4 py-2 text-sm text-amber-800 flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            Your account is pending verification. Some features will be limited until verification is complete.
+          </div>
         </div>
       )}
     </header>

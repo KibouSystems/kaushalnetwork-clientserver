@@ -34,7 +34,7 @@ function App() {
     }, [dispatch]);
 
     // Only hide the navbar on the exact /admin/dashboard route
-    const hideNavbar = location.pathname === "/admin/dashboard";
+    const hideNavbar = location.pathname === "/superadmin/dashboard";
 
     return (
         <>
@@ -61,8 +61,8 @@ function App() {
                         </ProtectedAdminRoute>
                     }
                 />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="/admin/login" element={<SuperadminLogin />} />
+                <Route path="/superadmin/dashboard" element={<AdminDashboard />} />
+                <Route path="/superadmin/login" element={<SuperadminLogin />} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFoundPage />} />

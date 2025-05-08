@@ -70,155 +70,236 @@ export default function RegisterCompany() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 p-8">
-      {/* Add Logo and Title */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold">Begin your Growth Journey</h2>
-        <img src={logoImage} alt="Kaushal Network" className="h-16 w-16 object-contain" />
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg">
+        <form onSubmit={handleSubmit} className="space-y-8 p-8">
+          {/* Header Section */}
+          <div className="flex items-center justify-between mb-12 border-b pb-6">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900">Begin your Growth Journey</h2>
+              <p className="mt-2 text-gray-600">Join Kaushal Network and expand your business horizons</p>
+            </div>
+            <img src={logoImage} alt="Kaushal Network" className="h-20 w-20 object-contain" />
+          </div>
+
+          {/* Basic Information Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Basic Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Type of Enterprise</label>
+                <input 
+                  name="typeOfEnterprise" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Name of Business</label>
+                <input 
+                  name="nameOfBusiness" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input 
+                  name="email" 
+                  type="email" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Create Password</label>
+                <input
+                  name="password"
+                  type="password"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Enterprise Details Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Enterprise Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Trade Name</label>
+                <input 
+                  name="tradeName" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Legal Name</label>
+                <input 
+                  name="legalName" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Logo</label>
+                <input
+                  name="logo"
+                  type="file"
+                  onChange={handleFileChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Type of Entity</label>
+                <select 
+                  name="typeOfEntity" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Company">Company</option>
+                  <option value="LLP">LLP</option>
+                  <option value="Proprietor">Proprietor</option>
+                  <option value="Joint Venture">Joint Venture</option>
+                  <option value="Foreign Company">Foreign Company</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Products and Services Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Products and Services</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Business Involvement</label>
+                <input 
+                  name="businessInvolvement" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sector</label>
+                <input 
+                  name="sector" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
+                <input 
+                  name="industry" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Details Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Person 1 Name</label>
+                <input 
+                  name="contact1.name" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Person 1 Designation</label>
+                <input
+                  name="contact1.designation"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Person 1 Email</label>
+                <input
+                  name="contact1.email"
+                  type="email"
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Person 1 Contact No</label>
+                <input 
+                  name="contact1.contactNo" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Statutory Details Section */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Statutory Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">MSME Reg. No</label>
+                <input 
+                  name="statutory.msmeRegNo" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">CIN/LLP-CIN</label>
+                <input 
+                  name="statutory.cin" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">PAN</label>
+                <input 
+                  name="statutory.pan" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">GSTIN No.</label>
+                <input 
+                  name="statutory.gstin" 
+                  onChange={handleChange} 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button 
+              type="submit" 
+              className="px-8 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+            >
+              Submit Registration
+            </button>
+          </div>
+        </form>
       </div>
-
-      <h2 className="text-2xl font-bold">Basic Information</h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>Type of Enterprise</label>
-          <input name="typeOfEnterprise" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Name of Business</label>
-          <input name="nameOfBusiness" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Email</label>
-          <input name="email" type="email" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Create Password</label>
-          <input
-            name="password"
-            type="password"
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Confirm Password</label>
-          <input
-            name="confirmPassword"
-            type="password"
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-      </div>
-
-      <h2 className="text-2xl font-bold mt-8">Enterprise Details</h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>Trade Name</label>
-          <input name="tradeName" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Legal Name</label>
-          <input name="legalName" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Logo</label>
-          <input
-            name="logo"
-            type="file"
-            onChange={handleFileChange}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Type of Entity</label>
-          <select name="typeOfEntity" onChange={handleChange} className="border p-2 w-full">
-            <option>Company</option>
-            <option>LLP</option>
-            <option>Proprietor</option>
-            <option>Joint Venture</option>
-            <option>Foreign Company</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Products and Services */}
-      <h2 className="text-2xl font-bold mt-8">Products and Services</h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>Business Involvement</label>
-          <input name="businessInvolvement" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Sector</label>
-          <input name="sector" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Industry</label>
-          <input name="industry" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-      </div>
-
-      {/* Contact Details */}
-      <h2 className="text-2xl font-bold mt-8">Contact Details</h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>Person 1 Name</label>
-          <input name="contact1.name" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>Person 1 Designation</label>
-          <input
-            name="contact1.designation"
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Person 1 Email</label>
-          <input
-            name="contact1.email"
-            type="email"
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Person 1 Contact No</label>
-          <input name="contact1.contactNo" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-      </div>
-
-      {/* Statutory Details */}
-      <h2 className="text-2xl font-bold mt-8">Statutory Details</h2>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>MSME Reg. No</label>
-          <input name="statutory.msmeRegNo" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>CIN/LLP-CIN</label>
-          <input name="statutory.cin" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>PAN</label>
-          <input name="statutory.pan" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        <div>
-          <label>GSTIN No.</label>
-          <input name="statutory.gstin" onChange={handleChange} className="border p-2 w-full" />
-        </div>
-        {/* You can similarly add file inputs for attachments */}
-      </div>
-
-      <button type="submit" className="bg-blue-600 text-white p-3 rounded mt-6">
-        Submit
-      </button>
-    </form>
+    </div>
   );
 }
