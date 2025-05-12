@@ -27,7 +27,7 @@ export default function SuperadminLogin({ onLoginSuccess }: Props) {
         Cookies.set('admin_token', token);
         toast.success('Login successful');
         if (onLoginSuccess) onLoginSuccess();
-        navigate('/admin/dashboard', { replace: true });
+        navigate('/superadmin/dashboard', { replace: true });
       }
     } catch (error) {
       toast.error('Login failed');

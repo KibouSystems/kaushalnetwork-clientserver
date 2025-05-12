@@ -2,9 +2,19 @@ import { motion } from 'framer-motion';
 import { Building, Globe, Users, FileText } from 'lucide-react';
 import { CompanyData } from '../../types/company.types';
 
-interface Props {
-  company: CompanyData;
-}
+const cleanPath = (path: string | null) => {
+  if (!path) return null;
+  return path.replace('undefined/', '').replace(/\\/g, '/');
+};
+
+const getImageUrl = (path: string) => {
+  if (!path) return null;
+  const cleanedPath = cleanPath(path);
+  console.warn(`http://localhost:3000/${cleanedPath}`);
+  
+  return cleanedPath ? `http://localhost:3000/${cleanedPath}` : null;
+
+};
 
 const InfoItem = ({ label, value, isLink = false }: { label: string; value: string; isLink?: boolean }) => (
   <div className="mb-2">
@@ -21,7 +31,7 @@ const DocumentLink = ({ label, url }: { label: string; url: string | null }) => 
   <div className="mb-2">
     {url ? (
       <a 
-        href={`http://localhost:3000/${url}`}
+        href={`http://localhost:3000/${cleanPath(url)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-600 hover:underline text-sm"
@@ -35,11 +45,6 @@ const DocumentLink = ({ label, url }: { label: string; url: string | null }) => 
 );
 
 export default function CompanyDetailsTab({ company }: Props) {
-  const getImageUrl = (path: string) => {
-    if (!path) return '/placeholder-logo.png';
-    return path.startsWith('http') ? path : `http://localhost:3000/${path.replace(/\\/g, '/')}`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-10">
       <div className="max-w-5xl mx-auto px-4">
@@ -51,12 +56,10 @@ export default function CompanyDetailsTab({ company }: Props) {
           {/* Company Header */}
           <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
             <img
-              src={getImageUrl(company.logoUrl)}
+              src={getImageUrl(company.logoUrl)} 
+
               alt={company.companyName}
               className="w-32 h-32 rounded-2xl object-cover border-4 border-blue-100 shadow"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740";
-              }}
             />
             <div className="flex-1">
               <h1 className="text-4xl font-extrabold text-blue-900 mb-2">{company.companyName}</h1>

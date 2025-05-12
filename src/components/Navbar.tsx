@@ -20,15 +20,16 @@ const Navbar: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-console.warn(isAuthenticated, 'isAuthenticated');
+  console.warn(isAuthenticated, 'isAuthenticated');
 
- 
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser());
-      // No need to manually set isAuthenticated as it's handled by the reducer
-      toast.success('Logged out successfully');
+      Cookies.remove('auth_token'); // Explicitly remove cookie
+      setIsVerified(false); // Reset verification state
+      setIsAdminView(false); // Reset admin view
       navigate('/login');
+      toast.success('Logged out successfully');
     } catch (error) {
       toast.error('Error during logout');
     }
@@ -43,16 +44,13 @@ console.warn(isAuthenticated, 'isAuthenticated');
   }, []);
 
   useEffect(() => {
-    console.warn(" is admin view",Cookies.get('admin_view') );
-    
     const adminView = Cookies.get('admin_view') === 'true';
     const authToken = Cookies.get('auth_token');
     setIsAdminView(adminView);
 
-    // Check for user view conditions
-    if (!adminView && authToken) {
-      // Add User View button to nav
-      navigate('/company-view'); // or wherever your user view route is
+    // Only navigate to company-view on initial login
+    if (!adminView && authToken && window.location.pathname === '/login') {
+      navigate('/company-view');
     }
   }, [navigate]);
 
@@ -74,6 +72,24 @@ console.warn(isAuthenticated, 'isAuthenticated');
     checkVerification();
   }, []);
 
+  // Add new effect to sync auth state
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const authToken = Cookies.get('auth_token');
+      if (!authToken && isAuthenticated) {
+        dispatch(logoutUser());
+      }
+    };
+
+    // Check immediately
+    checkAuthStatus();
+
+    // Add listener for cookie changes
+    const intervalId = setInterval(checkAuthStatus, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, isAuthenticated]);
+
   const handleAdminNavigation = () => {
     const isAdmin = Cookies.get('admin_view') === 'true';
     if (!isAdmin) {
@@ -81,10 +97,16 @@ console.warn(isAuthenticated, 'isAuthenticated');
       return;
     }
     navigate('/admin-view');
+    window.location.reload(); // Force reload to update permissions
   };
 
   const handleSuperAdminNavigation = () => {
     window.open('/admin/dashboard', '_blank');
+  };
+
+  const handleUserViewNavigation = () => {
+    navigate('/company-view');
+    window.location.reload(); // Force reload to update permissions
   };
 
   const handleUnverifiedClick = (e: React.MouseEvent) => {
@@ -94,6 +116,8 @@ console.warn(isAuthenticated, 'isAuthenticated');
       duration: 4000,
     });
   };
+
+  const canAccessFeature = isAuthenticated && isVerified;
 
   return (
     <header className="bg-white shadow px-4 sm:px-6 lg:px-8">
@@ -112,64 +136,68 @@ console.warn(isAuthenticated, 'isAuthenticated');
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-2 lg:space-x-4 items-center">
-        
+
           {isAdminView ? (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={handleAdminNavigation}
             >
               Admin view
             </Button>
           ) : Cookies.get('auth_token') && (
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/company-view')}
+            <Button
+              variant="ghost"
+              onClick={handleUserViewNavigation}
             >
               User View
             </Button>
           )}
-          
+
           {/* Network Button */}
-          <div className="relative group">
-            <Button 
-              variant="ghost" 
-              onClick={isVerified ? () => navigate('/network') : handleUnverifiedClick}
-              className={!isVerified ? 'opacity-50 cursor-not-allowed' : ''}
-            >
-              Network
+          {isAuthenticated && (
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                onClick={canAccessFeature ? () => navigate('/network') : handleUnverifiedClick}
+                className={!canAccessFeature ? 'opacity-50 cursor-not-allowed' : ''}
+              >
+                Network
+                {!isVerified && (
+                  <div className="absolute -top-1 -right-1">
+                    <AlertCircle className="w-4 h-4 text-amber-500" />
+                  </div>
+                )}
+              </Button>
               {!isVerified && (
-                <div className="absolute -top-1 -right-1">
-                  <AlertCircle className="w-4 h-4 text-amber-500" />
+                <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
+                  Account verification required
                 </div>
               )}
-            </Button>
-            {!isVerified && (
-              <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
-                Account verification required
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Buzz Button */}
-          <div className="relative group">
-            <Button 
-              variant="ghost" 
-              onClick={isVerified ? () => navigate('/buzz') : handleUnverifiedClick}
-              className={!isVerified ? 'opacity-50 cursor-not-allowed' : ''}
-            >
-              BUZZ
+          {isAuthenticated && (
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                onClick={canAccessFeature ? () => navigate('/buzz') : handleUnverifiedClick}
+                className={!canAccessFeature ? 'opacity-50 cursor-not-allowed' : ''}
+              >
+                BUZZ
+                {!isVerified && (
+                  <div className="absolute -top-1 -right-1">
+                    <AlertCircle className="w-4 h-4 text-amber-500" />
+                  </div>
+                )}
+              </Button>
               {!isVerified && (
-                <div className="absolute -top-1 -right-1">
-                  <AlertCircle className="w-4 h-4 text-amber-500" />
+                <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
+                  Account verification required
                 </div>
               )}
-            </Button>
-            {!isVerified && (
-              <div className="absolute hidden group-hover:block w-48 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-8 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200">
-                Account verification required
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {isAuthenticated ? (
             <Button variant="outline" onClick={handleLogout}>
@@ -191,54 +219,58 @@ console.warn(isAuthenticated, 'isAuthenticated');
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden flex flex-col items-start space-y-2 px-4 pb-4">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full text-left"
             onClick={handleSuperAdminNavigation}
           >
             Super Admin
           </Button>
           {isAdminView ? (
-            <Button 
-              variant="ghost" 
-              className="w-full text-left" 
+            <Button
+              variant="ghost"
+              className="w-full text-left"
               onClick={handleAdminNavigation}
             >
               Admin view
             </Button>
           ) : Cookies.get('auth_token') && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="w-full text-left"
-              onClick={() => navigate('/company-view')}
+              onClick={handleUserViewNavigation}
             >
               User View
             </Button>
           )}
-          
-          <Button 
-            variant="ghost" 
-            className="w-full text-left relative"
-            onClick={isVerified ? () => navigate('/network') : handleUnverifiedClick}
-            disabled={!isVerified}
-          >
-            Network
-            {!isVerified && (
-              <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
-            )}
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-full text-left relative"
-            onClick={isVerified ? () => navigate('/buzz') : handleUnverifiedClick}
-            disabled={!isVerified}
-          >
-            BUZZ
-            {!isVerified && (
-              <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
-            )}
-          </Button>
+
+          {isAuthenticated && (
+            <>
+              <Button
+                variant="ghost"
+                className="w-full text-left relative"
+                onClick={canAccessFeature ? () => navigate('/network') : handleUnverifiedClick}
+                disabled={!canAccessFeature}
+              >
+                Network
+                {!isVerified && (
+                  <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
+                )}
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="w-full text-left relative"
+                onClick={canAccessFeature ? () => navigate('/buzz') : handleUnverifiedClick}
+                disabled={!canAccessFeature}
+              >
+                BUZZ
+                {!isVerified && (
+                  <AlertCircle className="w-4 h-4 text-amber-500 absolute right-2 top-1/2 -translate-y-1/2" />
+                )}
+              </Button>
+            </>
+          )}
 
           {isAuthenticated ? (
             <Button variant="outline" className="w-full text-left" onClick={handleLogout}>

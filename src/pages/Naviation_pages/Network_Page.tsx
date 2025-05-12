@@ -14,6 +14,7 @@ import {
   Users
 } from "@phosphor-icons/react";
 import { useNavigate } from 'react-router-dom';
+import ChatModal from '../../components/chat/ChatModal';
 
 // Custom debounce hook
 const useDebounce = (value: any, delay: number) => {
@@ -50,6 +51,7 @@ const NetworkPage = () => {
   });
   const abortControllerRef = useRef<AbortController | null>(null);
   const debouncedParams = useDebounce(queryParams, 2000); // Debounce all params by 500ms
+  const [selectedChat, setSelectedChat] = useState<{ id: number; name: string } | null>(null);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -137,12 +139,17 @@ const NetworkPage = () => {
       {/* Quick Links */}
       <div className="grid grid-cols-3 text-sm border-b bg-white">
         {[
-          { icon: ChatTeardropDots, label: "Chat" },
+          { 
+            icon: ChatTeardropDots, 
+            label: "Chat",
+            onClick: () => setSelectedChat({ id: company.id, name: company.companyName })
+          },
           { icon: Envelope, label: "Mail" },
           { icon: Calendar, label: "Schedule" }
         ].map((item, index) => (
           <motion.button
             key={index}
+            onClick={item.onClick}
             whileHover={{ backgroundColor: "#EEF2FF" }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center justify-center p-3 space-x-2 transition-all"
@@ -285,6 +292,14 @@ const NetworkPage = () => {
           </motion.div>
         )}
       </div>
+      {selectedChat && (
+        <ChatModal
+          isOpen={!!selectedChat}
+          onClose={() => setSelectedChat(null)}
+          recipientName={selectedChat.name}
+          recipientId={selectedChat.id}
+        />
+      )}
     </div>
   );
 };

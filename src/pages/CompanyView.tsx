@@ -26,6 +26,10 @@ export default function CompanyView() {
     const fetchCompanyData = async () => {
       try {
         const token = Cookies.get('auth_token');
+
+        // --------------================================================================================
+
+        // issueeeeeeeeeeeeeeeeeeee-----------------------
         const response = await axios.get('http://localhost:3000/api/v0/company/company-user-view', {
           headers: {
             Authorization: `Bearer ${token}`
@@ -60,56 +64,67 @@ export default function CompanyView() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Company Header */}
+        {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-          <div className="relative h-48 bg-gradient-to-r from-blue-600 to-purple-600">
-            {company.bannerUrl && (
-              <img
-                src={`http://localhost:3000/${company.bannerUrl}`}
-                alt="Company Banner"
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-          <div className="relative px-6 pb-6">
-            <div className="flex items-end -mt-12 mb-4">
-              <img
-                src={`http://localhost:3000/${company.logoUrl}`}
-                alt={company.companyName}
-                className="h-24 w-24 rounded-xl border-4 border-white shadow-lg bg-white"
-              />
-              <div className="ml-4 mb-2">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-gray-900">{company.companyName}</h1>
-                  {company.verified && (
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                  )}
+          <div className="h-32 bg-gradient-to-r from-blue-600 to-purple-600" />
+          <div className="px-8 py-6 -mt-16">
+            <div className="flex items-end space-x-5">
+              <div className="relative">
+                <img
+                  src={`http://localhost:3000/${company?.logoUrl}`}
+                  alt={company?.companyName}
+                  className="h-24 w-24 rounded-xl border-4 border-white shadow-lg bg-white object-cover"
+                />
+                {company?.verified && (
+                  <div className="absolute -right-2 -bottom-2">
+                    <CheckCircle className="w-6 h-6 text-green-500 bg-white rounded-full" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0 mb-2">
+                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                  {company?.companyName}
+                </h2>
+                <div className="flex items-center space-x-2 text-gray-500">
+                  <Building2 className="h-4 w-4" />
+                  <span>{company?.tradeName}</span>
                 </div>
-                <p className="text-gray-600">{company.tradeName}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Company Info */}
+          {/* Info Cards - Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Company Information */}
             <motion.div 
-              className="bg-white rounded-xl p-6 shadow-sm"
+              className="bg-white rounded-xl shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-xl font-semibold mb-4">Company Information</h2>
-              <div className="grid grid-cols-2 gap-6">
-                <InfoItem icon={Building} label="Legal Name" value={company.legalName} />
-                <InfoItem icon={Briefcase} label="Company Type" value={company.companyType} />
-                <InfoItem icon={Globe} label="Website" value={company.websiteUrl} isLink />
-                <InfoItem icon={Users} label="Team Size" value={`${company.minEmployeeCount} - ${company.maxEmployeeCount}`} />
-                <InfoItem icon={MapPin} label="Location" value={company.registeredOfficeAddress} />
-                <InfoItem icon={FileText} label="Industry" value={company.industry} />
+              <div className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Company Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <InfoItem icon={Building} label="Legal Name" value={company?.legalName} />
+                  <InfoItem icon={Briefcase} label="Company Type" value={company?.companyType} />
+                  <InfoItem icon={Globe} label="Website" value={company?.websiteUrl} isLink />
+                  <InfoItem 
+                    icon={Users} 
+                    label="Team Size" 
+                    value={`${company?.minEmployeeCount} - ${company?.maxEmployeeCount}`} 
+                  />
+                  <InfoItem 
+                    icon={MapPin} 
+                    label="Location" 
+                    value={company?.registeredOfficeAddress} 
+                    className="md:col-span-2"
+                  />
+                </div>
               </div>
             </motion.div>
 
@@ -147,9 +162,8 @@ export default function CompanyView() {
             </motion.div>
           </div>
 
-          {/* Sidebar */}
+          {/* Documents - Right Column */}
           <div className="space-y-6">
-            {/* Documents */}
             <motion.div 
               className="bg-white rounded-xl p-6 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
@@ -171,17 +185,22 @@ export default function CompanyView() {
   );
 }
 
-const InfoItem = ({ icon: Icon, label, value, isLink = false }) => (
-  <div className="flex items-start gap-3">
-    <Icon className="w-5 h-5 text-gray-400 mt-0.5" />
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
+const InfoItem = ({ icon: Icon, label, value, isLink = false, className = '' }) => (
+  <div className={`flex items-start gap-3 ${className}`}>
+    <Icon className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
+    <div className="flex-1 min-w-0">
+      <p className="text-sm text-gray-500 mb-1">{label}</p>
       {isLink && value ? (
-        <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+        <a 
+          href={value} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-600 hover:underline truncate block"
+        >
           {value}
         </a>
       ) : (
-        <p className="font-medium text-gray-900">{value || 'N/A'}</p>
+        <p className="font-medium text-gray-900 truncate">{value || 'N/A'}</p>
       )}
     </div>
   </div>

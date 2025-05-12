@@ -78,6 +78,8 @@ export default function SuperAdminDashboard() {
       setLoading(true);
       const response = await axiosInstance.get('/company/all');
       setCompanies(response.data);
+      console.warn('Fetched companies:', response.data);
+      
     } catch (error) {
       toast.error('Failed to fetch companies');
     } finally {
