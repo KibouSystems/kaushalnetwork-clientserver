@@ -213,7 +213,7 @@ const DocumentLink = ({ label, url }: { label: string; url: string | null }) => 
   <div className="mb-2">
     {url ? (
       <a 
-        href={`http://localhost:3000/${url}`}
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
         className="text-blue-600 hover:underline text-sm"

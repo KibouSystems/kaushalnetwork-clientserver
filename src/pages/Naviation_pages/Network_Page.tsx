@@ -151,7 +151,9 @@ export default function NetworkPage() {
         <div className="mr-4">
           <div className="w-20 h-20 bg-white rounded-md border border-gray-200 overflow-hidden flex items-center justify-center">
             <img
-              src={`http://localhost:3000/${company.logoUrl}`}
+              src={company.logoUrl && (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://')) 
+                ? company.logoUrl 
+                : `http://localhost:3000/${company.logoUrl}`}
               alt={company.companyName}
               className="object-cover max-h-full max-w-full"
               onError={(e) => {
@@ -487,7 +489,7 @@ export default function NetworkPage() {
         />
       )}
       <CompanyPreviewDialog
-        company={previewCompany}
+        companyId={previewCompany?.id}
         isOpen={!!previewCompany}
         onClose={() => setPreviewCompany(null)}
       />

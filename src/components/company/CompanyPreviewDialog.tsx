@@ -15,7 +15,7 @@ import { TenderCard } from '../company/TenderCard';
 import { TenderDetailsModal } from '../company/TenderDetailsModal';
 
 interface CompanyPreviewDialogProps {
-  company: Company | null;
+  companyId: number | undefined;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -59,12 +59,35 @@ interface Tender {
   };
 }
 
-export default function CompanyPreviewDialog({ company, isOpen, onClose }: CompanyPreviewDialogProps) {
+export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: CompanyPreviewDialogProps) {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [selectedTender, setSelectedTender] = useState<Tender | null>(null);
   const [loadingTenders, setLoadingTenders] = useState(false);
+  const [company, setCompany] = useState<Company | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch company details when dialog opens and companyId changes
+  useEffect(() => {
+    const fetchCompanyDetails = async () => {
+      if (!companyId || !isOpen) return;
+      
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:3000/api/v0/company/user-view?id=${companyId}`
+        );
+        setCompany(response.data);
+      } catch (error) {
+        console.error('Error fetching company details:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanyDetails();
+  }, [companyId, isOpen]);
 
   // Fetch tenders when company changes
   useEffect(() => {
@@ -87,11 +110,13 @@ export default function CompanyPreviewDialog({ company, isOpen, onClose }: Compa
     fetchTenders();
   }, [company, isOpen]);
 
-  if (!company) return null;
+  if (!isOpen) return null;
 
   const handleViewProfile = () => {
-    navigate(`/company/${company.id}`);
-    onClose();
+    if (company) {
+      navigate(`/company/${company.id}`);
+      onClose();
+    }
   };
 
   // Define tabs for better organization with enhanced icons
@@ -104,9 +129,39 @@ export default function CompanyPreviewDialog({ company, isOpen, onClose }: Compa
     { name: 'Tenders', icon: Calendar }
   ];
 
+  if (loading) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40"
+              onClick={onClose}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 400 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative z-10 flex items-center justify-center p-12"
+            >
+              <div className="text-center">
+                <div className="inline-block mx-auto mb-6 w-12 h-12 border-4 border-t-blue-600 border-blue-200 rounded-full animate-spin"></div>
+                <p className="text-gray-600 font-medium text-lg">Loading company details...</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && company && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <motion.div
             initial={{ opacity: 0 }}
@@ -145,7 +200,9 @@ export default function CompanyPreviewDialog({ company, isOpen, onClose }: Compa
                   <div className="relative">
                     <div className="w-32 h-32 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-white">
                       <img
-                        src={`http://localhost:3000/${company?.logoUrl}`}
+                        src={company?.logoUrl && (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://')) 
+                          ? company.logoUrl 
+                          : `http://localhost:3000/${company?.logoUrl}`}
                         alt={company?.companyName}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -310,11 +367,13 @@ export default function CompanyPreviewDialog({ company, isOpen, onClose }: Compa
                             <EnhancedInfoItem icon={Boxes} label="Business Type" value={company?.businessType} />
                             <EnhancedInfoItem icon={TrendingUp} label="Sector" value={company?.sector} />
                             
-                            {/* Missing fields with enhanced styling */}
-                            {!company.gstNumber && 
+                            {/* Use correct field names from API response */}
+                            {company.gstin ? 
+                              <EnhancedInfoItem icon={FileText} label="GST Number" value={company.gstin} /> : 
                               <EnhancedInfoItem icon={FileText} label="GST Number" missing />
                             }
-                            {!company.panNumber && 
+                            {company.pan ? 
+                              <EnhancedInfoItem icon={FileText} label="PAN Number" value={company.pan} /> : 
                               <EnhancedInfoItem icon={FileText} label="PAN Number" missing />
                             }
                           </div>
@@ -531,10 +590,21 @@ export default function CompanyPreviewDialog({ company, isOpen, onClose }: Compa
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
                       <h2 className="text-xl font-bold text-gray-900 mb-4">Financial & Registration Details</h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ContactItem icon={FileText} label="GST Number" value={company.gstNumber || 'Not available'} />
-                        <ContactItem icon={FileText} label="PAN Number" value={company.panNumber || 'Not available'} />
+                        {/* Use correct field names from API response */}
+                        <ContactItem icon={FileText} label="GST Number" value={company.gstin || 'Not available'} />
+                        <ContactItem icon={FileText} label="PAN Number" value={company.pan || 'Not available'} />
+                        <ContactItem icon={FileText} label="MSME Registration" value={company.msmeRegistrationNumber || 'Not available'} />
+                        <ContactItem icon={FileText} label="CIN Number" value={company.cin || 'Not available'} />
+                        {company.tradeLicenseNumber && 
+                          <ContactItem icon={FileText} label="Trade License" value={company.tradeLicenseNumber} />
+                        }
+                        {company.iecNumber && 
+                          <ContactItem icon={FileText} label="IEC Number" value={company.iecNumber} />
+                        }
+                        {company.aadharNumber && 
+                          <ContactItem icon={FileText} label="Aadhaar" value={company.aadharNumber} />
+                        }
                         <ContactItem icon={Award} label="Annual Turnover" value={company.annualTurnover || 'Not available'} />
-                        <ContactItem icon={FileText} label="Registration Number" value={company.registrationNumber || 'Not available'} />
                       </div>
                     </div>
 

@@ -420,7 +420,7 @@ export default function TenderListTab() {
                   <div className="flex items-start gap-4 mb-4">
                     <div className="relative flex-shrink-0">
                       <img
-                        src={`http://localhost:3000/${tender.company.logoUrl}`}
+                        src={tender.company.logoUrl?.startsWith('http') ? tender.company.logoUrl : `http://localhost:3000/${tender.company.logoUrl}`}
                         alt={tender.company.companyName}
                         className="w-12 h-12 rounded-lg object-cover"
                         onError={(e) => {
@@ -508,7 +508,7 @@ export default function TenderListTab() {
                               <div className="flex items-start gap-4">
                                 <div className="relative">
                                   <img
-                                    src={`http://localhost:3000/${detail.company.logoUrl}`}
+                                    src={detail.company.logoUrl?.startsWith('http') ? detail.company.logoUrl : `http://localhost:3000/${detail.company.logoUrl}`}
                                     alt={detail.company.companyName}
                                     className="w-16 h-16 rounded-lg object-cover border border-gray-200"
                                     onError={(e) => {

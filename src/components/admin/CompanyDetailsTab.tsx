@@ -75,7 +75,7 @@ const DocumentCard = ({
       <p className="text-sm mb-2 font-mono bg-gray-50 p-1 rounded">{number || 'Not provided'}</p>
       {documentUrl ? (
         <a 
-          href={`http://localhost:3000/${documentUrl}`}
+          href={documentUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center text-sm text-blue-600 hover:text-blue-800"
@@ -152,7 +152,7 @@ const CompanyDetailsTab = ({ company }: { company: CompanyData }) => {
           <div className="md:w-1/3 p-6 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-b md:border-b-0 md:border-r border-gray-200">
             <div className="w-32 h-32 rounded-lg border border-gray-200 bg-white flex items-center justify-center overflow-hidden p-2">
               <img 
-                src={`http://localhost:3000/${company.logoUrl}`}
+                src={company.logoUrl}
                 alt={`${company.companyName} logo`}
                 className="max-w-full max-h-full object-contain"
                 onError={(e) => {

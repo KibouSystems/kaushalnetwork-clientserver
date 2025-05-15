@@ -183,15 +183,13 @@ export default function CompanyDetails() {
           <div className="flex items-end gap-6">
             <div className="relative">
               <img
-                src={`http://localhost:3000/${company?.logoUrl}`}
+                src={company?.logoUrl}
                 alt={company?.companyName}
                 className="w-36 h-36 rounded-2xl border-4 border-white shadow-lg object-cover bg-white"
-                style={{ background: "#fff" }}
-                onError={e => {
-                  (e.currentTarget as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Company&background=eee&color=888";
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://via.placeholder.com/150?text=Logo";
                 }}
               />
-              {/* Optional: Add a subtle shadow below the logo */}
               <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-28 h-3 bg-black/10 rounded-full blur-sm"></div>
             </div>
             <div className="mb-2">
@@ -432,6 +430,78 @@ export default function CompanyDetails() {
               <h2 className="text-xl font-bold mb-4 text-gray-900">Major Clients <MissingField text="(missing)" /></h2>
               <div className="text-red-500">
                 <p>Client list missing</p>
+              </div>
+            </motion.div>
+
+            {/* Documents */}
+            <motion.div className="bg-white rounded-xl p-6 shadow-sm">
+              <h2 className="text-xl font-bold mb-4 text-gray-900">Documents</h2>
+              <div className="space-y-4">
+                {company?.msmeRegistrationDocumentUrl && (
+                  <div>
+                    <p className="text-sm text-gray-500">MSME Registration:</p>
+                    <a
+                      href={company.msmeRegistrationDocumentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                )}
+                {company?.cinDocumentUrl && (
+                  <div>
+                    <p className="text-sm text-gray-500">CIN Document:</p>
+                    <a
+                      href={company.cinDocumentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                )}
+                {company?.panUrl && (
+                  <div>
+                    <p className="text-sm text-gray-500">PAN Document:</p>
+                    <a
+                      href={company.panUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                )}
+                {company?.gstinDocumentUrl && (
+                  <div>
+                    <p className="text-sm text-gray-500">GSTIN Document:</p>
+                    <a
+                      href={company.gstinDocumentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                )}
+                {company?.aadharDocumentUrl && (
+                  <div>
+                    <p className="text-sm text-gray-500">Aadhar Document:</p>
+                    <a
+                      href={company.aadharDocumentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
