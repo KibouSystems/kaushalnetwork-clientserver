@@ -22,6 +22,10 @@ export default function CompanyView() {
   const [company, setCompany] = useState<CompanyView | null>(null);
   const [loading, setLoading] = useState(true);
 
+
+
+ 
+  
   useEffect(() => {
     const fetchCompanyData = async () => {
       try {
@@ -36,6 +40,7 @@ export default function CompanyView() {
           }
         });
         setCompany(response.data);
+         console.log(company?.logoUrl);
       } catch (error) {
         toast.error('Failed to fetch company data');
         console.error('Error:', error);
@@ -72,8 +77,11 @@ export default function CompanyView() {
           <div className="px-8 py-6 -mt-16">
             <div className="flex items-end space-x-5">
               <div className="relative">
+               {company?.logoUrl}
+
                 <img
-                  src={`http://localhost:3000/${company?.logoUrl}`}
+                  src="http://localhost:3000/uploads/1747147674266_ganesh.jpg"
+                  
                   alt={company?.companyName}
                   className="h-24 w-24 rounded-xl border-4 border-white shadow-lg bg-white object-cover"
                 />
@@ -210,7 +218,7 @@ const DocumentLink = ({ label, url }) => {
   if (!url) return null;
   return (
     <a
-      href={`http://localhost:3000/${url}`}
+      href={url}
       target="_blank"
       rel="noopener noreferrer"
       className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
