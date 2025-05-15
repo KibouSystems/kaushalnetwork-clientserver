@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axiosInstance from '../../utils/axiosConfig';
-import axios from 'axios';
 import { tokenManager } from '../../utils/tokenManager';
 import UsersTab from '../../components/admin/UsersTab';
 import CompanyUserList from '../../components/admin/CompanyUserList';
 import CompanyBuzzList from '../../components/admin/CompanyBuzzList';
 import CompanyDetailsTab from '../../components/admin/CompanyDetailsTab';
 import TenderListTab from '../../components/admin/TenderListTab';
+import { Building2, Users, UserPlus, MessageSquare, FileText } from 'lucide-react';
 
 interface CompanyData {
   id: number;
@@ -55,6 +55,7 @@ export default function AdminView() {
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'company' | 'users' | 'allusers' | 'buzz' | 'tenders'>('company');
+  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -62,12 +63,24 @@ export default function AdminView() {
         setLoading(true);
         const response = await axiosInstance.get('/company/admin-view');
         setCompany(response.data);
+        
+        // Extract email from token
+        const token = tokenManager.getToken();
+        if (token) {
+          try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const payload = JSON.parse(jsonPayload);
+            setEmail(payload.email || null);
+          } catch (e) {
+            console.error('Error decoding token:', e);
+          }
+        }
       } catch (error: any) {
         console.error('Error:', error.response?.data || error.message);
-        if (error.response?.status === 401) {
-          // Handle unauthorized access
-          console.log('Unauthorized access, redirecting to login');
-        }
       } finally {
         setLoading(false);
       }
@@ -78,66 +91,108 @@ export default function AdminView() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="w-16 h-16 border-4 border-t-blue-600 border-blue-200 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (!company) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500">No company data available</div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-md text-center">
+          <div className="text-red-500 text-lg font-medium mb-2">No company data available</div>
+          <p className="text-gray-600">Please check your account configuration or contact support.</p>
+        </div>
       </div>
     );
   }
 
+  const navigationItems = [
+    { key: 'company', label: 'Company Details', icon: Building2 },
+    { key: 'users', label: 'Create User', icon: UserPlus },
+    { key: 'allusers', label: 'All Users', icon: Users },
+    { key: 'buzz', label: 'Buzz Posts', icon: MessageSquare },
+    { key: 'tenders', label: 'Tenders', icon: FileText }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Tab Navigation */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex space-x-2 md:space-x-8 pt-2">
-            {[
-              { key: 'company', label: 'Company Details' },
-              { key: 'users', label: 'Create User' },
-              { key: 'allusers', label: 'All Users' },
-              { key: 'buzz', label: 'Buzz Posts' },
-              { key: 'tenders', label: 'Tenders' }
-            ].map(tab => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`relative py-3 px-4 md:px-8 rounded-t-lg font-semibold text-sm md:text-base transition-all duration-200
-                  ${activeTab === tab.key
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow'
-                    : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-700'}
-                `}
-                style={{ outline: 'none' }}
-              >
-                {tab.label}
-                {activeTab === tab.key && (
-                  <span className="absolute left-0 bottom-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-b-lg"></span>
-                )}
-              </button>
-            ))}
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <div className="w-64 bg-white shadow-md">
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-center">
+            <div className="w-10 h-10 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+              {company.companyName.charAt(0).toUpperCase()}
+            </div>
+            <div className="ml-3 overflow-hidden">
+              <div className="font-medium text-gray-800 truncate">{company.companyName}</div>
+              <div className="text-xs text-gray-500 truncate">{email}</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation Links */}
+        <nav className="p-2 mt-2">
+          {navigationItems.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setActiveTab(item.key as any)}
+              className={`w-full flex items-center px-4 py-3 rounded-md mb-1 text-left transition-all
+                ${activeTab === item.key
+                  ? 'bg-blue-50 text-blue-700 font-medium'
+                  : 'text-gray-700 hover:bg-gray-50'
+                }
+              `}
+            >
+              <item.icon size={18} className={`mr-3 ${activeTab === item.key ? 'text-blue-600' : 'text-gray-500'}`} />
+              {item.label}
+              {activeTab === item.key && (
+                <div className="ml-auto w-1.5 h-5 bg-blue-600 rounded-full"></div>
+              )}
+            </button>
+          ))}
+        </nav>
+        
+        {/* Company Status */}
+        <div className="p-4 mt-4 border-t border-gray-100">
+          <div className="flex items-center">
+            <div className={`w-3 h-3 rounded-full ${company.verified ? 'bg-green-500' : 'bg-yellow-500'} mr-2`}></div>
+            <span className={`text-sm ${company.verified ? 'text-green-600' : 'text-yellow-600'} font-medium`}>
+              {company.verified ? 'Verified Account' : 'Pending Verification'}
+            </span>
+          </div>
+          <div className="text-xs text-gray-500 mt-1">
+            {company.companyType} • {company.sector}
           </div>
         </div>
       </div>
-
-      {/* Tab Content */}
-      <div className="max-w-7xl mx-auto px-2 md:px-4 py-8">
-        {activeTab === 'company' ? (
-          <CompanyDetailsTab company={company} />
-        ) : activeTab === 'users' ? (
-          <UsersTab />
-        ) : activeTab === 'allusers' ? (
-          <CompanyUserList />
-        ) : activeTab === 'buzz' ? (
-          <CompanyBuzzList />
-        ) : (
-          <TenderListTab />
-        )}
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
+        <header className="bg-white shadow-sm">
+          <div className="px-6 py-4">
+            <h1 className="text-xl font-semibold text-gray-900">
+              {navigationItems.find(item => item.key === activeTab)?.label}
+            </h1>
+          </div>
+        </header>
+        
+        <main className="p-6">
+          <div className="bg-white rounded-lg shadow">
+            {activeTab === 'company' ? (
+              <CompanyDetailsTab company={company} />
+            ) : activeTab === 'users' ? (
+              <UsersTab />
+            ) : activeTab === 'allusers' ? (
+              <CompanyUserList />
+            ) : activeTab === 'buzz' ? (
+              <CompanyBuzzList />
+            ) : (
+              <TenderListTab />
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import {
 } from "@phosphor-icons/react";
 import { useNavigate } from 'react-router-dom';
 import ChatModal from '../../components/chat/ChatModal';
+import CompanyPreviewDialog from '../../components/company/CompanyPreviewDialog';
 
 // Custom debounce hook
 const useDebounce = (value: any, delay: number) => {
@@ -38,7 +39,7 @@ const arr_of_img = ["https://img.freepik.com/free-vector/bird-colorful-logo-grad
   "https://img.freepik.com/free-vector/hub-logo-template_23-2149852444.jpg?ga=GA1.1.188395480.1746186161&semt=ais_hybrid&w=740"
 
 ]
-const NetworkPage = () => {
+export default function NetworkPage() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,9 +50,31 @@ const NetworkPage = () => {
     companyType: '',
     deliverableNames: ''
   });
+  // Add pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const companiesPerPage = 5;
+  
   const abortControllerRef = useRef<AbortController | null>(null);
-  const debouncedParams = useDebounce(queryParams, 2000); // Debounce all params by 500ms
+  const debouncedParams = useDebounce(queryParams, 2000);
   const [selectedChat, setSelectedChat] = useState<{ id: number; name: string } | null>(null);
+  const [previewCompany, setPreviewCompany] = useState<Company | null>(null);
+
+  // Calculate current companies to display based on pagination
+  const indexOfLastCompany = currentPage * companiesPerPage;
+  const indexOfFirstCompany = indexOfLastCompany - companiesPerPage;
+  const currentCompanies = companies.slice(indexOfFirstCompany, indexOfLastCompany);
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(companies.length / companiesPerPage);
+
+  // Generate page numbers array
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -99,199 +122,362 @@ const NetworkPage = () => {
     };
   }, [debouncedParams]);
 
+  // Make sure the handleCardClick function is properly implemented
+  const handleCardClick = (company: Company, e: React.MouseEvent) => {
+    // Prevent triggering when clicking buttons or links
+    if ((e.target as HTMLElement).closest('button') || 
+        (e.target as HTMLElement).closest('a')) {
+      return;
+    }
+    setPreviewCompany(company);
+  };
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top when changing page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const CompanyCard = ({ company }: { company: Company }) => (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+      onClick={(e) => handleCardClick(company, e)}
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 30, scale: 0.97 }}
-      transition={{ duration: 0.3, type: 'spring', bounce: 0.2 }}
-      whileHover={{
-        scale: 1.02,
-        boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
-      }}
-      className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:border-blue-400 transition-all duration-300"
+      exit={{ opacity: 0, y: 20, scale: 0.98 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-md shadow-md overflow-hidden border-l-4 border-blue-600 hover:shadow-lg transition-all duration-300 cursor-pointer"
     >
-      {/* Header */}
-      <div className="p-6 border-b bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
-        <div className="flex items-center space-x-4">
-          <motion.img
-            src={`http://localhost:3000/${company.logoUrl}`}
-            alt={company.companyName}
-            className="w-16 h-16 rounded-xl object-cover bg-gray-100 border border-gray-200 shadow-md"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = arr_of_img[Math.floor(Math.random() * arr_of_img.length)]; // existing fallback
-            }}
-            whileHover={{ scale: 1.1, rotate: 3 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-          />
-          <div className="flex-1">
-            <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {company.companyName}
-            </h3>
-            <p className="text-sm text-gray-600 flex items-center gap-1">
-              <Buildings className="w-4 h-4" />
-              {company.sector} • {company.industry}
-            </p>
+      <div className="flex p-4">
+        <div className="mr-4">
+          <div className="w-20 h-20 bg-white rounded-md border border-gray-200 overflow-hidden flex items-center justify-center">
+            <img
+              src={`http://localhost:3000/${company.logoUrl}`}
+              alt={company.companyName}
+              className="object-cover max-h-full max-w-full"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
+              }}
+            />
           </div>
         </div>
-      </div>
-
-      {/* Quick Links */}
-      <div className="grid grid-cols-3 text-sm border-b bg-white">
-        {[
-          { 
-            icon: ChatTeardropDots, 
-            label: "Chat",
-            onClick: () => setSelectedChat({ id: company.id, name: company.companyName })
-          },
-          { icon: Envelope, label: "Mail" },
-          { icon: Calendar, label: "Schedule" }
-        ].map((item, index) => (
-          <motion.button
-            key={index}
-            onClick={item.onClick}
-            whileHover={{ backgroundColor: "#EEF2FF" }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center p-3 space-x-2 transition-all"
-          >
-            <item.icon weight="duotone" className="w-5 h-5 text-indigo-500" />
-            <span className="font-medium text-gray-700">{item.label}</span>
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Company Details */}
-      <div className="p-6 space-y-4 bg-gradient-to-br from-white to-blue-50/50">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500 flex items-center gap-1"><Briefcase className="w-4 h-4" />Type</p>
-            <p className="font-medium">{company.companyType}</p>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
+                {company.companyName}
+              </h3>
+              <div className="flex items-center text-xs font-medium text-gray-600 mb-2">
+                <Buildings className="w-3 h-3 mr-1" />
+                <span className="truncate">{company.sector}</span>
+                <span className="mx-1">•</span>
+                <span className="truncate">{company.industry}</span>
+              </div>
+            </div>
+            <div className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-sm font-semibold">
+              {company.companyType}
+            </div>
           </div>
-          <div>
-            <p className="text-gray-500 flex items-center gap-1"><MapPin className="w-4 h-4" />Location</p>
-            <p className="font-medium">{company.registeredOfficeAddress}</p>
+          
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm my-2">
+            <div className="flex items-start">
+              <MapPin className="w-4 h-4 text-gray-500 mr-1 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-700 truncate">{company.registeredOfficeAddress}</span>
+            </div>
+            <div className="flex items-start">
+              <Briefcase className="w-4 h-4 text-gray-500 mr-1 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-700 truncate">{company.deliverableNames}</span>
+            </div>
           </div>
-          <div className="col-span-2">
-            <p className="text-gray-500 flex items-center gap-1"><Users className="w-4 h-4" />Products/Services</p>
-            <p className="font-medium">{company.deliverableNames}</p>
+
+          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+            <div className="flex space-x-3">
+              <button 
+                onClick={() => setSelectedChat({ id: company.id, name: company.companyName })}
+                className="flex items-center text-sm text-gray-600 hover:text-blue-600"
+              >
+                <ChatTeardropDots className="w-4 h-4 mr-1" />
+                <span>Chat</span>
+              </button>
+              <button className="flex items-center text-sm text-gray-600 hover:text-blue-600">
+                <Envelope className="w-4 h-4 mr-1" />
+                <span>Mail</span>
+              </button>
+            </div>
+            <Button
+              size="sm"
+              onClick={() => navigate(`/company/${company.id}`)}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3"
+            >
+              View Details
+            </Button>
           </div>
         </div>
-        <motion.div
-          className="flex space-x-2 pt-2"
-          initial={false}
-          whileHover={{ gap: 12 }}
-        >
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="transition-all"
-            onClick={() => navigate(`/company/${company.id}`)}
-          >
-            View Profile
-          </Button>
-          <Button size="sm" variant="outline" className="transition-all">Send Query</Button>
-        </motion.div>
       </div>
     </motion.div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
+    <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Filters Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg mb-8 border border-gray-100"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            <div className="relative">
-              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search companies..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                onChange={(e) => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
-              />
-            </div>
+        <div className="mb-6">
+          <div className="flex justify-between items-end">
             <div>
-              <select
-                className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                onChange={(e) => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
-              >
-                <option value="">Select Sector</option>
-                <option value="IT">IT</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Finance">Finance</option>
-                <option value="Education">Education</option>
-              </select>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">Business Directory</h1>
+              <p className="text-gray-600">Find and connect with verified business partners across India</p>
             </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Enter Location"
-                className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                onChange={(e) => setQueryParams(prev => ({ ...prev, location: e.target.value }))}
-              />
-            </div>
-            <div>
-              <select
-                className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                onChange={(e) => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
-              >
-                <option value="">Company Type</option>
-                <option value="MSME">MSME</option>
-                <option value="Corporate">Corporate</option>
-                <option value="Service Provider">Service Provider</option>
-                <option value="Bank">Bank</option>
-                <option value="Others">Others</option>
-              </select>
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="Product/Service"
-                className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                onChange={(e) => setQueryParams(prev => ({ ...prev, deliverableNames: e.target.value }))}
-              />
+            <div className="flex items-center gap-2">
+              <Button className="bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 py-1 px-3 text-sm font-medium">
+                Export Results
+              </Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 text-sm font-medium">
+                Contact Support
+              </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
+        
+        {/* Enhanced Filters Section */}
+        <div className="bg-white rounded-md shadow-md border border-gray-200 mb-6">
+          <div className="p-4 border-b border-gray-200 bg-gray-50">
+            <h2 className="font-semibold text-gray-800">Advanced Search Filters</h2>
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="relative">
+                <label className="block text-xs font-medium text-gray-700 mb-1">Company Name</label>
+                <div className="relative">
+                  <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Enter keywords..."
+                    className="w-full pl-9 pr-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    onChange={(e) => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Industry Sector</label>
+                <select
+                  className="w-full py-2 px-3 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  onChange={(e) => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
+                >
+                  <option value="">All Sectors</option>
+                  <option value="IT">Information Technology</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Finance">Finance & Banking</option>
+                  <option value="Education">Education</option>
+                  <option value="Retail">Retail</option>
+                  <option value="Logistics">Logistics</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
+                <input
+                  type="text"
+                  placeholder="City, State or Country"
+                  className="w-full px-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  onChange={(e) => setQueryParams(prev => ({ ...prev, location: e.target.value }))}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Business Type</label>
+                <select
+                  className="w-full py-2 px-3 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  onChange={(e) => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
+                >
+                  <option value="">All Types</option>
+                  <option value="MSME">MSME</option>
+                  <option value="Corporate">Corporate</option>
+                  <option value="Service Provider">Service Provider</option>
+                  <option value="Bank">Bank/NBFC</option>
+                  <option value="Manufacturer">Manufacturer</option>
+                  <option value="Distributor">Distributor</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Products/Services</label>
+                <input
+                  type="text"
+                  placeholder="Enter products or services"
+                  className="w-full px-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  onChange={(e) => setQueryParams(prev => ({ ...prev, deliverableNames: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="mt-4 flex justify-between items-center pt-3 border-t border-gray-100">
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="py-1 px-4 text-sm border-gray-300 text-gray-600">
+                  Clear All
+                </Button>
+                <Button variant="outline" className="py-1 px-4 text-sm border-gray-300 text-gray-600">
+                  Save Search
+                </Button>
+              </div>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-6 text-sm">
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        </div>
 
+        {/* Results Stats & Controls */}
+        {!loading && companies.length > 0 && (
+          <div className="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200 mb-4">
+            <div className="text-sm text-gray-600">
+              <span className="font-semibold text-gray-900">{companies.length}</span> businesses found
+              {totalPages > 1 && (
+                <span className="ml-2">
+                  (Showing {indexOfFirstCompany + 1}-{Math.min(indexOfLastCompany, companies.length)} of {companies.length})
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Sort:</span>
+                <select className="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <option>Relevance</option>
+                  <option>Newest First</option>
+                  <option>A to Z</option>
+                </select>
+              </div>
+              <div className="flex border rounded overflow-hidden">
+                <button className="p-1.5 bg-gray-50 border-r">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" />
+                    <path d="M2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+                <button className="p-1.5 bg-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Results Grid */}
         {loading ? (
-          <div className="text-center py-12">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-              className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"
-            />
+          <div className="bg-white rounded-md shadow-md border border-gray-200 p-12 text-center">
+            <div className="inline-block mx-auto mb-6 w-12 h-12 border-4 border-t-blue-600 border-blue-200 rounded-full animate-spin"></div>
+            <p className="text-gray-600">Searching India's leading business directory...</p>
+            <p className="text-sm text-gray-500 mt-2">This may take a moment</p>
           </div>
         ) : (
           <AnimatePresence>
-            <motion.div
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {companies.map((company) => (
-                <CompanyCard key={company.id} company={company} />
-              ))}
-            </motion.div>
+            {companies.length > 0 ? (
+              <motion.div
+                layout
+                className="grid gap-4"
+              >
+                {currentCompanies.map((company) => (
+                  <CompanyCard key={company.id} company={company} />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white rounded-md shadow-md border border-gray-200 p-10 text-center"
+              >
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MagnifyingGlass size={32} className="text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No results found</h3>
+                <p className="text-gray-600 max-w-md mx-auto mb-6">
+                  We couldn't find businesses matching your search criteria. Try adjusting your filters or browsing our categories.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {["IT", "Manufacturing", "Healthcare", "Finance", "Retail"].map(sector => (
+                    <Button 
+                      key={sector}
+                      variant="outline" 
+                      className="border-gray-200 text-gray-700" 
+                      onClick={() => setQueryParams(prev => ({ ...prev, sector, keyword: '' }))}
+                    >
+                      {sector}
+                    </Button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         )}
-
-        {!loading && companies.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12 text-gray-500"
-          >
-            No companies found matching your search criteria.
-          </motion.div>
+        
+        {/* Enhanced Pagination - Show when we have companies and more than one page */}
+        {!loading && companies.length > 0 && totalPages > 1 && (
+          <div className="mt-6">
+            <nav className="flex justify-center items-center">
+              <ul className="flex items-center space-x-1">
+                {/* Previous page button */}
+                <li>
+                  <button
+                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`p-2 rounded border ${
+                      currentPage === 1 
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                </li>
+                
+                {/* Page numbers */}
+                {getPageNumbers().map(number => (
+                  <li key={number}>
+                    <button
+                      onClick={() => handlePageChange(number)}
+                      className={`px-4 py-2 rounded ${
+                        number === currentPage
+                          ? 'bg-blue-600 text-white'
+                          : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  </li>
+                ))}
+                
+                {/* Next page button */}
+                <li>
+                  <button
+                    onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`p-2 rounded border ${
+                      currentPage === totalPages 
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+            
+            {/* Page info */}
+            <div className="text-center mt-2 text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </div>
+          </div>
         )}
       </div>
+      
+      {/* Modals */}
       {selectedChat && (
         <ChatModal
           isOpen={!!selectedChat}
@@ -300,8 +486,11 @@ const NetworkPage = () => {
           recipientId={selectedChat.id}
         />
       )}
+      <CompanyPreviewDialog
+        company={previewCompany}
+        isOpen={!!previewCompany}
+        onClose={() => setPreviewCompany(null)}
+      />
     </div>
   );
 };
-
-export default NetworkPage;
