@@ -44,7 +44,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<CompanyUserLogin />} />
         <Route path="/signup" element={<CompanyUserSignup />} />
-        <Route path="/register-company" element={<RegisterCompany />} />
+        {/* <Route path="/register-company" element={<RegisterCompany />} /> */}
         <Route path="/register" element={<Register />} />
         <Route path="/buzz" element={<Buzz />} />
         <Route path="/network" element={<NetworkPage />} />

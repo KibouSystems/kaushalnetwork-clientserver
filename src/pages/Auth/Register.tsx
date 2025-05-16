@@ -260,7 +260,7 @@ const Register = () => {
         formDataToSend.append('iecDocument', formData.statutory.iecDoc);
       }
 
-      const response = await axios.post('http://localhost:3000/api/v0/company', formDataToSend, {
+      const response = await axios.post('http://69.62.79.102:3000/api/v0/company', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
