@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build":  "build": "tsc && vite build",
+    "build":  "tsc && vite build",
     "preview": "vite preview",
     "docker:dev": "docker-compose up app-dev",
     "docker:build": "docker-compose build app-prod",
