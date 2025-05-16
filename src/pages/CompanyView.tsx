@@ -89,10 +89,10 @@ export default function CompanyView() {
 
         // Fetch both company and user data in parallel
         const [companyResponse, userResponse] = await Promise.all([
-          axios.get('http://localhost:3000/api/v0/company/company-user-view', {
+          axios.get('http://69.62.79.102:3000/api/v0/company/company-user-view', {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get('http://localhost:3000/api/v0/company-user/me', {
+          axios.get('http://69.62.79.102:3000/api/v0/company-user/me', {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

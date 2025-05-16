@@ -147,7 +147,7 @@ export default function NetworkPage() {
         });
 
         const response = await axios.get(
-          `http://localhost:3000/api/v0/company/all?${params.toString()}`,
+          `http://69.62.79.102:3000/api/v0/company/all?${params.toString()}`,
           { signal: abortControllerRef.current.signal }
         );
 
@@ -257,7 +257,7 @@ export default function NetworkPage() {
                 company.logoUrl &&
                 (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://'))
                   ? company.logoUrl
-                  : `http://localhost:3000/${company.logoUrl}`
+                  : `http://69.62.79.102:3000/${company.logoUrl}`
               }
               alt={company.companyName}
               className="object-cover max-h-full max-w-full"

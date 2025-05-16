@@ -40,7 +40,7 @@ const LandingPage = () => {
         });
 
         const response = await axios.get(
-          `http://localhost:3000/api/v0/company/all?${params.toString()}`
+          `http://69.62.79.102:3000/api/v0/company/all?${params.toString()}`
         );
         setSearchResults(response.data);
       } catch (error) {

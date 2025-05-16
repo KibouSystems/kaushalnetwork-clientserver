@@ -155,9 +155,9 @@ export default function CompanyDetails() {
     const fetchData = async () => {
       try {
         const [companyResponse, tendersResponse] = await Promise.all([
-          axios.get(`http://localhost:3000/api/v0/company/user-view?id=${id}`),
+          axios.get(`http://69.62.79.102:3000/api/v0/company/user-view?id=${id}`),
           axios.get(
-            `http://localhost:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`
+            `http://69.62.79.102:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`
           ),
         ]);
 

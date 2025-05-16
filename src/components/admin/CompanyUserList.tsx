@@ -28,7 +28,7 @@ const CompanyUserList: React.FC = () => {
         return;
       }
       try {
-        const response = await axios.get('http://localhost:3000/api/v0/company-user/all', {
+        const response = await axios.get('http://69.62.79.102:3000/api/v0/company-user/all', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

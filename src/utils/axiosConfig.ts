@@ -2,7 +2,7 @@ import axios from 'axios';
 import { tokenManager } from './tokenManager';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api/v0',
+  baseURL: 'http://69.62.79.102:3000/api/v0',
   withCredentials: true,
 });
 

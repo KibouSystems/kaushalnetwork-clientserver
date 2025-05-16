@@ -32,7 +32,7 @@ const CreateCompanyUserForm: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:3000/api/v0/company-user', data, {
+      const response = await axios.post('http://69.62.79.102:3000/api/v0/company-user', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

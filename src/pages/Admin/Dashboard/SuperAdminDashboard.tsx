@@ -131,7 +131,7 @@ export default function SuperAdminDashboard() {
       const loadingToastId = toast.loading('Verifying company...');
 
       await axios.put(
-        `http://localhost:3000/api/v0/company/verify?companyId=${companyId}`,
+        `http://69.62.79.102:3000/api/v0/company/verify?companyId=${companyId}`,
         {},
         {
           headers: {
@@ -162,7 +162,7 @@ export default function SuperAdminDashboard() {
 
   const getImageUrl = (path: string) => {
     if (!path) return '/placeholder-logo.png';
-    return path.startsWith('http') ? path : `http://localhost:3000/${path.replace(/\\/g, '/')}`;
+    return path.startsWith('http') ? path : `http://69.62.79.102:3000/${path.replace(/\\/g, '/')}`;
   };
 
   const handleLogout = () => {

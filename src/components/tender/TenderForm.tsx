@@ -51,7 +51,7 @@ export default function TenderForm() {
   const fetchCompanyDetails = async () => {
     try {
       const token = Cookies.get('auth_token');
-      const response = await axios.get('http://localhost:3000/api/v0/company/admin-view', {
+      const response = await axios.get('http://69.62.79.102:3000/api/v0/company/admin-view', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCompanyDetails(response.data);
@@ -72,7 +72,7 @@ export default function TenderForm() {
 
     try {
       const token = Cookies.get('auth_token');
-      await axios.post('http://localhost:3000/api/v0/tender', formData, {
+      await axios.post('http://69.62.79.102:3000/api/v0/tender', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

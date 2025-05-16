@@ -98,7 +98,7 @@ export const SuperAdminCompanyModal: React.FC<SuperAdminCompanyModalProps> = ({
     try {
       const adminToken = Cookies.get('admin_token');
       const response = await axios.get(
-        `http://localhost:3000/api/v0/company/superadmin-view?companyId=${id}`,
+        `http://69.62.79.102:3000/api/v0/company/superadmin-view?companyId=${id}`,
         {
           headers: {
             Authorization: adminToken ? `Bearer ${adminToken}` : '',
@@ -121,7 +121,7 @@ export const SuperAdminCompanyModal: React.FC<SuperAdminCompanyModalProps> = ({
     try {
       const adminToken = Cookies.get('admin_token');
       await axios.put(
-        `http://localhost:3000/api/v0/company/verify?companyId=${companyData.id}`,
+        `http://69.62.79.102:3000/api/v0/company/verify?companyId=${companyData.id}`,
         {},
         {
           headers: {
@@ -146,7 +146,7 @@ export const SuperAdminCompanyModal: React.FC<SuperAdminCompanyModalProps> = ({
     try {
       const adminToken = Cookies.get('admin_token');
       await axios.put(
-        `http://localhost:3000/api/v0/company/unverify?companyId=${companyData.id}`,
+        `http://69.62.79.102:3000/api/v0/company/unverify?companyId=${companyData.id}`,
         {},
         {
           headers: {

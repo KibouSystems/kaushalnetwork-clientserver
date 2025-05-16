@@ -106,7 +106,7 @@ export default function CompanyPreviewDialog({
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3000/api/v0/company/user-view?id=${companyId}`
+          `http://69.62.79.102:3000/api/v0/company/user-view?id=${companyId}`
         );
         setCompany(response.data);
       } catch (error) {
@@ -127,7 +127,7 @@ export default function CompanyPreviewDialog({
       try {
         setLoadingTenders(true);
         const response = await axios.get(
-          `http://localhost:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`
+          `http://69.62.79.102:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`
         );
         setTenders(response.data);
       } catch (error) {
@@ -235,7 +235,7 @@ export default function CompanyPreviewDialog({
                           (company.logoUrl.startsWith('http://') ||
                             company.logoUrl.startsWith('https://'))
                             ? company.logoUrl
-                            : `http://localhost:3000/${company?.logoUrl}`
+                            : `http://69.62.79.102:3000/${company?.logoUrl}`
                         }
                         alt={company?.companyName}
                         className="w-full h-full object-cover"

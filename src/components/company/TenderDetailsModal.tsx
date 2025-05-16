@@ -43,7 +43,7 @@ export const TenderDetailsModal = ({ tender, isOpen, onClose }: TenderDetailsMod
       }
 
       await axios.post(
-        'http://localhost:3000/api/v0/tender-application',
+        'http://69.62.79.102:3000/api/v0/tender-application',
         {
           tenderId: tender.id,
           proposedPrice,

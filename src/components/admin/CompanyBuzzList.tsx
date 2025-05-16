@@ -41,7 +41,7 @@ const CompanyBuzzList: React.FC = () => {
         }
 
         const response = await axios.get(
-          'http://localhost:3000/api/v0/buzz/company-admin-view/all',
+          'http://69.62.79.102:3000/api/v0/buzz/company-admin-view/all',
           {
             headers: {
               Authorization: `Bearer ${token}`,

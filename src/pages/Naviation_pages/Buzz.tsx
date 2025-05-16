@@ -80,7 +80,7 @@ const Buzz = () => {
   const fetchBuzzPosts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:3000/api/v0/buzz/all', {
+      const response = await axios.get('http://69.62.79.102:3000/api/v0/buzz/all', {
         withCredentials: true,
       });
       setBuzzList(response.data);
@@ -156,7 +156,7 @@ const Buzz = () => {
     }
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/v0/buzz',
+        'http://69.62.79.102:3000/api/v0/buzz',
         {
           title: currentPost.title,
           textContent: currentPost.content.text,

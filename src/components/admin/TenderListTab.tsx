@@ -116,8 +116,8 @@ export default function TenderListTab() {
     try {
       const authToken = Cookies.get('auth_token');
       const url = companyName
-        ? `http://localhost:3000/api/v0/tender/user-view/all?companyName=${companyName}`
-        : 'http://localhost:3000/api/v0/tender/user-view/all';
+        ? `http://69.62.79.102:3000/api/v0/tender/user-view/all?companyName=${companyName}`
+        : 'http://69.62.79.102:3000/api/v0/tender/user-view/all';
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${authToken}` },
@@ -135,7 +135,7 @@ export default function TenderListTab() {
     try {
       const token = Cookies.get('auth_token');
       const response = await axios.get(
-        'http://localhost:3000/api/v0/tender-application/proposed/all',
+        'http://69.62.79.102:3000/api/v0/tender-application/proposed/all',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ export default function TenderListTab() {
     try {
       const token = Cookies.get('auth_token');
       const response = await axios.get(
-        `http://localhost:3000/api/v0/tender-application/all?tenderId=${tenderId}`,
+        `http://69.62.79.102:3000/api/v0/tender-application/all?tenderId=${tenderId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ export default function TenderListTab() {
 
       console.log('Sending tender data:', payload); // Debug log
 
-      const response = await axios.post('http://localhost:3000/api/v0/tender', payload, {
+      const response = await axios.post('http://69.62.79.102:3000/api/v0/tender', payload, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
@@ -558,7 +558,7 @@ export default function TenderListTab() {
                               src={
                                 tender.Company.logoUrl?.startsWith('http')
                                   ? tender.Company.logoUrl
-                                  : `http://localhost:3000/${tender.Company.logoUrl}`
+                                  : `http://69.62.79.102:3000/${tender.Company.logoUrl}`
                               }
                               alt={tender.Company.companyName}
                               className="w-14 h-14 rounded-lg object-cover border border-gray-200"
@@ -738,7 +738,7 @@ export default function TenderListTab() {
                                             src={
                                               detail.company.logoUrl?.startsWith('http')
                                                 ? detail.company.logoUrl
-                                                : `http://localhost:3000/${detail.company.logoUrl}`
+                                                : `http://69.62.79.102:3000/${detail.company.logoUrl}`
                                             }
                                             alt={detail.company.companyName}
                                             className="w-full h-full object-cover"

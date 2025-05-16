@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
       if (token) {
         try {
           const response = await axios.get(
-            'http://localhost:3000/api/v0/company/company-user-view',
+            'http://69.62.79.102:3000/api/v0/company/company-user-view',
             {
               headers: { Authorization: `Bearer ${token}` },
             }
