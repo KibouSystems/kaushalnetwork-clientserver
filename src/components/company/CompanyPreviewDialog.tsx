@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
   X,
-  Building,
   MapPin,
   Globe,
   Users,
@@ -19,10 +19,8 @@ import {
   Users2,
   Boxes,
   Clock,
-  BookOpen,
   Info,
   ChevronRight,
-  ExternalLink,
   Check,
   Shield,
   Star,
@@ -52,11 +50,11 @@ const MissingField = ({ text }: { text: string }) => (
 );
 
 // Custom tab interface
-interface TabProps {
-  label: string;
-  icon: any;
-  children: React.ReactNode;
-}
+// interface TabProps {
+//   label: string;
+//   icon: any;
+//   children: React.ReactNode;
+// }
 
 interface Tender {
   id: number;

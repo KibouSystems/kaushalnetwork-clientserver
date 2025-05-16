@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
-  User,
   Send,
   Paperclip,
   MoreVertical,
@@ -76,13 +76,55 @@ const CONTACTS = [
 ];
 
 const MESSAGES = [
-  { id: 1, text: 'Hello! I\'m interested in your services.', sender: 'them', time: '10:30 AM', status: 'read' },
-  { id: 2, text: 'Hi there! Thank you for reaching out. How can I help you today?', sender: 'me', time: '10:32 AM', status: 'read' },
-  { id: 3, text: 'I wanted to inquire about your pricing for enterprise solutions.', sender: 'them', time: '10:33 AM', status: 'read' },
-  { id: 4, text: 'Of course! Our enterprise solutions start at $499/month. Would you like me to send over a detailed pricing sheet?', sender: 'me', time: '10:35 AM', status: 'sent' },
-  { id: 5, text: 'That would be great! Please include information about the features included in each tier.', sender: 'them', time: '10:36 AM', status: 'read' },
-  { id: 6, text: 'I\'ve just emailed the comprehensive pricing information to you. Let me know if you have any questions after reviewing it!', sender: 'me', time: '10:40 AM', status: 'sent' },
-  { id: 7, text: 'Thank you! I\'ll take a look and get back to you soon.', sender: 'them', time: '10:41 AM', status: 'read' },
+  {
+    id: 1,
+    text: "Hello! I'm interested in your services.",
+    sender: 'them',
+    time: '10:30 AM',
+    status: 'read',
+  },
+  {
+    id: 2,
+    text: 'Hi there! Thank you for reaching out. How can I help you today?',
+    sender: 'me',
+    time: '10:32 AM',
+    status: 'read',
+  },
+  {
+    id: 3,
+    text: 'I wanted to inquire about your pricing for enterprise solutions.',
+    sender: 'them',
+    time: '10:33 AM',
+    status: 'read',
+  },
+  {
+    id: 4,
+    text: 'Of course! Our enterprise solutions start at $499/month. Would you like me to send over a detailed pricing sheet?',
+    sender: 'me',
+    time: '10:35 AM',
+    status: 'sent',
+  },
+  {
+    id: 5,
+    text: 'That would be great! Please include information about the features included in each tier.',
+    sender: 'them',
+    time: '10:36 AM',
+    status: 'read',
+  },
+  {
+    id: 6,
+    text: "I've just emailed the comprehensive pricing information to you. Let me know if you have any questions after reviewing it!",
+    sender: 'me',
+    time: '10:40 AM',
+    status: 'sent',
+  },
+  {
+    id: 7,
+    text: "Thank you! I'll take a look and get back to you soon.",
+    sender: 'them',
+    time: '10:41 AM',
+    status: 'read',
+  },
 ];
 
 const CompanyChatTab: React.FC = () => {
@@ -120,9 +162,9 @@ const CompanyChatTab: React.FC = () => {
 
     // Simulate message status change
     setTimeout(() => {
-      setMessages(prev => prev.map(msg =>
-        msg.id === newMessage.id ? { ...msg, status: 'sent' } : msg
-      ));
+      setMessages(prev =>
+        prev.map(msg => (msg.id === newMessage.id ? { ...msg, status: 'sent' } : msg))
+      );
     }, 1000);
   };
 
@@ -147,7 +189,8 @@ const CompanyChatTab: React.FC = () => {
         <div className="flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-50 border-b border-yellow-200 py-2 px-4 text-yellow-800 text-sm font-medium gap-2">
           <Info className="w-4 h-4 text-yellow-500" />
           <span>
-            <span className="font-semibold">Demo Only:</span> Company chat is a preview and not functional yet. This feature is coming soon!
+            <span className="font-semibold">Demo Only:</span> Company chat is a preview and not
+            functional yet. This feature is coming soon!
           </span>
         </div>
       </div>
@@ -183,7 +226,9 @@ const CompanyChatTab: React.FC = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Contact List - Hidden on mobile when chat is active */}
         <AnimatePresence>
-          {(isMobileContactsVisible || !activeChat || !window.matchMedia('(max-width: 768px)').matches) && (
+          {(isMobileContactsVisible ||
+            !activeChat ||
+            !window.matchMedia('(max-width: 768px)').matches) && (
             <motion.div
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -194,13 +239,16 @@ const CompanyChatTab: React.FC = () => {
               {/* Search Input */}
               <div className="p-3 border-b border-gray-200">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={16}
+                  />
                   <input
                     type="text"
                     placeholder="Search chats..."
                     className="pl-9 pr-4 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                   />
                 </div>
               </div>
@@ -240,7 +288,9 @@ const CompanyChatTab: React.FC = () => {
                       {/* Contact Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start">
-                          <h3 className="font-medium text-gray-900 truncate pr-2">{contact.name}</h3>
+                          <h3 className="font-medium text-gray-900 truncate pr-2">
+                            {contact.name}
+                          </h3>
                           <span className="text-xs text-gray-500">{contact.time}</span>
                         </div>
                         <p className="text-sm text-gray-600 truncate">{contact.message}</p>
@@ -268,7 +318,9 @@ const CompanyChatTab: React.FC = () => {
         </AnimatePresence>
 
         {/* Conversation Area */}
-        <div className={`flex-1 flex flex-col ${!activeChat && !isMobileContactsVisible ? 'flex' : activeChat && !isMobileContactsVisible ? 'flex' : 'hidden md:flex'}`}>
+        <div
+          className={`flex-1 flex flex-col ${!activeChat && !isMobileContactsVisible ? 'flex' : activeChat && !isMobileContactsVisible ? 'flex' : 'hidden md:flex'}`}
+        >
           {activeChat ? (
             <>
               {/* Chat Header */}
@@ -321,7 +373,10 @@ const CompanyChatTab: React.FC = () => {
               </div>
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-br from-gray-50 to-white" id="messages-container">
+              <div
+                className="flex-1 overflow-y-auto p-4 bg-gradient-to-br from-gray-50 to-white"
+                id="messages-container"
+              >
                 {messages.map(msg => (
                   <div
                     key={msg.id}
@@ -344,15 +399,14 @@ const CompanyChatTab: React.FC = () => {
                       </div>
                       <div className="flex items-center mt-1 space-x-1">
                         <span className="text-xs text-gray-500">{msg.time}</span>
-                        {msg.sender === 'me' && (
-                          msg.status === 'read' ? (
+                        {msg.sender === 'me' &&
+                          (msg.status === 'read' ? (
                             <CheckCircle size={12} className="text-blue-500" />
                           ) : msg.status === 'sent' ? (
                             <CheckCircle size={12} className="text-gray-400" />
                           ) : (
                             <Clock size={12} className="text-gray-400" />
-                          )
-                        )}
+                          ))}
                       </div>
                     </div>
                   </div>
@@ -369,7 +423,7 @@ const CompanyChatTab: React.FC = () => {
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 resize-none"
                       style={{ maxHeight: '120px', minHeight: '40px' }}
                       value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                      onChange={e => setMessage(e.target.value)}
                       onKeyDown={handleKeyPress}
                       rows={1}
                     />
@@ -385,7 +439,9 @@ const CompanyChatTab: React.FC = () => {
                       onClick={handleSendMessage}
                       disabled={!message.trim()}
                       className={`p-3 rounded-full ${
-                        message.trim() ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-100 text-gray-400'
+                        message.trim()
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                          : 'bg-gray-100 text-gray-400'
                       } flex items-center justify-center`}
                     >
                       <Send size={18} />
@@ -411,7 +467,8 @@ const CompanyChatTab: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Company Chat (Demo)</h3>
                 <p className="text-gray-600 mb-6">
-                  This chat feature is a demo and will be available in a future update.<br />
+                  This chat feature is a demo and will be available in a future update.
+                  <br />
                   You will soon be able to communicate with your business partners here.
                 </p>
                 <div className="flex flex-col gap-2">

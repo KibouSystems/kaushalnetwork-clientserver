@@ -56,6 +56,8 @@ export default function TenderForm() {
       });
       setCompanyDetails(response.data);
     } catch (error) {
+      console.log(error);
+
       toast.error('Failed to fetch company details');
     } finally {
       setLoading(false);
@@ -95,6 +97,7 @@ export default function TenderForm() {
         otherConditions: '',
       });
     } catch (error) {
+      console.error(error);
       toast.error('Failed to create tender');
     }
   };

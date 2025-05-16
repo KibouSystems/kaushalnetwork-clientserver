@@ -5,25 +5,24 @@ import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import { 
-  MessageSquare, 
-  Send, 
-  Image as ImageIcon, 
-  Paperclip, 
-  X, 
-  Plus, 
-  Calendar,
-  ThumbsUp, 
-  MessageCircle, 
-  Share2, 
-  Clock, 
-  User, 
-  Menu, 
+import {
+  MessageSquare,
+  Send,
+  Image as ImageIcon,
+  Paperclip,
+  X,
+  Plus,
+  ThumbsUp,
+  MessageCircle,
+  Share2,
+  Clock,
+  User,
+  Menu,
   Search,
   Info,
   Sparkles,
   TrendingUp,
-  Bell
+  Bell,
 } from 'lucide-react';
 
 interface BuzzPost {
@@ -133,18 +132,20 @@ const Buzz = () => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      setCurrentPost(prev => ({
-        ...prev,
-        content: {
-          ...prev.content,
-          media: Array.from(files),
-        },
-      }));
-    }
-  };
+  // Uncomment this if you want to handle file uploads in the future
+  // Currently disabled as per the original code
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files;
+  //   if (files) {
+  //     setCurrentPost(prev => ({
+  //       ...prev,
+  //       content: {
+  //         ...prev.content,
+  //         media: Array.from(files),
+  //       },
+  //     }));
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,16 +203,16 @@ const Buzz = () => {
       {/* Feature Preview Banner */}
       <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-2 sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-center text-sm">
-          <Info size={16} className="mr-2" /> 
+          <Info size={16} className="mr-2" />
           <span>Buzz is in preview mode. Some features like media sharing are coming soon!</span>
         </div>
       </div>
-      
+
       {/* Header */}
       <header className="bg-white shadow-md sticky top-10 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={toggleSidebar}
               className="p-2 rounded-full hover:bg-gray-100 md:hidden"
             >
@@ -221,23 +222,26 @@ const Buzz = () => {
               <Sparkles size={24} className="text-blue-600 mr-2" /> Buzz Feed
             </h1>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-              <input 
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={16}
+              />
+              <input
                 type="text"
                 placeholder="Search posts..."
                 className="pl-9 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <Button 
+            <Button
               onClick={handleCreateClick}
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-4 py-2 rounded-full"
             >
               <Plus size={18} /> Create Post
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateClick}
               className="md:hidden bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium p-2 rounded-full"
             >
@@ -245,35 +249,35 @@ const Buzz = () => {
             </Button>
           </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="container mx-auto px-4 border-t border-gray-100">
           <div className="flex overflow-x-auto whitespace-nowrap space-x-6 py-2 scrollbar-hide">
-            <TabButton 
-              icon={<Clock size={16} />} 
-              label="Latest" 
-              active={activeTab === 'latest'} 
-              onClick={() => setActiveTab('latest')} 
+            <TabButton
+              icon={<Clock size={16} />}
+              label="Latest"
+              active={activeTab === 'latest'}
+              onClick={() => setActiveTab('latest')}
             />
-            <TabButton 
-              icon={<TrendingUp size={16} />} 
-              label="Trending" 
-              active={activeTab === 'trending'} 
-              onClick={() => setActiveTab('trending')} 
+            <TabButton
+              icon={<TrendingUp size={16} />}
+              label="Trending"
+              active={activeTab === 'trending'}
+              onClick={() => setActiveTab('trending')}
               comingSoon
             />
-            <TabButton 
-              icon={<Bell size={16} />} 
-              label="Notifications" 
-              active={activeTab === 'notifications'} 
-              onClick={() => setActiveTab('notifications')} 
+            <TabButton
+              icon={<Bell size={16} />}
+              label="Notifications"
+              active={activeTab === 'notifications'}
+              onClick={() => setActiveTab('notifications')}
               comingSoon
             />
-            <TabButton 
-              icon={<User size={16} />} 
-              label="My Posts" 
-              active={activeTab === 'myPosts'} 
-              onClick={() => setActiveTab('myPosts')} 
+            <TabButton
+              icon={<User size={16} />}
+              label="My Posts"
+              active={activeTab === 'myPosts'}
+              onClick={() => setActiveTab('myPosts')}
               comingSoon
             />
           </div>
@@ -283,60 +287,64 @@ const Buzz = () => {
       <div className="container mx-auto px-4 pt-6">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Sidebar - Hidden on mobile */}
-          <div className={`
+          <div
+            className={`
             fixed md:relative inset-0 bg-black/50 md:bg-transparent z-30
             ${sidebarOpen ? 'block' : 'hidden'} md:block md:w-64 lg:w-80 flex-shrink-0
-          `}>
+          `}
+          >
             {/* Close button for mobile */}
-            <button 
+            <button
               onClick={toggleSidebar}
               className="absolute top-4 right-4 p-2 bg-white rounded-full md:hidden"
             >
               <X size={20} />
             </button>
-            
+
             {/* Sidebar content */}
             <div className="h-full w-3/4 max-w-xs md:w-full md:max-w-none bg-white shadow-lg md:rounded-xl overflow-hidden animate-slide-in">
               <div className="p-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <h2 className="text-xl font-bold">Buzz Community</h2>
                 <p className="text-sm opacity-80 mt-1">Connect with your business network</p>
               </div>
-              
+
               <div className="p-5">
                 <div className="mb-6">
-                  <button 
+                  <button
                     onClick={handleCreateClick}
                     className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                   >
                     <Plus size={18} /> Create New Post
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <h3 className="font-medium text-gray-500 uppercase text-xs tracking-wider">Categories</h3>
-                  
-                  <SidebarLink 
-                    icon={<Sparkles size={18} className="text-blue-500" />} 
-                    label="All Posts" 
-                    active={true} 
+                  <h3 className="font-medium text-gray-500 uppercase text-xs tracking-wider">
+                    Categories
+                  </h3>
+
+                  <SidebarLink
+                    icon={<Sparkles size={18} className="text-blue-500" />}
+                    label="All Posts"
+                    active={true}
                   />
-                  <SidebarLink 
-                    icon={<User size={18} className="text-purple-500" />} 
-                    label="Company Announcements" 
+                  <SidebarLink
+                    icon={<User size={18} className="text-purple-500" />}
+                    label="Company Announcements"
                     comingSoon={true}
                   />
-                  <SidebarLink 
-                    icon={<Bell size={18} className="text-amber-500" />} 
-                    label="Trending Topics" 
+                  <SidebarLink
+                    icon={<Bell size={18} className="text-amber-500" />}
+                    label="Trending Topics"
                     comingSoon={true}
                   />
-                  <SidebarLink 
-                    icon={<MessageCircle size={18} className="text-green-500" />} 
-                    label="Discussions" 
+                  <SidebarLink
+                    icon={<MessageCircle size={18} className="text-green-500" />}
+                    label="Discussions"
                     comingSoon={true}
                   />
                 </div>
-                
+
                 {/* Stats */}
                 <div className="mt-8 p-4 bg-gray-50 rounded-xl">
                   <h3 className="font-medium text-gray-600 mb-3">Your Activity</h3>
@@ -377,12 +385,14 @@ const Buzz = () => {
                       <X size={18} />
                     </Button>
                   </div>
-                  
+
                   <form onSubmit={handleSubmit} className="p-6">
                     <div className="space-y-6">
                       {/* Title */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Title
+                        </label>
                         <input
                           type="text"
                           name="title"
@@ -393,10 +403,12 @@ const Buzz = () => {
                           required
                         />
                       </div>
-                      
+
                       {/* Content */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Content
+                        </label>
                         <textarea
                           name="text"
                           placeholder="Share your thoughts, ideas, or announcements..."
@@ -406,28 +418,38 @@ const Buzz = () => {
                           required
                         />
                       </div>
-                      
+
                       {/* Upload section */}
                       <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                         <div className="flex items-center mb-4">
                           <Info size={18} className="text-blue-500 mr-2" />
-                          <p className="text-blue-700 text-sm">Media uploads will be available in a future update</p>
+                          <p className="text-blue-700 text-sm">
+                            Media uploads will be available in a future update
+                          </p>
                         </div>
                         <div className="flex flex-wrap gap-3">
-                          <button type="button" disabled className="flex items-center gap-2 px-4 py-2 bg-white/70 text-gray-400 rounded-lg cursor-not-allowed">
+                          <button
+                            type="button"
+                            disabled
+                            className="flex items-center gap-2 px-4 py-2 bg-white/70 text-gray-400 rounded-lg cursor-not-allowed"
+                          >
                             <ImageIcon size={16} /> Add Image
                           </button>
-                          <button type="button" disabled className="flex items-center gap-2 px-4 py-2 bg-white/70 text-gray-400 rounded-lg cursor-not-allowed">
+                          <button
+                            type="button"
+                            disabled
+                            className="flex items-center gap-2 px-4 py-2 bg-white/70 text-gray-400 rounded-lg cursor-not-allowed"
+                          >
                             <Paperclip size={16} /> Attach File
                           </button>
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Submit button */}
                     <div className="mt-6 flex justify-end">
-                      <Button 
-                        type="submit" 
+                      <Button
+                        type="submit"
                         className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2"
                       >
                         <Send size={16} /> Publish Post
@@ -443,15 +465,13 @@ const Buzz = () => {
               {loading ? (
                 <LoadingPosts />
               ) : buzzList.length > 0 ? (
-                buzzList.map((post, index) => (
-                  <PostCard key={post.id} post={post} index={index} />
-                ))
+                buzzList.map((post, index) => <PostCard key={post.id} post={post} index={index} />)
               ) : (
                 <EmptyState onCreateClick={handleCreateClick} />
               )}
             </div>
           </div>
-          
+
           {/* Right Sidebar - Only visible on larger screens */}
           <div className="hidden lg:block w-80 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-sm sticky top-32">
@@ -461,21 +481,27 @@ const Buzz = () => {
               <div className="p-5">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">1</div>
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                      1
+                    </div>
                     <span className="text-gray-800">Feature coming soon</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">2</div>
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
+                      2
+                    </div>
                     <span className="text-gray-800">Feature coming soon</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">3</div>
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
+                      3
+                    </div>
                     <span className="text-gray-800">Feature coming soon</span>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 p-3 bg-gray-50 rounded-lg text-xs text-gray-500 flex items-center">
-                  <Info size={14} className="mr-2" /> 
+                  <Info size={14} className="mr-2" />
                   This feature is coming soon
                 </div>
               </div>
@@ -487,13 +513,20 @@ const Buzz = () => {
   );
 };
 
-// Helper components 
-const SidebarLink = ({ icon, label, active = false, comingSoon = false }) => (
+// Helper components
+interface SidebarLinkProps {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  comingSoon?: boolean;
+}
+
+const SidebarLink = ({ icon, label, active = false, comingSoon = false }: SidebarLinkProps) => (
   <div className="relative">
-    <button 
+    <button
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-        active 
-          ? 'bg-blue-50 text-blue-700' 
+        active
+          ? 'bg-blue-50 text-blue-700'
           : comingSoon
             ? 'text-gray-400 cursor-not-allowed'
             : 'text-gray-700 hover:bg-gray-50'
@@ -503,39 +536,58 @@ const SidebarLink = ({ icon, label, active = false, comingSoon = false }) => (
       {icon}
       <span>{label}</span>
       {comingSoon && (
-        <span className="ml-auto text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Soon</span>
+        <span className="ml-auto text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+          Soon
+        </span>
       )}
     </button>
   </div>
 );
 
-const TabButton = ({ icon, label, active = false, onClick, comingSoon = false }) => (
-  <button 
+interface TabButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  onClick: () => void;
+  comingSoon?: boolean;
+}
+
+const TabButton = ({
+  icon,
+  label,
+  active = false,
+  onClick,
+  comingSoon = false,
+}: TabButtonProps) => (
+  <button
     onClick={onClick}
     disabled={comingSoon}
     className={`
       flex items-center gap-2 px-4 py-2 border-b-2 whitespace-nowrap transition-colors
-      ${active 
-        ? 'border-blue-600 text-blue-700 font-medium' 
-        : comingSoon
-          ? 'border-transparent text-gray-400 cursor-not-allowed'
-          : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-200'
+      ${
+        active
+          ? 'border-blue-600 text-blue-700 font-medium'
+          : comingSoon
+            ? 'border-transparent text-gray-400 cursor-not-allowed'
+            : 'border-transparent text-gray-700 hover:text-gray-900 hover:border-gray-200'
       }
     `}
   >
     {icon}
     <span>{label}</span>
     {comingSoon && (
-      <span className="ml-1 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">Soon</span>
+      <span className="ml-1 text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">
+        Soon
+      </span>
     )}
   </button>
 );
 
-const PostCard = ({ post, index }) => {
+const PostCard = ({ post, index }: { post: BuzzResponse; index: number }) => {
   // For demo, generate a random date in the past week
   const randomDate = new Date();
   randomDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 7));
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -554,24 +606,28 @@ const PostCard = ({ post, index }) => {
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <span>{post.CompanyUser.designation}</span>
               <span className="inline-block w-1 h-1 rounded-full bg-gray-300"></span>
-              <span>{randomDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+              <span>
+                {randomDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </span>
             </p>
           </div>
         </div>
       </div>
-      
+
       {/* Post Content */}
       <div className="p-5">
         <h2 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h2>
         <p className="text-gray-700 whitespace-pre-wrap mb-4">{post.textContent}</p>
-        
+
         {/* Image Placeholder (Future Feature) */}
         <div className="bg-gray-50 rounded-lg p-8 flex flex-col items-center justify-center border border-gray-100 mb-4 text-center">
           <ImageIcon size={32} className="text-gray-300 mb-2" />
-          <p className="text-gray-400 text-sm">Image uploads will be supported in an upcoming update</p>
+          <p className="text-gray-400 text-sm">
+            Image uploads will be supported in an upcoming update
+          </p>
         </div>
       </div>
-      
+
       {/* Post Actions */}
       <div className="bg-gray-50 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -588,10 +644,8 @@ const PostCard = ({ post, index }) => {
             <span>Share</span>
           </button>
         </div>
-        
-        <span className="text-xs text-gray-500">
-          {Math.floor(Math.random() * 10)} likes
-        </span>
+
+        <span className="text-xs text-gray-500">{Math.floor(Math.random() * 10)} likes</span>
       </div>
     </motion.div>
   );
@@ -619,7 +673,11 @@ const LoadingPosts = () => (
   </>
 );
 
-const EmptyState = ({ onCreateClick }) => (
+interface EmptyStateProps {
+  onCreateClick: () => void;
+}
+
+const EmptyState = ({ onCreateClick }: EmptyStateProps) => (
   <div className="bg-white rounded-xl shadow-sm p-10 text-center">
     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
       <MessageSquare size={24} className="text-blue-600" />

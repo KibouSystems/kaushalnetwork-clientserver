@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -6,7 +7,6 @@ import {
   Users,
   MapPin,
   Globe,
-  Calendar,
   BadgeCheck,
   Mail,
   Phone,
@@ -14,10 +14,8 @@ import {
   BriefcaseIcon,
   FileText,
   TrendingUp,
-  Users2,
   Boxes,
   Clock,
-  BookOpen,
   Package,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -109,7 +107,15 @@ interface MissingFields {
   };
 }
 
-interface ExtendedCompanyDetails extends CompanyDetails, MissingFields {}
+interface ExtendedCompanyDetails extends CompanyDetails, MissingFields {
+  countryCode: string;
+  contactNumber: string;
+  msmeRegistrationDocumentUrl: any;
+  cinDocumentUrl: any;
+  panUrl: any;
+  gstinDocumentUrl: any;
+  aadharDocumentUrl: any;
+}
 
 interface Tender {
   id: number;
@@ -549,7 +555,17 @@ export default function CompanyDetails() {
 }
 
 // Helper component for consistent info display with missing field support
-const InfoItem = ({ icon: Icon, label, value, isLink = false, missing = false }) => (
+import { FC, SVGProps } from 'react';
+
+type InfoItemProps = {
+  icon: FC<SVGProps<SVGSVGElement>>;
+  label: string;
+  value?: string;
+  isLink?: boolean;
+  missing?: boolean;
+};
+
+const InfoItem = ({ icon: Icon, label, value, isLink = false, missing = false }: InfoItemProps) => (
   <div className="flex items-start gap-3">
     <Icon className={`w-5 h-5 ${missing ? 'text-red-400' : 'text-gray-400'} mt-0.5`} />
     <div>

@@ -13,19 +13,17 @@ import {
   FunnelSimple,
   X,
   ArrowClockwise,
-  CaretDown,
-  CaretUp,
   Heart,
   Star,
   Info,
   ArrowRight,
   Check,
 } from '@phosphor-icons/react';
-import { useNavigate } from 'react-router-dom';
 import ChatModal from '../../components/chat/ChatModal';
 import CompanyPreviewDialog from '../../components/company/CompanyPreviewDialog';
 
 // Custom debounce hook
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useDebounce = (value: any, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -49,7 +47,6 @@ const arr_of_img = [
 ];
 
 export default function NetworkPage() {
-  const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [queryParams, setQueryParams] = useState({
@@ -141,7 +138,7 @@ export default function NetworkPage() {
 
         const params = new URLSearchParams();
         Object.entries(debouncedParams).forEach(([key, value]) => {
-          if (value !== '' && value !== null) {
+          if (value !== '' && value !== null && value !== undefined) {
             params.append(key, value.toString());
           }
         });
@@ -150,8 +147,8 @@ export default function NetworkPage() {
           `http://69.62.79.102:3000/api/v0/company/all?${params.toString()}`,
           { signal: abortControllerRef.current.signal }
         );
-
         setCompanies(response.data);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (error.name === 'CanceledError') {
           // Ignore canceled requests
@@ -224,7 +221,8 @@ export default function NetworkPage() {
     });
   };
 
-  const handleChatClick = (company: Company) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleChatClick = (_company: Company) => {
     notifyFutureFeature('Company chat');
     // setSelectedChat({ id: company.id, name: company.companyName });
   };
@@ -358,9 +356,7 @@ export default function NetworkPage() {
           <div className="px-6 py-8 md:py-10 max-w-3xl relative">
             <div className="absolute right-0 top-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
             <div className="relative z-10">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                Business Network
-              </h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Business Network</h1>
               <p className="text-blue-100 text-lg mb-6">
                 Connect with verified businesses and potential partners across India
               </p>
@@ -386,15 +382,17 @@ export default function NetworkPage() {
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="text-xs font-medium text-blue-100">Popular searches:</span>
-                {['IT Services', 'Manufacturing', 'Export', 'Healthcare', 'Consulting'].map(term => (
-                  <button
-                    key={term}
-                    onClick={() => setQueryParams(prev => ({ ...prev, keyword: term }))}
-                    className="text-xs bg-white/10 hover:bg-white/20 text-white rounded-full px-3 py-1 transition-colors"
-                  >
-                    {term}
-                  </button>
-                ))}
+                {['IT Services', 'Manufacturing', 'Export', 'Healthcare', 'Consulting'].map(
+                  term => (
+                    <button
+                      key={term}
+                      onClick={() => setQueryParams(prev => ({ ...prev, keyword: term }))}
+                      className="text-xs bg-white/10 hover:bg-white/20 text-white rounded-full px-3 py-1 transition-colors"
+                    >
+                      {term}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -454,7 +452,9 @@ export default function NetworkPage() {
                       placeholder="City, State or Country"
                       className="w-full px-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       value={queryParams.location}
-                      onChange={e => setQueryParams(prev => ({ ...prev, location: e.target.value }))}
+                      onChange={e =>
+                        setQueryParams(prev => ({ ...prev, location: e.target.value }))
+                      }
                     />
                   </div>
 
@@ -466,7 +466,9 @@ export default function NetworkPage() {
                     <select
                       className="w-full py-2 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-white"
                       value={queryParams.companyType}
-                      onChange={e => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
+                      onChange={e =>
+                        setQueryParams(prev => ({ ...prev, companyType: e.target.value }))
+                      }
                     >
                       <option value="">All Types</option>
                       <option value="MSME">MSME</option>
@@ -515,9 +517,7 @@ export default function NetworkPage() {
                       Save Search
                     </Button>
                   </div>
-                  <Button
-                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 py-1.5 px-4 text-sm shadow-sm"
-                  >
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 py-1.5 px-4 text-sm shadow-sm">
                     Search
                     <ArrowRight className="w-4 h-4" />
                   </Button>
@@ -531,7 +531,8 @@ export default function NetworkPage() {
         {!loading && companies.length > 0 && (
           <div className="flex flex-wrap justify-between items-center bg-white p-3 rounded-lg shadow-sm border border-gray-200 mb-6">
             <div className="text-sm text-gray-600 mb-2 sm:mb-0">
-              <span className="font-semibold text-gray-900">{companies.length}</span> businesses found
+              <span className="font-semibold text-gray-900">{companies.length}</span> businesses
+              found
               {totalPages > 1 && (
                 <span className="ml-2">
                   (Showing {indexOfFirstCompany + 1}-
@@ -550,7 +551,12 @@ export default function NetworkPage() {
                     }`}
                     title="Grid View"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
                       <path d="M3 3a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2V3z" />
                       <path d="M13 3a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2 2h-4a2 2 0 01-2-2V3z" />
                       <path d="M3 13a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-2z" />
@@ -564,8 +570,18 @@ export default function NetworkPage() {
                     }`}
                     title="List View"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke="currentColor" strokeWidth="2" fill="none" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        fill="none"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -597,7 +613,8 @@ export default function NetworkPage() {
           <div>
             <h3 className="font-medium text-blue-800 text-sm">Advanced Features Coming Soon</h3>
             <p className="text-blue-700 text-xs mt-1">
-              Email, chat functionality, favorites, and advanced filtering options will be available in future updates.
+              Email, chat functionality, favorites, and advanced filtering options will be available
+              in future updates.
             </p>
           </div>
         </div>
@@ -673,7 +690,12 @@ export default function NetworkPage() {
                     aria-label="Previous page"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                   </button>
                 </li>
@@ -711,7 +733,12 @@ export default function NetworkPage() {
                     aria-label="Next page"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
                 </li>

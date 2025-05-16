@@ -2,18 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import {
-  X,
-  CheckCircle,
-  ExternalLink,
-  MapPin,
-  Building,
-  Users,
-  FileText,
-  Briefcase,
-  Award,
-  XCircle,
-} from 'lucide-react';
+import { X, CheckCircle, ExternalLink, MapPin, Building, Award, XCircle } from 'lucide-react';
 
 interface CompanyDetailedData {
   id: number;

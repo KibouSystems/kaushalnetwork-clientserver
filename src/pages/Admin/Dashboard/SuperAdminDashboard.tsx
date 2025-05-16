@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
@@ -5,7 +7,6 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import {
   CheckCircle,
-  XCircle,
   ChevronDown,
   ChevronUp,
   Search,

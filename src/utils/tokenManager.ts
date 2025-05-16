@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { get } from 'lodash';
 
 const TOKEN_KEY = 'auth_token';
 

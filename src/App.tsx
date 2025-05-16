@@ -1,7 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Cookies from 'js-cookie';
 import { Toaster } from 'react-hot-toast';
 
 // Pages and Components
@@ -10,7 +9,6 @@ import NotFoundPage from './pages/NotFoundPage';
 import CompanyUserSignup from './pages/CompanyUserSignup';
 import LandingPage from './pages/LandingPage';
 import Navbar from './components/Navbar';
-import RegisterCompany from './pages/RegisterCompany';
 import Register from './pages/Auth/Register';
 import Buzz from './pages/Naviation_pages/Buzz';
 import NetworkPage from './pages/Naviation_pages/Network_Page';

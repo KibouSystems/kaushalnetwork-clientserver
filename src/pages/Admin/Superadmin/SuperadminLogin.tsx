@@ -30,6 +30,8 @@ export default function SuperadminLogin({ onLoginSuccess }: Props) {
         navigate('/superadmin/dashboard', { replace: true });
       }
     } catch (error) {
+      console.log(error);
+
       toast.error('Login failed');
     }
   };

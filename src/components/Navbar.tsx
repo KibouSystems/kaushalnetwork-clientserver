@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Cookie, Menu, X, AlertCircle, ChevronDown, LogOut, User, Box, Settings } from 'lucide-react';
+import { Menu, X, AlertCircle, ChevronDown, LogOut, User, Box, Settings } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logoImage from '../logo/image.png';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -25,13 +25,13 @@ const Navbar: React.FC = () => {
   // Toggle menus
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleAccountMenu = () => setShowAccountMenu(!showAccountMenu);
-  
+
   // Close menus when clicking elsewhere
   useEffect(() => {
     const handleClickOutside = () => {
       setShowAccountMenu(false);
     };
-    
+
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
     if (!isAuth && isAuthenticated) {
       dispatch(logoutUser());
     }
-  }, []);
+  }, [dispatch, isAuthenticated]);
 
   useEffect(() => {
     const adminView = Cookies.get('admin_view') === 'true';
@@ -108,6 +108,7 @@ const Navbar: React.FC = () => {
       navigate('/login');
       toast.success('Logged out successfully');
     } catch (error) {
+      console.error('Logout error:', error);
       toast.error('Error during logout');
     }
   };
@@ -143,14 +144,11 @@ const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and brand */}
-            <Link 
-              to="/" 
-              className="flex items-center space-x-3 flex-shrink-0"
-            >
+            <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
               <div className="w-10 h-10 overflow-hidden rounded-md">
-                <img 
-                  src={logoImage} 
-                  alt="Kaushal Network" 
+                <img
+                  src={logoImage}
+                  alt="Kaushal Network"
                   className="h-full w-full object-contain"
                 />
               </div>
@@ -161,8 +159,8 @@ const Navbar: React.FC = () => {
 
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <button 
-                onClick={toggleMenu} 
+              <button
+                onClick={toggleMenu}
                 className="p-2 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-colors"
               >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -175,15 +173,12 @@ const Navbar: React.FC = () => {
               {isAuthenticated && (
                 <>
                   {isAdminView ? (
-                    <NavButton 
-                      onClick={handleAdminNavigation}
-                      active={isActive('/admin-view')}
-                    >
+                    <NavButton onClick={handleAdminNavigation} active={isActive('/admin-view')}>
                       Admin view
                     </NavButton>
                   ) : (
                     Cookies.get('auth_token') && (
-                      <NavButton 
+                      <NavButton
                         onClick={handleUserViewNavigation}
                         active={isActive('/company-view')}
                       >
@@ -217,12 +212,12 @@ const Navbar: React.FC = () => {
                   BUZZ
                 </FeatureNavButton>
               )}
-              
+
               {/* Auth buttons or user menu */}
               {isAuthenticated ? (
                 <div className="relative ml-2">
                   <button
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       toggleAccountMenu();
                     }}
@@ -233,7 +228,7 @@ const Navbar: React.FC = () => {
                     </div>
                     <ChevronDown className="w-4 h-4 text-gray-500" />
                   </button>
-                  
+
                   {/* Dropdown menu */}
                   <AnimatePresence>
                     {showAccountMenu && (
@@ -256,7 +251,7 @@ const Navbar: React.FC = () => {
                             <Settings className="w-4 h-4 mr-2 text-gray-500" />
                             Settings
                           </button>
-                          <button 
+                          <button
                             onClick={handleLogout}
                             className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md flex items-center"
                           >
@@ -270,14 +265,14 @@ const Navbar: React.FC = () => {
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
-                  <Button 
+                  <Button
                     variant="ghost"
                     onClick={() => navigate('/login')}
                     className="text-gray-700 hover:text-blue-700"
                   >
                     Login
                   </Button>
-                  <Button 
+                  <Button
                     className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-sm"
                     onClick={() => navigate('/register')}
                   >
@@ -302,29 +297,37 @@ const Navbar: React.FC = () => {
                 {isAuthenticated && (
                   <>
                     {isAdminView ? (
-                      <MobileNavButton onClick={handleAdminNavigation} active={isActive('/admin-view')}>
+                      <MobileNavButton
+                        onClick={handleAdminNavigation}
+                        active={isActive('/admin-view')}
+                      >
                         <Box className="w-5 h-5 mr-2" />
                         Admin view
                       </MobileNavButton>
                     ) : (
                       Cookies.get('auth_token') && (
-                        <MobileNavButton onClick={handleUserViewNavigation} active={isActive('/company-view')}>
+                        <MobileNavButton
+                          onClick={handleUserViewNavigation}
+                          active={isActive('/company-view')}
+                        >
                           <User className="w-5 h-5 mr-2" />
                           User View
                         </MobileNavButton>
                       )
                     )}
-                    
-                    <MobileNavButton 
-                      onClick={canAccessFeature ? () => navigate('/network') : handleUnverifiedClick}
+
+                    <MobileNavButton
+                      onClick={
+                        canAccessFeature ? () => navigate('/network') : handleUnverifiedClick
+                      }
                       active={isActive('/network')}
                       disabled={!canAccessFeature}
                     >
                       {!isVerified && <AlertCircle className="w-4 h-4 text-amber-500 mr-2" />}
                       Network
                     </MobileNavButton>
-                    
-                    <MobileNavButton 
+
+                    <MobileNavButton
                       onClick={canAccessFeature ? () => navigate('/buzz') : handleUnverifiedClick}
                       active={isActive('/buzz')}
                       disabled={!canAccessFeature}
@@ -332,21 +335,19 @@ const Navbar: React.FC = () => {
                       {!isVerified && <AlertCircle className="w-4 h-4 text-amber-500 mr-2" />}
                       BUZZ
                     </MobileNavButton>
-                    
+
                     <MobileNavButton onClick={handleLogout}>
                       <LogOut className="w-5 h-5 mr-2" />
                       Logout
                     </MobileNavButton>
                   </>
                 )}
-                
+
                 {!isAuthenticated && (
                   <>
-                    <MobileNavButton onClick={() => navigate('/login')}>
-                      Login
-                    </MobileNavButton>
+                    <MobileNavButton onClick={() => navigate('/login')}>Login</MobileNavButton>
                     <div className="mt-4">
-                      <Button 
+                      <Button
                         className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
                         onClick={() => navigate('/register')}
                       >
@@ -360,7 +361,7 @@ const Navbar: React.FC = () => {
           )}
         </AnimatePresence>
       </header>
-      
+
       {/* Verification banner */}
       {!isVerified && isAuthenticated && (
         <motion.div
@@ -372,7 +373,8 @@ const Navbar: React.FC = () => {
             <div className="flex items-center justify-center gap-2 text-amber-800">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <p className="text-sm font-medium">
-                Your account is pending verification. Some features will be limited until verification is complete.
+                Your account is pending verification. Some features will be limited until
+                verification is complete.
               </p>
             </div>
           </div>
@@ -383,38 +385,44 @@ const Navbar: React.FC = () => {
 };
 
 // Button components for cleaner code
-const NavButton = ({ children, onClick, active = false }: { children: React.ReactNode; onClick: () => void; active?: boolean }) => (
-  <button 
-    onClick={onClick} 
+const NavButton = ({
+  children,
+  onClick,
+  active = false,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  active?: boolean;
+}) => (
+  <button
+    onClick={onClick}
     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-      active 
-        ? 'text-blue-700 bg-blue-50' 
-        : 'text-gray-700 hover:text-blue-700 hover:bg-gray-50'
+      active ? 'text-blue-700 bg-blue-50' : 'text-gray-700 hover:text-blue-700 hover:bg-gray-50'
     }`}
   >
     {children}
   </button>
 );
 
-const FeatureNavButton = ({ 
-  children, 
-  onClick, 
-  disabled = false, 
+const FeatureNavButton = ({
+  children,
+  onClick,
+  disabled = false,
   verified = true,
-  active = false
-}: { 
-  children: React.ReactNode; 
-  onClick: (e: React.MouseEvent) => void; 
+  active = false,
+}: {
+  children: React.ReactNode;
+  onClick: (e: React.MouseEvent) => void;
   disabled?: boolean;
   verified?: boolean;
   active?: boolean;
 }) => (
   <div className="relative group">
-    <button 
-      onClick={onClick} 
+    <button
+      onClick={onClick}
       className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-        disabled 
-          ? 'text-gray-400 cursor-not-allowed' 
+        disabled
+          ? 'text-gray-400 cursor-not-allowed'
           : active
             ? 'text-blue-700 bg-blue-50'
             : 'text-gray-700 hover:text-blue-700 hover:bg-gray-50'
@@ -429,7 +437,7 @@ const FeatureNavButton = ({
         )}
       </div>
     </button>
-    
+
     {!verified && (
       <div className="absolute hidden group-hover:block w-52 p-2 bg-amber-50 text-amber-800 text-xs rounded-md -bottom-10 left-1/2 transform -translate-x-1/2 shadow-lg border border-amber-200 z-10">
         Account verification required for this feature
@@ -438,13 +446,13 @@ const FeatureNavButton = ({
   </div>
 );
 
-const MobileNavButton = ({ 
-  children, 
+const MobileNavButton = ({
+  children,
   onClick,
   active = false,
-  disabled = false
-}: { 
-  children: React.ReactNode; 
+  disabled = false,
+}: {
+  children: React.ReactNode;
   onClick: (e?: React.MouseEvent) => void;
   active?: boolean;
   disabled?: boolean;
@@ -453,8 +461,8 @@ const MobileNavButton = ({
     onClick={onClick}
     disabled={disabled}
     className={`flex w-full items-center px-4 py-3 text-base rounded-lg transition-colors ${
-      disabled 
-        ? 'text-gray-400' 
+      disabled
+        ? 'text-gray-400'
         : active
           ? 'bg-blue-50 text-blue-700'
           : 'text-gray-700 hover:bg-gray-50'

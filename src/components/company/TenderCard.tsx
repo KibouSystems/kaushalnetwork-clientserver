@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, Package, DollarSign, FileText, Building, Clock, Tag, CheckCircle } from 'lucide-react';
+import { MapPin, Package, DollarSign, FileText, Building, Tag, CheckCircle } from 'lucide-react';
 import { Tender } from '../../types/company.types';
 import { Button } from '../ui/button';
 
@@ -18,7 +18,7 @@ export const TenderCard = ({ tender, onViewDetails }: TenderCardProps) => (
   >
     {/* Color strip based on pricing category */}
     <div className={`h-1.5 ${getCategoryColor(tender.pricingCategory)}`}></div>
-    
+
     <div className="p-6">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-3">
@@ -49,7 +49,9 @@ export const TenderCard = ({ tender, onViewDetails }: TenderCardProps) => (
       </div>
 
       <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
-        <p className="text-gray-600 text-sm line-clamp-2">{tender.objective || "No objective provided"}</p>
+        <p className="text-gray-600 text-sm line-clamp-2">
+          {tender.objective || 'No objective provided'}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-4">
@@ -62,27 +64,31 @@ export const TenderCard = ({ tender, onViewDetails }: TenderCardProps) => (
             <p className="text-sm font-semibold text-gray-900">₹{tender.totalPrice}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 bg-green-100 rounded-md">
             <MapPin className="w-3.5 h-3.5 text-green-700" />
           </div>
           <div>
             <p className="text-xs text-gray-500">Location</p>
-            <p className="text-sm text-gray-900 truncate max-w-[120px]">{tender.locationOfService || "Not specified"}</p>
+            <p className="text-sm text-gray-900 truncate max-w-[120px]">
+              {tender.locationOfService || 'Not specified'}
+            </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 bg-amber-100 rounded-md">
             <Building className="w-3.5 h-3.5 text-amber-700" />
           </div>
           <div>
             <p className="text-xs text-gray-500">Type</p>
-            <p className="text-sm text-gray-900 truncate max-w-[120px]">{tender.company.companyType}</p>
+            <p className="text-sm text-gray-900 truncate max-w-[120px]">
+              {tender.company.companyType}
+            </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 bg-purple-100 rounded-md">
             <Tag className="w-3.5 h-3.5 text-purple-700" />

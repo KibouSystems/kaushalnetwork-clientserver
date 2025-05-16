@@ -1,25 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Package,
   DollarSign,
   MapPin,
-  Clock,
   Plus,
   Search,
   Building,
   CheckCircle,
   FileText,
   Briefcase,
-  ArrowRight,
   X,
-  Filter,
-  Calendar,
-  AlertCircle,
   Tag,
-  Layers,
-  Truck,
-  CreditCard
 } from 'lucide-react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -125,6 +118,7 @@ export default function TenderListTab() {
       setTenders(response.data as TenderWithCompany[]);
       console.log('Fetched tenders:', response.data); // Debug log
     } catch (error) {
+      console.error('Error fetching tenders:', error);
       toast.error('Failed to fetch tenders');
     } finally {
       setLoading(false);
@@ -266,7 +260,7 @@ export default function TenderListTab() {
               <p className="text-blue-100 mt-1">Publish and manage procurement opportunities</p>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -333,7 +327,7 @@ export default function TenderListTab() {
                 exit={{ opacity: 0, y: -20 }}
                 className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
               >
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0.9 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0.9 }}
@@ -346,8 +340,8 @@ export default function TenderListTab() {
                       </div>
                       <h2 className="text-xl font-bold text-gray-900">Create New Tender</h2>
                     </div>
-                    <button 
-                      onClick={() => setShowForm(false)} 
+                    <button
+                      onClick={() => setShowForm(false)}
                       className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
                     >
                       <X className="w-5 h-5" />
@@ -363,7 +357,9 @@ export default function TenderListTab() {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Tender Name</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Tender Name
+                          </label>
                           <input
                             type="text"
                             value={formData.tenderName}
@@ -374,7 +370,9 @@ export default function TenderListTab() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Objective</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Objective
+                          </label>
                           <input
                             type="text"
                             value={formData.objective}
@@ -392,7 +390,9 @@ export default function TenderListTab() {
                         Description & Requirements
                       </h3>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Description
+                        </label>
                         <textarea
                           value={formData.description}
                           onChange={e => setFormData({ ...formData, description: e.target.value })}
@@ -411,7 +411,10 @@ export default function TenderListTab() {
                             type="text"
                             value={formData.productsAndServicesRequired}
                             onChange={e =>
-                              setFormData({ ...formData, productsAndServicesRequired: e.target.value })
+                              setFormData({
+                                ...formData,
+                                productsAndServicesRequired: e.target.value,
+                              })
                             }
                             className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
@@ -442,11 +445,15 @@ export default function TenderListTab() {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Nomenclature</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Nomenclature
+                          </label>
                           <input
                             type="text"
                             value={formData.nomenclature}
-                            onChange={e => setFormData({ ...formData, nomenclature: e.target.value })}
+                            onChange={e =>
+                              setFormData({ ...formData, nomenclature: e.target.value })
+                            }
                             className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
                           />
@@ -473,13 +480,19 @@ export default function TenderListTab() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Total Price</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Total Price
+                          </label>
                           <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                              ₹
+                            </span>
                             <input
                               type="text"
                               value={formData.totalPrice}
-                              onChange={e => setFormData({ ...formData, totalPrice: e.target.value })}
+                              onChange={e =>
+                                setFormData({ ...formData, totalPrice: e.target.value })
+                              }
                               className="block w-full pl-8 rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                               required
                             />
@@ -489,21 +502,29 @@ export default function TenderListTab() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Location of Service</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Location of Service
+                          </label>
                           <input
                             type="text"
                             value={formData.locationOfService}
-                            onChange={e => setFormData({ ...formData, locationOfService: e.target.value })}
+                            onChange={e =>
+                              setFormData({ ...formData, locationOfService: e.target.value })
+                            }
                             className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Terms</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Delivery Terms
+                          </label>
                           <input
                             type="text"
                             value={formData.deliveryTerms}
-                            onChange={e => setFormData({ ...formData, deliveryTerms: e.target.value })}
+                            onChange={e =>
+                              setFormData({ ...formData, deliveryTerms: e.target.value })
+                            }
                             className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                         </div>
@@ -550,7 +571,9 @@ export default function TenderListTab() {
                       transition={{ duration: 0.3 }}
                       className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
                     >
-                      <div className={`h-2 ${getPricingCategoryColor(tender.pricingCategory)}`}></div>
+                      <div
+                        className={`h-2 ${getPricingCategoryColor(tender.pricingCategory)}`}
+                      ></div>
                       <div className="p-6">
                         <div className="flex items-start gap-4 mb-4">
                           <div className="relative flex-shrink-0">
@@ -571,9 +594,13 @@ export default function TenderListTab() {
                             )}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2">{tender.tenderName}</h3>
+                            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2">
+                              {tender.tenderName}
+                            </h3>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-sm text-gray-500">{tender.Company.companyName}</span>
+                              <span className="text-sm text-gray-500">
+                                {tender.Company.companyName}
+                              </span>
                               {tender.Company.verified && (
                                 <span className="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
                                   Verified
@@ -584,11 +611,13 @@ export default function TenderListTab() {
                               <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full font-medium">
                                 {tender.Company.companyType}
                               </span>
-                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                                tender.pricingCategory === 'PERUNIT' 
-                                  ? 'bg-purple-50 text-purple-700' 
-                                  : 'bg-teal-50 text-teal-700'
-                              }`}>
+                              <span
+                                className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                  tender.pricingCategory === 'PERUNIT'
+                                    ? 'bg-purple-50 text-purple-700'
+                                    : 'bg-teal-50 text-teal-700'
+                                }`}
+                              >
                                 {tender.pricingCategory === 'PERUNIT' ? 'Per Unit' : 'Monthly'}
                               </span>
                             </div>
@@ -596,7 +625,9 @@ export default function TenderListTab() {
                         </div>
 
                         <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                          <p className="text-gray-600 text-sm line-clamp-2">{tender.description || "No description provided"}</p>
+                          <p className="text-gray-600 text-sm line-clamp-2">
+                            {tender.description || 'No description provided'}
+                          </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 text-sm">
@@ -604,13 +635,17 @@ export default function TenderListTab() {
                             <div className="p-1.5 bg-blue-100 rounded-md">
                               <DollarSign className="w-3.5 h-3.5 text-blue-700" />
                             </div>
-                            <span className="text-gray-900 font-semibold">₹{tender.totalPrice}</span>
+                            <span className="text-gray-900 font-semibold">
+                              ₹{tender.totalPrice}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 bg-green-100 rounded-md">
                               <MapPin className="w-3.5 h-3.5 text-green-700" />
                             </div>
-                            <span className="text-gray-600 truncate">{tender.locationOfService || 'Not specified'}</span>
+                            <span className="text-gray-600 truncate">
+                              {tender.locationOfService || 'Not specified'}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 bg-yellow-100 rounded-md">
@@ -622,7 +657,9 @@ export default function TenderListTab() {
                             <div className="p-1.5 bg-purple-100 rounded-md">
                               <Briefcase className="w-3.5 h-3.5 text-purple-700" />
                             </div>
-                            <span className="text-gray-600 truncate">{tender.Company.industry}</span>
+                            <span className="text-gray-600 truncate">
+                              {tender.Company.industry}
+                            </span>
                           </div>
                         </div>
 
@@ -643,7 +680,9 @@ export default function TenderListTab() {
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">No tenders found</h3>
                   <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                    {searchTerm ? 'Try different search terms' : 'Start by creating a new tender to see it here'}
+                    {searchTerm
+                      ? 'Try different search terms'
+                      : 'Start by creating a new tender to see it here'}
                   </p>
                   <button
                     onClick={() => setShowForm(true)}
@@ -685,23 +724,29 @@ export default function TenderListTab() {
                             <FileText className="w-6 h-6 text-indigo-600" />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Tender ID: {proposal.tenderId}</p>
+                            <p className="font-medium text-gray-900">
+                              Tender ID: {proposal.tenderId}
+                            </p>
                             <p className="text-xs text-gray-500">Proposal ID: {proposal.id}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="text-right">
-                            <p className="font-bold text-lg text-blue-600">₹{proposal.proposedPrice}</p>
+                            <p className="font-bold text-lg text-blue-600">
+                              ₹{proposal.proposedPrice}
+                            </p>
                             <p className="text-xs text-gray-500">Proposed Price</p>
                           </div>
-                          <button 
+                          <button
                             className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full"
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               fetchProposalDetails(proposal.tenderId);
                             }}
                           >
-                            <ChevronRight className={`w-5 h-5 transition-transform ${selectedTenderId === proposal.tenderId ? 'rotate-90' : ''}`} />
+                            <ChevronRight
+                              className={`w-5 h-5 transition-transform ${selectedTenderId === proposal.tenderId ? 'rotate-90' : ''}`}
+                            />
                           </button>
                         </div>
                       </div>
@@ -709,7 +754,7 @@ export default function TenderListTab() {
 
                     <AnimatePresence>
                       {selectedTenderId === proposal.tenderId && proposalDetails.length > 0 && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
@@ -725,7 +770,7 @@ export default function TenderListTab() {
                             <div className="p-4">
                               <div className="space-y-4">
                                 {proposalDetails.map(detail => (
-                                  <motion.div 
+                                  <motion.div
                                     key={detail.id}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -777,7 +822,9 @@ export default function TenderListTab() {
                                             </div>
                                           </div>
                                           <div className="bg-blue-50 px-4 py-3 rounded-lg text-center sm:text-right">
-                                            <p className="text-xs text-blue-600 uppercase font-semibold">Proposed Amount</p>
+                                            <p className="text-xs text-blue-600 uppercase font-semibold">
+                                              Proposed Amount
+                                            </p>
                                             <p className="text-xl font-bold text-blue-700">
                                               ₹{detail.proposedPrice}
                                             </p>
@@ -787,19 +834,27 @@ export default function TenderListTab() {
                                         <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                                           <div className="bg-gray-50 p-2 rounded-md">
                                             <p className="text-gray-500 text-xs">Business Type</p>
-                                            <p className="font-medium text-gray-800">{detail.company.businessType}</p>
+                                            <p className="font-medium text-gray-800">
+                                              {detail.company.businessType}
+                                            </p>
                                           </div>
                                           <div className="bg-gray-50 p-2 rounded-md">
                                             <p className="text-gray-500 text-xs">Entity Type</p>
-                                            <p className="font-medium text-gray-800">{detail.company.entityType}</p>
+                                            <p className="font-medium text-gray-800">
+                                              {detail.company.entityType}
+                                            </p>
                                           </div>
                                           <div className="bg-gray-50 p-2 rounded-md">
                                             <p className="text-gray-500 text-xs">Sector</p>
-                                            <p className="font-medium text-gray-800">{detail.company.sector}</p>
+                                            <p className="font-medium text-gray-800">
+                                              {detail.company.sector}
+                                            </p>
                                           </div>
                                           <div className="bg-gray-50 p-2 rounded-md">
                                             <p className="text-gray-500 text-xs">Industry</p>
-                                            <p className="font-medium text-gray-800">{detail.company.industry}</p>
+                                            <p className="font-medium text-gray-800">
+                                              {detail.company.industry}
+                                            </p>
                                           </div>
                                         </div>
 
@@ -845,8 +900,11 @@ export default function TenderListTab() {
 // Helper function to get color based on pricing category
 function getPricingCategoryColor(category: 'PERUNIT' | 'MONTHLY') {
   switch (category) {
-    case 'PERUNIT': return 'bg-purple-500';
-    case 'MONTHLY': return 'bg-teal-500';
-    default: return 'bg-gray-500';
+    case 'PERUNIT':
+      return 'bg-purple-500';
+    case 'MONTHLY':
+      return 'bg-teal-500';
+    default:
+      return 'bg-gray-500';
   }
 }

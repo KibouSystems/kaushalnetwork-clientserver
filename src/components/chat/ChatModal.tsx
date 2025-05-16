@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Send } from 'lucide-react';
-import { motion } from 'framer-motion';
 import io, { Socket } from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { toast } from 'react-hot-toast';
@@ -42,7 +41,7 @@ export default function ChatModal({ isOpen, onClose, recipientName, recipientId 
 
     setSocket(newSocket);
     return () => newSocket.disconnect();
-  }, [isOpen, recipientId]);
+  }, [isOpen, onClose, recipientId]);
 
   const handleSendMessage = () => {
     if (!socket || !newMessage.trim()) return;

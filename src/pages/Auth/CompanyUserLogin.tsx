@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../../features/auth/authSlice';
 import { RootState, AppDispatch } from '../../app/store';
 import toast, { Toaster } from 'react-hot-toast';
-import { setCookie } from '../../utils/cookies';
 import logoImage from '../../logo/image.png';
 
 export default function CompanyUserLogin() {
@@ -14,7 +13,7 @@ export default function CompanyUserLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+  const { isLoading } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

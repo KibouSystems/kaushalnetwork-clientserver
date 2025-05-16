@@ -124,7 +124,9 @@ export default function CompanyView() {
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <div className="bg-white p-8 rounded-xl shadow-lg text-center">
           <div className="text-red-500 text-xl font-medium mb-2">Data not available</div>
-          <p className="text-gray-600">Unable to load profile information. Please try again later.</p>
+          <p className="text-gray-600">
+            Unable to load profile information. Please try again later.
+          </p>
         </div>
       </div>
     );
@@ -144,8 +146,9 @@ export default function CompanyView() {
                   src={company.logoUrl}
                   alt={company.companyName}
                   className="h-24 w-24 rounded-xl border-4 border-white shadow-lg bg-white object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Logo';
+                  onError={e => {
+                    (e.target as HTMLImageElement).src =
+                      'https://via.placeholder.com/150?text=Logo';
                   }}
                 />
                 {company.verified && (
@@ -167,7 +170,7 @@ export default function CompanyView() {
                       <span>{company.tradeName}</span>
                     </div>
                   </div>
-                  
+
                   {/* User Profile Summary */}
                   <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-3">
                     <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
@@ -205,7 +208,7 @@ export default function CompanyView() {
                     {userProfile.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
-                
+
                 <div className="text-center">
                   <h4 className="font-bold text-lg text-gray-900">{userProfile.name}</h4>
                   <p className="text-gray-600">{userProfile.designation}</p>
@@ -222,15 +225,17 @@ export default function CompanyView() {
                       <p className="font-medium text-gray-900">{userProfile.email}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <Phone className="w-5 h-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-900">+{userProfile.countryCode} {userProfile.contactNumber}</p>
+                      <p className="font-medium text-gray-900">
+                        +{userProfile.countryCode} {userProfile.contactNumber}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <User className="w-5 h-5 text-gray-400" />
                     <div>
@@ -256,20 +261,28 @@ export default function CompanyView() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-2 rounded-full ${company.verified ? 'bg-green-100' : 'bg-yellow-100'}`}>
+                  <div
+                    className={`p-2 rounded-full ${company.verified ? 'bg-green-100' : 'bg-yellow-100'}`}
+                  >
                     {company.verified ? (
-                      <CheckCircle className={`h-5 w-5 ${company.verified ? 'text-green-600' : 'text-yellow-600'}`} />
+                      <CheckCircle
+                        className={`h-5 w-5 ${company.verified ? 'text-green-600' : 'text-yellow-600'}`}
+                      />
                     ) : (
-                      <Clock className={`h-5 w-5 ${company.verified ? 'text-green-600' : 'text-yellow-600'}`} />
+                      <Clock
+                        className={`h-5 w-5 ${company.verified ? 'text-green-600' : 'text-yellow-600'}`}
+                      />
                     )}
                   </div>
                   <div>
-                    <p className={`font-medium ${company.verified ? 'text-green-700' : 'text-yellow-700'}`}>
+                    <p
+                      className={`font-medium ${company.verified ? 'text-green-700' : 'text-yellow-700'}`}
+                    >
                       {company.verified ? 'Verified Company' : 'Verification Pending'}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {company.verified 
-                        ? 'All documents have been verified' 
+                      {company.verified
+                        ? 'All documents have been verified'
                         : 'Your company documents are under review'}
                     </p>
                   </div>
@@ -277,7 +290,10 @@ export default function CompanyView() {
 
                 <div className="mt-4 space-y-2">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Key Documents</h4>
-                  <DocumentLink label="MSME Registration" url={company.msmeRegistrationDocumentUrl} />
+                  <DocumentLink
+                    label="MSME Registration"
+                    url={company.msmeRegistrationDocumentUrl}
+                  />
                   <DocumentLink label="CIN Document" url={company.cinDocumentUrl} />
                   <DocumentLink label="PAN Document" url={company.panUrl} />
                   <DocumentLink label="GSTIN Document" url={company.gstinDocumentUrl} />
@@ -312,8 +328,16 @@ export default function CompanyView() {
                     label="Team Size"
                     value={`${company.minEmployeeCount} - ${company.maxEmployeeCount} employees`}
                   />
-                  <InfoItem icon={Building2} label="Industry" value={`${company.sector} - ${company.industry}`} />
-                  <InfoItem icon={Clock} label="Founded" value={company.incorporationYear.toString()} />
+                  <InfoItem
+                    icon={Building2}
+                    label="Industry"
+                    value={`${company.sector} - ${company.industry}`}
+                  />
+                  <InfoItem
+                    icon={Clock}
+                    label="Founded"
+                    value={company.incorporationYear.toString()}
+                  />
                   <InfoItem
                     icon={MapPin}
                     label="Registered Office"
@@ -325,7 +349,9 @@ export default function CompanyView() {
                 {/* Products & Services */}
                 {company.deliverableNames && (
                   <div className="mt-6 pt-6 border-t border-gray-100">
-                    <h4 className="text-base font-medium text-gray-800 mb-3">Products & Services</h4>
+                    <h4 className="text-base font-medium text-gray-800 mb-3">
+                      Products & Services
+                    </h4>
                     <div className="flex flex-wrap gap-2">
                       {company.deliverableNames.split(',').map((item, index) => (
                         <span
@@ -359,7 +385,10 @@ export default function CompanyView() {
                   {company.branches.length > 0 ? (
                     <div className="space-y-3">
                       {company.branches.map(branch => (
-                        <div key={branch.id} className="p-3 bg-gray-50 rounded-lg flex items-start gap-3">
+                        <div
+                          key={branch.id}
+                          className="p-3 bg-gray-50 rounded-lg flex items-start gap-3"
+                        >
                           <MapPin className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                           <p className="text-gray-700">{branch.branchAddress}</p>
                         </div>
@@ -406,7 +435,17 @@ export default function CompanyView() {
   );
 }
 
-const InfoItem = ({ icon: Icon, label, value, isLink = false, className = '' }) => (
+import { ComponentType } from 'react';
+
+interface InfoItemProps {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  isLink?: boolean;
+  className?: string;
+}
+
+const InfoItem = ({ icon: Icon, label, value, isLink = false, className = '' }: InfoItemProps) => (
   <div className={`flex items-start gap-3 ${className}`}>
     <Icon className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
     <div className="flex-1 min-w-0">
@@ -427,7 +466,12 @@ const InfoItem = ({ icon: Icon, label, value, isLink = false, className = '' }) 
   </div>
 );
 
-const DocumentLink = ({ label, url }) => {
+interface DocumentLinkProps {
+  label: string;
+  url?: string | null;
+}
+
+const DocumentLink = ({ label, url }: DocumentLinkProps) => {
   if (!url) return null;
   return (
     <a

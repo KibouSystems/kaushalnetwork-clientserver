@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-import { User, Mail, Phone, Briefcase, Lock, Globe, X, Check, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Briefcase, Lock, Globe, Check, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface FormData {

@@ -125,24 +125,25 @@ const Register = () => {
     }
   };
 
-  const validateForm = (data: any) => {
-    const errors: string[] = [];
+  // Disabled for now
+  // const validateForm = (data: any) => {
+  //   const errors: string[] = [];
 
-    // Required fields validation
-    if (!data.enterprise.business_name) errors.push('Business name is required');
-    if (!data.enterprise.email) errors.push('Email is required');
-    if (!data.enterprise.password) errors.push('Password is required');
+  //   // Required fields validation
+  //   if (!data.enterprise.business_name) errors.push('Business name is required');
+  //   if (!data.enterprise.email) errors.push('Email is required');
+  //   if (!data.enterprise.password) errors.push('Password is required');
 
-    // URL validation
-    if (
-      data.company_details.website_link &&
-      !data.company_details.website_link.startsWith('http')
-    ) {
-      data.company_details.website_link = `https://${data.company_details.website_link}`;
-    }
+  //   // URL validation
+  //   if (
+  //     data.company_details.website_link &&
+  //     !data.company_details.website_link.startsWith('http')
+  //   ) {
+  //     data.company_details.website_link = `https://${data.company_details.website_link}`;
+  //   }
 
-    return errors;
-  };
+  //   return errors;
+  // };
 
   const validateRequiredFiles = () => {
     if (!formData.details.logo) {

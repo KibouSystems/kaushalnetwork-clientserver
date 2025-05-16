@@ -6,7 +6,6 @@ import {
   Briefcase,
   Users,
   FileText,
-  Phone,
   Mail,
   ChevronDown,
   ChevronRight,
@@ -91,24 +90,22 @@ const DocumentCard = ({
   </div>
 );
 
-const SectionTitle = ({ title, icon: Icon }: { title: string; icon: any }) => (
-  <div className="flex items-center space-x-2 mb-4">
-    <div className="bg-blue-100 p-1.5 rounded-md">
-      <Icon size={18} className="text-blue-700" />
-    </div>
-    <h2 className="text-lg font-medium text-gray-800">{title}</h2>
-  </div>
-);
+// const SectionTitle = ({ title, icon: Icon }: { title: string; icon: any }) => (
+//   <div className="flex items-center space-x-2 mb-4">
+//     <div className="bg-blue-100 p-1.5 rounded-md">
+//       <Icon size={18} className="text-blue-700" />
+//     </div>
+//     <h2 className="text-lg font-medium text-gray-800">{title}</h2>
+//   </div>
+// );
 
 const InfoSection = ({
   title,
   children,
-  icon,
   defaultOpen = true,
 }: {
   title: string;
   children: React.ReactNode;
-  icon: any;
   defaultOpen?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);

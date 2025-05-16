@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import axiosInstance from '../../utils/axiosConfig';
 import { tokenManager } from '../../utils/tokenManager';
 import UsersTab from '../../components/admin/UsersTab';
@@ -292,45 +292,47 @@ export default function AdminView() {
   );
 }
 
-const InfoItem = ({
-  label,
-  value,
-  isLink = false,
-}: {
-  label: string;
-  value: string;
-  isLink?: boolean;
-}) => (
-  <div className="mb-2">
-    <span className="text-gray-600 text-sm">{label}:</span>
-    {isLink && value ? (
-      <a
-        href={value}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="ml-2 text-blue-600 hover:underline text-sm"
-      >
-        {value}
-      </a>
-    ) : (
-      <span className="ml-2 font-medium text-gray-900 text-sm">{value || 'N/A'}</span>
-    )}
-  </div>
-);
+// Unused component for displaying company info
+// const InfoItem = ({
+//   label,
+//   value,
+//   isLink = false,
+// }: {
+//   label: string;
+//   value: string;
+//   isLink?: boolean;
+// }) => (
+//   <div className="mb-2">
+//     <span className="text-gray-600 text-sm">{label}:</span>
+//     {isLink && value ? (
+//       <a
+//         href={value}
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="ml-2 text-blue-600 hover:underline text-sm"
+//       >
+//         {value}
+//       </a>
+//     ) : (
+//       <span className="ml-2 font-medium text-gray-900 text-sm">{value || 'N/A'}</span>
+//     )}
+//   </div>
+// );
 
-const DocumentLink = ({ label, url }: { label: string; url: string | null }) => (
-  <div className="mb-2">
-    {url ? (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 hover:underline text-sm"
-      >
-        {label} ↗
-      </a>
-    ) : (
-      <span className="text-gray-400 text-sm">{label} (Not available)</span>
-    )}
-  </div>
-);
+// Unused component for document links
+// const DocumentLink = ({ label, url }: { label: string; url: string | null }) => (
+//   <div className="mb-2">
+//     {url ? (
+//       <a
+//         href={url}
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="text-blue-600 hover:underline text-sm"
+//       >
+//         {label} ↗
+//       </a>
+//     ) : (
+//       <span className="text-gray-400 text-sm">{label} (Not available)</span>
+//     )}
+//   </div>
+// );
