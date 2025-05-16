@@ -10,8 +10,8 @@
     "docker:dev": "docker-compose up app-dev",
     "docker:build": "docker-compose build app-prod",
     "docker:prod": "docker-compose up app-prod",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint . --ignore-path .eslintignore",
+    "lint:fix": "eslint . --ignore-path .eslintignore --fix"
 
 
   },

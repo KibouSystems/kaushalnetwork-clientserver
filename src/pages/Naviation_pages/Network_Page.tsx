@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Company } from '../../types/company';
 import { Button } from '../../components/ui/button';
@@ -6,12 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChatTeardropDots,
   Envelope,
-  Calendar,
   MagnifyingGlass,
   Buildings,
   MapPin,
   Briefcase,
-  Users,
 } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import ChatModal from '../../components/chat/ChatModal';
