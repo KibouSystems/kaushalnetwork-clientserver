@@ -147,7 +147,7 @@ export default function AdminView() {
     { key: 'allusers', label: 'All Users', icon: Users },
     { key: 'buzz', label: 'Buzz Posts', icon: MessageSquare },
     { key: 'tenders', label: 'Tenders', icon: FileText },
-    { key: 'chats', label: 'Chat History', icon: MessageCircle },
+    { key: 'chats', label: 'Chat ', icon: MessageCircle },
   ];
 
   return (

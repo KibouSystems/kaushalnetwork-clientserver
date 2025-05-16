@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Package,
   DollarSign,
@@ -9,6 +9,17 @@ import {
   Search,
   Building,
   CheckCircle,
+  FileText,
+  Briefcase,
+  ArrowRight,
+  X,
+  Filter,
+  Calendar,
+  AlertCircle,
+  Tag,
+  Layers,
+  Truck,
+  CreditCard
 } from 'lucide-react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -243,386 +254,585 @@ export default function TenderListTab() {
 
   return (
     <div className="space-y-6">
-      {/* Sub Tab Navigation */}
-      <div className="flex space-x-4 border-b">
-        <button
-          onClick={() => setActiveSubTab('tenders')}
-          className={`pb-2 px-4 font-medium ${
-            activeSubTab === 'tenders'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Tenders
-        </button>
-        <button
-          onClick={() => setActiveSubTab('proposals')}
-          className={`pb-2 px-4 font-medium ${
-            activeSubTab === 'proposals'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Proposals
-        </button>
+      {/* Header with background gradient */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg p-6 text-white mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-white/20 backdrop-blur-md rounded-lg shadow-inner">
+              <Package className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Tenders Management</h1>
+              <p className="text-blue-100 mt-1">Publish and manage procurement opportunities</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by company..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="pl-10 pr-4 py-2.5 w-full rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-blue-100 focus:outline-none focus:ring-2 focus:ring-white/30"
+              />
+            </div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition shadow-sm font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              Create Tender
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Sub Tab Navigation */}
+      <div className="bg-white rounded-xl shadow-sm p-1.5 border border-gray-200">
+        <div className="flex space-x-1">
+          <button
+            onClick={() => setActiveSubTab('tenders')}
+            className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-center transition ${
+              activeSubTab === 'tenders'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <Package className="w-4 h-4" />
+              <span>Tenders</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveSubTab('proposals')}
+            className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-center transition ${
+              activeSubTab === 'proposals'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span>Proposals</span>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Content based on active subtab */}
       {activeSubTab === 'tenders' ? (
         <>
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-900">Tenders Management</h2>
-            <div className="flex gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search by company..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <button
-                onClick={() => setShowForm(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          {/* Create Tender Form - Improved Design */}
+          <AnimatePresence>
+            {showForm && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
               >
-                <Plus className="w-4 h-4" />
-                Create Tender
-              </button>
-            </div>
-          </div>
-
-          {/* Create Tender Form */}
-          {showForm && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl shadow-lg p-6"
-            >
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Tender Name</label>
-                    <input
-                      type="text"
-                      value={formData.tenderName}
-                      onChange={e => setFormData({ ...formData, tenderName: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Objective</label>
-                    <input
-                      type="text"
-                      value={formData.objective}
-                      onChange={e => setFormData({ ...formData, objective: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={e => setFormData({ ...formData, description: e.target.value })}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                    rows={3}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Products Required
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.productsAndServicesRequired}
-                      onChange={e =>
-                        setFormData({ ...formData, productsAndServicesRequired: e.target.value })
-                      }
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      About Products
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.aboutProductsAndServices}
-                      onChange={e =>
-                        setFormData({ ...formData, aboutProductsAndServices: e.target.value })
-                      }
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Nomenclature</label>
-                    <input
-                      type="text"
-                      value={formData.nomenclature}
-                      onChange={e => setFormData({ ...formData, nomenclature: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Pricing Category
-                    </label>
-                    <select
-                      value={formData.pricingCategory}
-                      onChange={e =>
-                        setFormData({
-                          ...formData,
-                          pricingCategory: e.target.value as 'PERUNIT' | 'MONTHLY',
-                        })
-                      }
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
+                <motion.div 
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.9 }}
+                  className="bg-white rounded-xl shadow-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+                >
+                  <div className="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <FileText className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900">Create New Tender</h2>
+                    </div>
+                    <button 
+                      onClick={() => setShowForm(false)} 
+                      className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
                     >
-                      <option value="PERUNIT">Per Unit</option>
-                      <option value="MONTHLY">Monthly</option> {/* Update option */}
-                    </select>
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Total Price</label>
-                    <input
-                      type="text"
-                      value={formData.totalPrice}
-                      onChange={e => setFormData({ ...formData, totalPrice: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                      required
-                    />
-                  </div>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Form sections with improved styling */}
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-700 mb-4 flex items-center">
+                        <Tag className="w-4 h-4 mr-2 text-blue-500" />
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Tender Name</label>
+                          <input
+                            type="text"
+                            value={formData.tenderName}
+                            onChange={e => setFormData({ ...formData, tenderName: e.target.value })}
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Objective</label>
+                          <input
+                            type="text"
+                            value={formData.objective}
+                            onChange={e => setFormData({ ...formData, objective: e.target.value })}
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-700 mb-4 flex items-center">
+                        <FileText className="w-4 h-4 mr-2 text-blue-500" />
+                        Description & Requirements
+                      </h3>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea
+                          value={formData.description}
+                          onChange={e => setFormData({ ...formData, description: e.target.value })}
+                          className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          rows={3}
+                          required
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Products Required
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.productsAndServicesRequired}
+                            onChange={e =>
+                              setFormData({ ...formData, productsAndServicesRequired: e.target.value })
+                            }
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            About Products
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.aboutProductsAndServices}
+                            onChange={e =>
+                              setFormData({ ...formData, aboutProductsAndServices: e.target.value })
+                            }
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-700 mb-4 flex items-center">
+                        <DollarSign className="w-4 h-4 mr-2 text-blue-500" />
+                        Pricing & Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Nomenclature</label>
+                          <input
+                            type="text"
+                            value={formData.nomenclature}
+                            onChange={e => setFormData({ ...formData, nomenclature: e.target.value })}
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Pricing Category
+                          </label>
+                          <select
+                            value={formData.pricingCategory}
+                            onChange={e =>
+                              setFormData({
+                                ...formData,
+                                pricingCategory: e.target.value as 'PERUNIT' | 'MONTHLY',
+                              })
+                            }
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                          >
+                            <option value="PERUNIT">Per Unit</option>
+                            <option value="MONTHLY">Monthly</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Total Price</label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <input
+                              type="text"
+                              value={formData.totalPrice}
+                              onChange={e => setFormData({ ...formData, totalPrice: e.target.value })}
+                              className="block w-full pl-8 rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Location of Service</label>
+                          <input
+                            type="text"
+                            value={formData.locationOfService}
+                            onChange={e => setFormData({ ...formData, locationOfService: e.target.value })}
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Terms</label>
+                          <input
+                            type="text"
+                            value={formData.deliveryTerms}
+                            onChange={e => setFormData({ ...formData, deliveryTerms: e.target.value })}
+                            className="block w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-4 pt-4 border-t">
+                      <button
+                        type="button"
+                        onClick={() => setShowForm(false)}
+                        className="px-5 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Create Tender
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Tenders List - Improved Design */}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+              <p className="mt-4 text-gray-600">Loading tenders...</p>
+            </div>
+          ) : (
+            <>
+              {tenders.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {tenders.map(tender => (
+                    <motion.div
+                      key={tender.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
+                    >
+                      <div className={`h-2 ${getPricingCategoryColor(tender.pricingCategory)}`}></div>
+                      <div className="p-6">
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className="relative flex-shrink-0">
+                            <img
+                              src={
+                                tender.Company.logoUrl?.startsWith('http')
+                                  ? tender.Company.logoUrl
+                                  : `http://localhost:3000/${tender.Company.logoUrl}`
+                              }
+                              alt={tender.Company.companyName}
+                              className="w-14 h-14 rounded-lg object-cover border border-gray-200"
+                              onError={e => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/400';
+                              }}
+                            />
+                            {tender.Company.verified && (
+                              <CheckCircle className="absolute -top-1 -right-1 w-5 h-5 text-green-500 bg-white rounded-full shadow-sm" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2">{tender.tenderName}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-sm text-gray-500">{tender.Company.companyName}</span>
+                              {tender.Company.verified && (
+                                <span className="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                                  Verified
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full font-medium">
+                                {tender.Company.companyType}
+                              </span>
+                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                tender.pricingCategory === 'PERUNIT' 
+                                  ? 'bg-purple-50 text-purple-700' 
+                                  : 'bg-teal-50 text-teal-700'
+                              }`}>
+                                {tender.pricingCategory === 'PERUNIT' ? 'Per Unit' : 'Monthly'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                          <p className="text-gray-600 text-sm line-clamp-2">{tender.description || "No description provided"}</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-blue-100 rounded-md">
+                              <DollarSign className="w-3.5 h-3.5 text-blue-700" />
+                            </div>
+                            <span className="text-gray-900 font-semibold">₹{tender.totalPrice}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-green-100 rounded-md">
+                              <MapPin className="w-3.5 h-3.5 text-green-700" />
+                            </div>
+                            <span className="text-gray-600 truncate">{tender.locationOfService || 'Not specified'}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-yellow-100 rounded-md">
+                              <Building className="w-3.5 h-3.5 text-yellow-700" />
+                            </div>
+                            <span className="text-gray-600 truncate">{tender.Company.sector}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-purple-100 rounded-md">
+                              <Briefcase className="w-3.5 h-3.5 text-purple-700" />
+                            </div>
+                            <span className="text-gray-600 truncate">{tender.Company.industry}</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t">
+                          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg font-medium flex items-center justify-center gap-2 shadow-sm transition-colors">
+                            <FileText className="w-4 h-4" />
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-
-                <div className="flex justify-end gap-4">
+              ) : (
+                <div className="bg-white rounded-xl shadow-md p-8 text-center">
+                  <div className="bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Package className="h-10 w-10 text-blue-500" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No tenders found</h3>
+                  <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                    {searchTerm ? 'Try different search terms' : 'Start by creating a new tender to see it here'}
+                  </p>
                   <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="px-4 py-2 text-gray-700 hover:text-gray-900"
+                    onClick={() => setShowForm(true)}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm font-medium"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
+                    <Plus className="w-4 h-4" />
                     Create Tender
                   </button>
                 </div>
-              </form>
-            </motion.div>
-          )}
-
-          {/* Tenders List */}
-          {loading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            </div>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {tenders.map(tender => (
-                <div
-                  key={tender.id}
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="relative flex-shrink-0">
-                      <img
-                        src={
-                          tender.Company.logoUrl?.startsWith('http')
-                            ? tender.Company.logoUrl
-                            : `http://localhost:3000/${tender.Company.logoUrl}`
-                        }
-                        alt={tender.Company.companyName}
-                        className="w-12 h-12 rounded-lg object-cover"
-                        onError={e => {
-                          (e.target as HTMLImageElement).src = 'https://placehold.co/400';
-                        }}
-                      />
-                      {tender.Company.verified && (
-                        <CheckCircle className="absolute -top-1 -right-1 w-4 h-4 text-green-500 bg-white rounded-full" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900">{tender.tenderName}</h3>
-                      <p className="text-sm text-gray-500">{tender.Company.companyName}</p>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full">
-                          {tender.Company.companyType}
-                        </span>
-                        <span className="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded-full">
-                          {tender.pricingCategory}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-600 mb-4 line-clamp-2">{tender.description}</p>
-
-                  <div className="space-y-2 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4" />
-                      <span>₹{tender.totalPrice}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{tender.locationOfService || 'Location not specified'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Building className="w-4 h-4" />
-                      <span>
-                        {tender.Company.sector} • {tender.Company.industry}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {tenders.length === 0 && (
-                <div className="col-span-full text-center py-8 bg-gray-50 rounded-lg">
-                  <Package className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No tenders found</h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {searchTerm ? 'Try different search terms' : 'Start by creating a new tender'}
-                  </p>
-                </div>
               )}
-            </div>
+            </>
           )}
         </>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm">
+        // Proposals Tab Content - Enhanced Design
+        <div className="bg-white rounded-xl shadow-md">
+          <div className="p-6 border-b">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <FileText className="w-6 h-6 text-indigo-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900">Tender Proposals</h2>
+            </div>
+          </div>
+
           <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Tender Proposals</h2>
             {proposals.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {proposals.map(proposal => (
                   <div key={proposal.id} className="flex flex-col space-y-4">
-                    <div
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    <motion.div
+                      className={`bg-white border ${selectedTenderId === proposal.tenderId ? 'border-blue-400 ring-2 ring-blue-100' : 'border-gray-200'} rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden`}
                       onClick={() => fetchProposalDetails(proposal.tenderId)}
+                      whileHover={{ scale: 1.01 }}
                     >
-                      <div>
-                        <p className="font-medium text-gray-900">Tender ID: {proposal.tenderId}</p>
-                        <p className="text-sm text-gray-500">Proposal ID: {proposal.id}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-blue-600">₹{proposal.proposedPrice}</p>
-                        <p className="text-sm text-gray-500">Proposed Price</p>
-                      </div>
-                    </div>
-
-                    {selectedTenderId === proposal.tenderId && proposalDetails.length > 0 && (
-                      <div className="ml-4 p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-medium mb-3">Proposals Details:</h4>
-                        <div className="space-y-4">
-                          {proposalDetails.map(detail => (
-                            <div key={detail.id} className="bg-white rounded-lg p-4 shadow-sm">
-                              <div className="flex items-start gap-4">
-                                <div className="relative">
-                                  <img
-                                    src={
-                                      detail.company.logoUrl?.startsWith('http')
-                                        ? detail.company.logoUrl
-                                        : `http://localhost:3000/${detail.company.logoUrl}`
-                                    }
-                                    alt={detail.company.companyName}
-                                    className="w-16 h-16 rounded-lg object-cover border border-gray-200"
-                                    onError={e => {
-                                      (e.target as HTMLImageElement).src =
-                                        'https://placehold.co/400';
-                                    }}
-                                  />
-                                  {detail.company.verified && (
-                                    <CheckCircle className="absolute -top-1 -right-1 w-5 h-5 text-green-500 bg-white rounded-full" />
-                                  )}
-                                </div>
-
-                                <div className="flex-1">
-                                  <div className="flex justify-between items-start">
-                                    <div>
-                                      <h3 className="text-lg font-semibold text-gray-900">
-                                        {detail.company.companyName}
-                                      </h3>
-                                      <div className="flex gap-2 mt-1">
-                                        <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-                                          {detail.company.companyType}
-                                        </span>
-                                        <span className="px-2 py-1 bg-purple-50 text-purple-700 text-xs rounded-full">
-                                          {detail.company.entityType}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="text-xl font-bold text-blue-600">
-                                        ₹{detail.proposedPrice}
-                                      </p>
-                                      <p className="text-sm text-gray-500">Proposed Amount</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                      <p className="text-gray-500">Business Type</p>
-                                      <p className="font-medium">{detail.company.businessType}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-gray-500">Entity Type</p>
-                                      <p className="font-medium">{detail.company.entityType}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-gray-500">Sector</p>
-                                      <p className="font-medium">{detail.company.sector}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-gray-500">Industry</p>
-                                      <p className="font-medium">{detail.company.industry}</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="mt-4 flex gap-2">
-                                    {detail.company.verified ? (
-                                      <div className="flex items-center gap-1 text-green-600 text-sm">
-                                        <CheckCircle className="w-4 h-4" />
-                                        <span>Verified Company</span>
-                                      </div>
-                                    ) : (
-                                      <div className="text-gray-500 text-sm">
-                                        Verification Pending
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2.5 bg-indigo-100 rounded-lg">
+                            <FileText className="w-6 h-6 text-indigo-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">Tender ID: {proposal.tenderId}</p>
+                            <p className="text-xs text-gray-500">Proposal ID: {proposal.id}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="font-bold text-lg text-blue-600">₹{proposal.proposedPrice}</p>
+                            <p className="text-xs text-gray-500">Proposed Price</p>
+                          </div>
+                          <button 
+                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              fetchProposalDetails(proposal.tenderId);
+                            }}
+                          >
+                            <ChevronRight className={`w-5 h-5 transition-transform ${selectedTenderId === proposal.tenderId ? 'rotate-90' : ''}`} />
+                          </button>
                         </div>
                       </div>
-                    )}
+                    </motion.div>
+
+                    <AnimatePresence>
+                      {selectedTenderId === proposal.tenderId && proposalDetails.length > 0 && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="ml-4 overflow-hidden"
+                        >
+                          <div className="bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="p-4 border-b border-gray-200">
+                              <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                                <Package className="w-4 h-4" />
+                                Proposal Details
+                              </h4>
+                            </div>
+                            <div className="p-4">
+                              <div className="space-y-4">
+                                {proposalDetails.map(detail => (
+                                  <motion.div 
+                                    key={detail.id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-lg p-5 shadow-sm border border-gray-100"
+                                  >
+                                    <div className="flex items-start gap-4">
+                                      <div className="relative">
+                                        <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                                          <img
+                                            src={
+                                              detail.company.logoUrl?.startsWith('http')
+                                                ? detail.company.logoUrl
+                                                : `http://localhost:3000/${detail.company.logoUrl}`
+                                            }
+                                            alt={detail.company.companyName}
+                                            className="w-full h-full object-cover"
+                                            onError={e => {
+                                              (e.target as HTMLImageElement).src =
+                                                'https://placehold.co/400';
+                                            }}
+                                          />
+                                        </div>
+                                        {detail.company.verified && (
+                                          <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                                            <CheckCircle className="w-4 h-4 text-green-500" />
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      <div className="flex-1">
+                                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                          <div>
+                                            <h3 className="text-lg font-semibold text-gray-900">
+                                              {detail.company.companyName}
+                                            </h3>
+                                            <div className="flex flex-wrap gap-2 mt-1">
+                                              <span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full">
+                                                {detail.company.companyType}
+                                              </span>
+                                              <span className="px-2 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full">
+                                                {detail.company.entityType}
+                                              </span>
+                                              {detail.company.verified && (
+                                                <span className="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full flex items-center gap-1">
+                                                  <CheckCircle className="w-3 h-3" />
+                                                  Verified
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div className="bg-blue-50 px-4 py-3 rounded-lg text-center sm:text-right">
+                                            <p className="text-xs text-blue-600 uppercase font-semibold">Proposed Amount</p>
+                                            <p className="text-xl font-bold text-blue-700">
+                                              ₹{detail.proposedPrice}
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                                          <div className="bg-gray-50 p-2 rounded-md">
+                                            <p className="text-gray-500 text-xs">Business Type</p>
+                                            <p className="font-medium text-gray-800">{detail.company.businessType}</p>
+                                          </div>
+                                          <div className="bg-gray-50 p-2 rounded-md">
+                                            <p className="text-gray-500 text-xs">Entity Type</p>
+                                            <p className="font-medium text-gray-800">{detail.company.entityType}</p>
+                                          </div>
+                                          <div className="bg-gray-50 p-2 rounded-md">
+                                            <p className="text-gray-500 text-xs">Sector</p>
+                                            <p className="font-medium text-gray-800">{detail.company.sector}</p>
+                                          </div>
+                                          <div className="bg-gray-50 p-2 rounded-md">
+                                            <p className="text-gray-500 text-xs">Industry</p>
+                                            <p className="font-medium text-gray-800">{detail.company.industry}</p>
+                                          </div>
+                                        </div>
+
+                                        <div className="mt-4 flex gap-2">
+                                          <button className="flex-1 py-2 px-4 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium">
+                                            View Company Profile
+                                          </button>
+                                          <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                            Contact Company
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No proposals available</p>
+              <div className="text-center py-16 bg-gray-50 rounded-lg">
+                <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                  <FileText className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No proposals yet</h3>
+                <p className="text-gray-500 max-w-sm mx-auto">
+                  No proposals have been submitted for your tenders yet. Check back later.
+                </p>
               </div>
             )}
           </div>
@@ -630,4 +840,13 @@ export default function TenderListTab() {
       )}
     </div>
   );
+}
+
+// Helper function to get color based on pricing category
+function getPricingCategoryColor(category: 'PERUNIT' | 'MONTHLY') {
+  switch (category) {
+    case 'PERUNIT': return 'bg-purple-500';
+    case 'MONTHLY': return 'bg-teal-500';
+    default: return 'bg-gray-500';
+  }
 }

@@ -155,15 +155,15 @@ const CompanyDetailsTab = ({ company }: { company: CompanyData }) => {
       {/* Header with Company Overview */}
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden mb-6">
         <div className="flex flex-col md:flex-row">
-          {/* Company Logo */}
-          <div className="md:w-1/3 p-6 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-b md:border-b-0 md:border-r border-gray-200">
-            <div className="w-32 h-32 rounded-lg border border-gray-200 bg-white flex items-center justify-center overflow-hidden p-2">
+          {/* Company Logo - Modified to fill entire left section */}
+          <div className="md:w-1/3 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 border-b md:border-b-0 md:border-r border-gray-200 relative overflow-hidden">
+            <div className="w-full h-full min-h-[300px]">
               <img
                 src={company.logoUrl}
                 alt={`${company.companyName} logo`}
-                className="max-w-full max-h-full object-contain"
+                className="w-full h-full object-cover"
                 onError={e => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Logo';
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300?text=Logo';
                 }}
               />
             </div>
