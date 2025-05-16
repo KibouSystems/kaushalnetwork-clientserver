@@ -25,7 +25,7 @@ interface BuzzResponse {
   id: number;
   title: string;
   textContent: string;
-  companyUser: {
+  CompanyUser: {
     name: string;
     designation: string;
     email: string;
@@ -56,7 +56,7 @@ const Buzz = () => {
   const fetchBuzzPosts = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/v0/buzz/all', {
-        withCredentials: true
+        withCredentials: true,
       });
       setBuzzList(response.data);
     } catch (error) {
@@ -79,7 +79,7 @@ const Buzz = () => {
     const { name, value } = e.target;
     if (name.startsWith('identity.')) {
       const field = name.split('.')[1];
-      setCurrentPost((prev) => ({
+      setCurrentPost(prev => ({
         ...prev,
         identity: {
           ...prev.identity,
@@ -87,7 +87,7 @@ const Buzz = () => {
         },
       }));
     } else {
-      setCurrentPost((prev) => ({
+      setCurrentPost(prev => ({
         ...prev,
         content: {
           ...prev.content,
@@ -100,7 +100,7 @@ const Buzz = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      setCurrentPost((prev) => ({
+      setCurrentPost(prev => ({
         ...prev,
         content: {
           ...prev.content,
@@ -126,10 +126,10 @@ const Buzz = () => {
           textContent: currentPost.content.text,
         },
         {
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`
-          }
+            Authorization: `Bearer ${authToken}`,
+          },
         }
       );
 
@@ -159,7 +159,7 @@ const Buzz = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <motion.div 
+      <motion.div
         initial={{ x: -64 }}
         animate={{ x: 0 }}
         className="absolute top-21 h-[100%] left-0 w-64  bg-white shadow-lg z-20 overflow-y-auto"
@@ -168,10 +168,7 @@ const Buzz = () => {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Buzz Feed
           </h1>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               onClick={handleCreateClick}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200"
@@ -211,7 +208,7 @@ const Buzz = () => {
                       name="title"
                       placeholder="Post Title"
                       value={currentPost.title}
-                      onChange={(e) => setCurrentPost(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={e => setCurrentPost(prev => ({ ...prev, title: e.target.value }))}
                       className="w-full p-2 border rounded"
                       required
                     />
@@ -293,22 +290,34 @@ const Buzz = () => {
                     <div className="max-w-full">
                       <h3 className="font-bold text-xl mb-2 break-words">{post.title}</h3>
                       <p className="text-sm text-gray-600">
-                        By {post.companyUser.name} • {post.companyUser.designation}
+                        By {post.CompanyUser.name} • {post.CompanyUser.designation}
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-700 whitespace-pre-wrap break-words mb-4">{post.textContent}</p>
-                  
+                  <p className="text-gray-700 whitespace-pre-wrap break-words mb-4">
+                    {post.textContent}
+                  </p>
+
                   {/* Media Placeholder */}
                   <div className="mt-4 grid grid-cols-2 gap-4">
-                    {[1, 2].map((placeholder) => (
-                      <div 
+                    {[1, 2].map(placeholder => (
+                      <div
                         key={placeholder}
                         className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center group hover:bg-gray-200 transition-colors"
                       >
                         <div className="text-center p-4">
-                          <svg className="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <svg
+                            className="w-8 h-8 text-gray-400 mx-auto mb-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
                           </svg>
                           <p className="text-sm text-gray-500">Media placeholder</p>
                         </div>

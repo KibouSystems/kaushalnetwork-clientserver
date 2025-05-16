@@ -26,19 +26,19 @@ export const loginSuperadmin = createAsyncThunk(
     try {
       // Log request for debugging
       console.log('Sending request to:', '/admin/login', credentials);
-      
+
       const response = await axiosInstance.post('/admin/login', credentials, {
         baseURL: 'http://localhost:3000/api/v0',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
       const { token, user } = response.data;
       console.log('Login response:', response.data);
 
       if (token) {
-        Cookies.set('admin_token', token, { expires: 7 }); 
+        Cookies.set('admin_token', token, { expires: 7 });
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
 
@@ -50,29 +50,26 @@ export const loginSuperadmin = createAsyncThunk(
   }
 );
 
-export const getSuperadminMe = createAsyncThunk(
-  'superadmin/getMe',
-  async () => {
-    const response = await axiosInstance.get('/admin/me');
-    return response.data;
-  }
-);
+export const getSuperadminMe = createAsyncThunk('superadmin/getMe', async () => {
+  const response = await axiosInstance.get('/admin/me');
+  return response.data;
+});
 
 const superadminSlice = createSlice({
   name: 'superadmin',
   initialState,
   reducers: {
-    logout: (state) => {
+    logout: state => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
       Cookies.remove('admin_token');
       delete axiosInstance.defaults.headers.common['Authorization'];
-    }
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(loginSuperadmin.pending, (state) => {
+      .addCase(loginSuperadmin.pending, state => {
         state.isLoading = true;
       })
       .addCase(loginSuperadmin.fulfilled, (state, action) => {

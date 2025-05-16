@@ -10,12 +10,11 @@ export const tokenManager = {
   },
 
   getToken(): string | null {
-    return Cookies.get(TOKEN_KEY) 
+    return Cookies.get(TOKEN_KEY);
   },
 
-  
   getadmin(): string | null {
-    return Cookies.get('admin') 
+    return Cookies.get('admin');
   },
   removeToken() {
     Cookies.remove(TOKEN_KEY);
@@ -33,8 +32,5 @@ export const tokenManager = {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
-  }
+  },
 };
-  
- 
-

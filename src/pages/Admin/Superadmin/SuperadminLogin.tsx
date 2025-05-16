@@ -18,11 +18,11 @@ export default function SuperadminLogin({ onLoginSuccess }: Props) {
     try {
       const response = await axios.post('http://localhost:3000/api/v0/admin/login', {
         username,
-        password
+        password,
       });
 
       const { token } = response.data;
-      
+
       if (token) {
         Cookies.set('admin_token', token);
         toast.success('Login successful');
@@ -44,7 +44,7 @@ export default function SuperadminLogin({ onLoginSuccess }: Props) {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
               className="w-full p-2 border rounded"
             />
           </div>
@@ -53,7 +53,7 @@ export default function SuperadminLogin({ onLoginSuccess }: Props) {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className="w-full p-2 border rounded"
             />
           </div>

@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../utils/axiosConfig';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { 
-  CheckCircle, 
-  XCircle, 
-  ChevronDown, 
-  ChevronUp, 
-  Search, 
-  Filter, 
+import {
+  CheckCircle,
+  XCircle,
+  ChevronDown,
+  ChevronUp,
+  Search,
+  Filter,
   RefreshCw,
   Building,
   Globe,
   Users,
   FileText,
-  Tag 
+  Tag,
 } from 'lucide-react';
 import axios from 'axios';
 import SuperadminLogin from '../Superadmin/SuperadminLogin';
@@ -79,7 +79,6 @@ export default function SuperAdminDashboard() {
       const response = await axiosInstance.get('/company/all');
       setCompanies(response.data);
       console.warn('Fetched companies:', response.data);
-      
     } catch (error) {
       toast.error('Failed to fetch companies');
     } finally {
@@ -101,36 +100,36 @@ export default function SuperAdminDashboard() {
 
   const filterCompanies = () => {
     let filtered = [...companies];
-    
+
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(
-        company => 
+        company =>
           company.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           company.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           company.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
           company.sector.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     // Apply verification status filter
     if (filterStatus === 'verified') {
       filtered = filtered.filter(company => company.verified);
     } else if (filterStatus === 'unverified') {
       filtered = filtered.filter(company => !company.verified);
     }
-    
+
     setFilteredCompanies(filtered);
   };
 
   const handleVerify = async (companyId: number, e: React.MouseEvent) => {
     e.stopPropagation();
-  
+
     try {
       const adminToken = Cookies.get('admin_token'); // Get token from cookies
-  
+
       const loadingToastId = toast.loading('Verifying company...');
-  
+
       await axios.put(
         `http://localhost:3000/api/v0/company/verify?companyId=${companyId}`,
         {},
@@ -140,15 +139,13 @@ export default function SuperAdminDashboard() {
           },
         }
       );
-  
+
       toast.dismiss(loadingToastId);
       toast.success('Company verified successfully');
-  
+
       // Update state locally
       setCompanies(prev =>
-        prev.map(company =>
-          company.id === companyId ? { ...company, verified: true } : company
-        )
+        prev.map(company => (company.id === companyId ? { ...company, verified: true } : company))
       );
     } catch (error) {
       toast.error('Failed to verify company');
@@ -158,6 +155,8 @@ export default function SuperAdminDashboard() {
 
   const toggleExpand = (companyId: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    // Instead of controlling expandedCompanyId (local expand),
+    // we now set selectedCompanyId to show the modal with detailed view
     setSelectedCompanyId(companyId);
   };
 
@@ -177,7 +176,9 @@ export default function SuperAdminDashboard() {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
         <SuperadminLogin onLoginSuccess={() => setIsAuthenticated(true)} />
-        <p className="mt-4 text-sm text-gray-600">Please log in as admin to access the dashboard.</p>
+        <p className="mt-4 text-sm text-gray-600">
+          Please log in as admin to access the dashboard.
+        </p>
       </div>
     );
   }
@@ -202,7 +203,8 @@ export default function SuperAdminDashboard() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900"> Super Admin Dashboard</h1>
               <p className="text-gray-600">
-                {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'} found
+                {filteredCompanies.length}{' '}
+                {filteredCompanies.length === 1 ? 'company' : 'companies'} found
               </p>
             </div>
             <div className="flex items-center gap-4">
@@ -235,7 +237,7 @@ export default function SuperAdminDashboard() {
                   placeholder="Search companies..."
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -245,7 +247,9 @@ export default function SuperAdminDashboard() {
                     <select
                       className="block pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value as 'all' | 'verified' | 'unverified')}
+                      onChange={e =>
+                        setFilterStatus(e.target.value as 'all' | 'verified' | 'unverified')
+                      }
                     >
                       <option value="all">All Companies</option>
                       <option value="verified">Verified Only</option>
@@ -264,12 +268,14 @@ export default function SuperAdminDashboard() {
               </div>
               <h3 className="mt-3 text-lg font-medium text-gray-900">No companies found</h3>
               <p className="mt-2 text-sm text-gray-500">
-                {searchTerm ? `No companies match "${searchTerm}"` : 'There are no companies to display'}
+                {searchTerm
+                  ? `No companies match "${searchTerm}"`
+                  : 'There are no companies to display'}
               </p>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredCompanies.map((company) => {
+              {filteredCompanies.map(company => {
                 const isExpanded = expandedCompanyId === company.id;
                 return (
                   <div
@@ -285,9 +291,10 @@ export default function SuperAdminDashboard() {
                             src={getImageUrl(company.logoUrl)}
                             alt={company.companyName}
                             className="h-16 w-16 rounded-lg object-cover border border-gray-200"
-                            onError={(e) => {
+                            onError={e => {
                               (e.target as HTMLImageElement).onerror = null;
-                              (e.target as HTMLImageElement).src = 'https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740';
+                              (e.target as HTMLImageElement).src =
+                                'https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740';
                             }}
                           />
                           {company.verified && (
@@ -297,11 +304,13 @@ export default function SuperAdminDashboard() {
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">{company.companyName}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+                            {company.companyName}
+                          </h3>
                           <p className="text-sm text-gray-500 line-clamp-1">{company.email}</p>
                         </div>
                         <button
-                          onClick={(e) => toggleExpand(company.id, e)}
+                          onClick={e => toggleExpand(company.id, e)}
                           className="p-1 rounded-full hover:bg-gray-100"
                         >
                           {isExpanded ? (
@@ -326,13 +335,13 @@ export default function SuperAdminDashboard() {
                           <Tag className="w-4 h-4 text-gray-400" />
                           <span className="text-gray-700">{company.industry}</span>
                         </div>
-                        
+
                         {isExpanded && (
                           <div className="mt-4 space-y-3 pt-3 border-t border-gray-100">
                             {company.tagline && (
                               <p className="italic text-gray-600">"{company.tagline}"</p>
                             )}
-                            
+
                             <div className="flex items-start gap-2">
                               <Building className="w-4 h-4 text-gray-400 mt-0.5" />
                               <div>
@@ -342,43 +351,45 @@ export default function SuperAdminDashboard() {
                                 </p>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-start gap-2">
                               <Globe className="w-4 h-4 text-gray-400 mt-0.5" />
                               <div>
                                 <p className="font-medium text-gray-900">Website</p>
-                                <a 
-                                  href={company.websiteUrl} 
-                                  target="_blank" 
+                                <a
+                                  href={company.websiteUrl}
+                                  target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-600 hover:underline"
-                                  onClick={(e) => e.stopPropagation()}
+                                  onClick={e => e.stopPropagation()}
                                 >
                                   {company.websiteUrl.replace(/^https?:\/\/(www\.)?/, '')}
                                 </a>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-start gap-2">
                               <Users className="w-4 h-4 text-gray-400 mt-0.5" />
                               <div>
                                 <p className="font-medium text-gray-900">Team Size</p>
                                 <p className="text-gray-700">
-                                  {company.minEmployeeCount === company.maxEmployeeCount 
+                                  {company.minEmployeeCount === company.maxEmployeeCount
                                     ? `${company.minEmployeeCount} employees`
                                     : `${company.minEmployeeCount}-${company.maxEmployeeCount} employees`}
                                 </p>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-start gap-2">
                               <FileText className="w-4 h-4 text-gray-400 mt-0.5" />
                               <div>
                                 <p className="font-medium text-gray-900">Deliverables</p>
-                                <p className="text-gray-700 line-clamp-2">{company.deliverableNames}</p>
+                                <p className="text-gray-700 line-clamp-2">
+                                  {company.deliverableNames}
+                                </p>
                               </div>
                             </div>
-                            
+
                             <div className="pt-2">
                               <p className="text-xs text-gray-500">
                                 {company.registeredOfficeAddress}
@@ -390,7 +401,7 @@ export default function SuperAdminDashboard() {
 
                       {!isExpanded && (
                         <button
-                          onClick={(e) => toggleExpand(company.id, e)}
+                          onClick={e => toggleExpand(company.id, e)}
                           className="mt-4 text-sm text-blue-600 hover:text-blue-800 font-medium"
                         >
                           Show details
@@ -399,7 +410,7 @@ export default function SuperAdminDashboard() {
 
                       <div className="mt-5">
                         <button
-                          onClick={(e) => handleVerify(company.id, e)}
+                          onClick={e => handleVerify(company.id, e)}
                           disabled={company.verified}
                           className={`w-full py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center ${
                             company.verified
@@ -425,7 +436,7 @@ export default function SuperAdminDashboard() {
           )}
         </div>
       </div>
-      
+
       <SuperAdminCompanyModal
         companyId={selectedCompanyId}
         isOpen={!!selectedCompanyId}

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import logoImage from "../../logo/image.png";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import React, { useState } from 'react';
+import { Button } from '../../components/ui/button';
+import logoImage from '../../logo/image.png';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import FileUpload from '../../components/FileUpload';
 
 const Register = () => {
   const navigate = useNavigate(); // Add this line at the top of component
-  
+
   const [page, setPage] = useState(1);
   // Below state was not in use if needed uncomment it
   // const [formProgress, setFormProgress] = useState(40);
@@ -32,12 +32,12 @@ const Register = () => {
       branchAddress: '',
       websiteLink: '',
       involveInBusiness: [],
-      nameOfGoods: "", // Change from array to string
-      nameOfServices: "", // Change from array to string
-      sector: "",
-      industry: "",
-      numberOfEmployees: "",
-      experience: ""
+      nameOfGoods: '', // Change from array to string
+      nameOfServices: '', // Change from array to string
+      sector: '',
+      industry: '',
+      numberOfEmployees: '',
+      experience: '',
     },
     contacts: [
       {
@@ -68,11 +68,11 @@ const Register = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     section?: string,
-    index?: number,
+    index?: number
   ) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => {
+    setFormData(prev => {
       if (section) {
         if (section === 'contacts' && typeof index !== 'undefined') {
           const newContacts = [...prev.contacts];
@@ -94,19 +94,19 @@ const Register = () => {
       if (section === 'statutory') {
         setFormData(prev => ({
           ...prev,
-          statutory: { ...prev.statutory, [name]: files[0] }
+          statutory: { ...prev.statutory, [name]: files[0] },
         }));
       } else if (section === 'details') {
         setFormData(prev => ({
           ...prev,
-          details: { ...prev.details, [name]: files[0] }
+          details: { ...prev.details, [name]: files[0] },
         }));
       }
     }
   };
 
   const addPerson = () => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       contacts: [...prev.contacts, { name: '', designation: '', email: '', contactNo: '' }],
     }));
@@ -115,7 +115,7 @@ const Register = () => {
   const addBrandName = () => {
     const brandName = prompt('Enter brand name');
     if (brandName) {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         details: {
           ...prev.details,
@@ -127,15 +127,17 @@ const Register = () => {
 
   const validateForm = (data: any) => {
     const errors: string[] = [];
-    
+
     // Required fields validation
-    if (!data.enterprise.business_name) errors.push("Business name is required");
-    if (!data.enterprise.email) errors.push("Email is required");
-    if (!data.enterprise.password) errors.push("Password is required");
-    
+    if (!data.enterprise.business_name) errors.push('Business name is required');
+    if (!data.enterprise.email) errors.push('Email is required');
+    if (!data.enterprise.password) errors.push('Password is required');
+
     // URL validation
-    if (data.company_details.website_link && 
-        !data.company_details.website_link.startsWith('http')) {
+    if (
+      data.company_details.website_link &&
+      !data.company_details.website_link.startsWith('http')
+    ) {
       data.company_details.website_link = `https://${data.company_details.website_link}`;
     }
 
@@ -144,27 +146,27 @@ const Register = () => {
 
   const validateRequiredFiles = () => {
     if (!formData.details.logo) {
-      toast.error("Logo is required");
+      toast.error('Logo is required');
       return false;
     }
     if (!formData.statutory.msmeDoc) {
-      toast.error("MSME registration document is required");
+      toast.error('MSME registration document is required');
       return false;
     }
     if (!formData.statutory.cinDoc) {
-      toast.error("CIN document is required");
+      toast.error('CIN document is required');
       return false;
     }
     if (!formData.statutory.panDoc) {
-      toast.error("PAN document is required");
+      toast.error('PAN document is required');
       return false;
     }
     if (!formData.statutory.gstinDoc) {
-      toast.error("GSTIN document is required");
+      toast.error('GSTIN document is required');
       return false;
     }
     if (!formData.statutory.aadharDoc) {
-      toast.error("Aadhar document is required");
+      toast.error('Aadhar document is required');
       return false;
     }
     return true;
@@ -180,7 +182,7 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateRequiredFiles()) {
       return;
     }
@@ -202,7 +204,10 @@ const Register = () => {
       formDataToSend.append('incorporationYear', formData.details.incorporationYear);
       formDataToSend.append('registeredOfficeAddress', formData.details.registeredOffice);
       formDataToSend.append('businessType', formData.details.involveInBusiness[0] || 'GOODS');
-      formDataToSend.append('deliverableNames', `${formData.details.nameOfGoods},${formData.details.nameOfServices}`);
+      formDataToSend.append(
+        'deliverableNames',
+        `${formData.details.nameOfGoods},${formData.details.nameOfServices}`
+      );
       formDataToSend.append('sector', formData.details.sector);
       formDataToSend.append('industry', formData.details.industry);
       formDataToSend.append('minEmployeeCount', '1');
@@ -236,11 +241,16 @@ const Register = () => {
 
       // Required files
       if (formData.details.logo) formDataToSend.append('logo', formData.details.logo);
-      if (formData.statutory.msmeDoc) formDataToSend.append('msmeRegistrationDocument', formData.statutory.msmeDoc);
-      if (formData.statutory.cinDoc) formDataToSend.append('cinDocument', formData.statutory.cinDoc);
-      if (formData.statutory.panDoc) formDataToSend.append('panDocument', formData.statutory.panDoc);
-      if (formData.statutory.gstinDoc) formDataToSend.append('gstinDocument', formData.statutory.gstinDoc);
-      if (formData.statutory.aadharDoc) formDataToSend.append('aadhar', formData.statutory.aadharDoc);
+      if (formData.statutory.msmeDoc)
+        formDataToSend.append('msmeRegistrationDocument', formData.statutory.msmeDoc);
+      if (formData.statutory.cinDoc)
+        formDataToSend.append('cinDocument', formData.statutory.cinDoc);
+      if (formData.statutory.panDoc)
+        formDataToSend.append('panDocument', formData.statutory.panDoc);
+      if (formData.statutory.gstinDoc)
+        formDataToSend.append('gstinDocument', formData.statutory.gstinDoc);
+      if (formData.statutory.aadharDoc)
+        formDataToSend.append('aadhar', formData.statutory.aadharDoc);
 
       // Optional files
       if (formData.statutory.tradeLicenseDoc) {
@@ -250,16 +260,12 @@ const Register = () => {
         formDataToSend.append('iecDocument', formData.statutory.iecDoc);
       }
 
-      const response = await axios.post(
-        'http://localhost:3000/api/v0/company',
-        formDataToSend,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true
-        }
-      );
+      const response = await axios.post('http://localhost:3000/api/v0/company', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
 
       if (response.status === 201) {
         toast.success('Registration successful!');
@@ -278,15 +284,15 @@ const Register = () => {
 
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent form submission
-    
+
     // Validate first page
     if (page === 1) {
       if (!formData.businessName || !formData.email || !formData.password) {
-        toast.error("Please fill in all required fields");
+        toast.error('Please fill in all required fields');
         return;
       }
       if (formData.password !== formData.confirmPassword) {
-        toast.error("Passwords do not match!");
+        toast.error('Passwords do not match!');
         return;
       }
       if (!formData.contacts[0].name || !formData.contacts[0].email) {
@@ -294,7 +300,7 @@ const Register = () => {
         return;
       }
     }
-    
+
     setPage(2);
   };
 
@@ -328,13 +334,25 @@ const Register = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div className="flex-1">
-            <div className={`h-2 rounded-full transition-all duration-300 ${page >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`} />
-            <p className={`mt-2 text-sm font-medium ${page >= 1 ? 'text-blue-600' : 'text-gray-500'}`}>Basic Information</p>
+            <div
+              className={`h-2 rounded-full transition-all duration-300 ${page >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`}
+            />
+            <p
+              className={`mt-2 text-sm font-medium ${page >= 1 ? 'text-blue-600' : 'text-gray-500'}`}
+            >
+              Basic Information
+            </p>
           </div>
           <div className="w-4" />
           <div className="flex-1">
-            <div className={`h-2 rounded-full transition-all duration-300 ${page >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`} />
-            <p className={`mt-2 text-sm font-medium ${page >= 2 ? 'text-blue-600' : 'text-gray-500'}`}>Company Details</p>
+            <div
+              className={`h-2 rounded-full transition-all duration-300 ${page >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`}
+            />
+            <p
+              className={`mt-2 text-sm font-medium ${page >= 2 ? 'text-blue-600' : 'text-gray-500'}`}
+            >
+              Company Details
+            </p>
           </div>
         </div>
 
@@ -439,7 +457,7 @@ const Register = () => {
                             type="text"
                             name="name"
                             value={contact.name}
-                            onChange={(e) => handleInputChange(e, 'contacts', index)}
+                            onChange={e => handleInputChange(e, 'contacts', index)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -449,7 +467,7 @@ const Register = () => {
                             type="text"
                             name="designation"
                             value={contact.designation}
-                            onChange={(e) => handleInputChange(e, 'contacts', index)}
+                            onChange={e => handleInputChange(e, 'contacts', index)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -459,7 +477,7 @@ const Register = () => {
                             type="email"
                             name="email"
                             value={contact.email}
-                            onChange={(e) => handleInputChange(e, 'contacts', index)}
+                            onChange={e => handleInputChange(e, 'contacts', index)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -469,7 +487,7 @@ const Register = () => {
                             type="text"
                             name="contactNo"
                             value={contact.contactNo}
-                            onChange={(e) => handleInputChange(e, 'contacts', index)}
+                            onChange={e => handleInputChange(e, 'contacts', index)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -514,7 +532,7 @@ const Register = () => {
                         type="text"
                         name="tradeName"
                         value={formData.details.tradeName}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -524,7 +542,7 @@ const Register = () => {
                         type="text"
                         name="legalName"
                         value={formData.details.legalName}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -533,7 +551,7 @@ const Register = () => {
                       <FileUpload
                         label="Logo"
                         name="logo"
-                        onChange={(e) => handleFileChange(e, 'details')}
+                        onChange={e => handleFileChange(e, 'details')}
                         accept=".png,.jpg,.jpeg"
                         required
                       />
@@ -543,7 +561,7 @@ const Register = () => {
                       <select
                         name="entityType"
                         value={formData.details.entityType}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       >
                         <option>Company</option>
@@ -561,7 +579,7 @@ const Register = () => {
                         type="text"
                         name="incorporationYear"
                         value={formData.details.incorporationYear}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -571,7 +589,7 @@ const Register = () => {
                         type="text"
                         name="registeredOffice"
                         value={formData.details.registeredOffice}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -581,7 +599,7 @@ const Register = () => {
                         type="text"
                         name="branchAddress"
                         value={formData.details.branchAddress}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -591,7 +609,7 @@ const Register = () => {
                         type="text"
                         name="websiteLink"
                         value={formData.details.websiteLink}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -624,18 +642,18 @@ const Register = () => {
                           'Securities',
                           'Investments',
                           'E-Commerce',
-                        ].map((item) => (
+                        ].map(item => (
                           <label key={item} className="flex items-center">
                             <input
                               type="checkbox"
                               checked={formData.details.involveInBusiness.includes(item)}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const newValue = e.target.checked
                                   ? [...formData.details.involveInBusiness, item]
-                                  : formData.details.involveInBusiness.filter((x) => x !== item);
+                                  : formData.details.involveInBusiness.filter(x => x !== item);
                                 handleInputChange(
                                   { target: { name: 'involveInBusiness', value: newValue } },
-                                  'details',
+                                  'details'
                                 );
                               }}
                               className="mr-2"
@@ -651,7 +669,7 @@ const Register = () => {
                         type="text"
                         name="nameOfGoods"
                         value={formData.details.nameOfGoods}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -661,7 +679,7 @@ const Register = () => {
                         type="text"
                         name="nameOfServices"
                         value={formData.details.nameOfServices}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -671,7 +689,7 @@ const Register = () => {
                         type="text"
                         name="sector"
                         value={formData.details.sector}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -681,7 +699,7 @@ const Register = () => {
                         type="text"
                         name="industry"
                         value={formData.details.industry}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -693,7 +711,7 @@ const Register = () => {
                         type="text"
                         name="numberOfEmployees"
                         value={formData.details.numberOfEmployees}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -703,7 +721,7 @@ const Register = () => {
                         type="text"
                         name="experience"
                         value={formData.details.experience}
-                        onChange={(e) => handleInputChange(e, 'details')}
+                        onChange={e => handleInputChange(e, 'details')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                     </div>
@@ -720,13 +738,13 @@ const Register = () => {
                         type="text"
                         name="msmeRegNo"
                         value={formData.statutory.msmeRegNo}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="MSME Document"
                         name="msmeDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>
@@ -736,13 +754,13 @@ const Register = () => {
                         type="text"
                         name="cinNumber"
                         value={formData.statutory.cinNumber}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="CIN Document"
                         name="cinDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>
@@ -752,13 +770,13 @@ const Register = () => {
                         type="text"
                         name="panNumber"
                         value={formData.statutory.panNumber}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="PAN Document"
                         name="panDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf,.jpg,.png"
                       />
                     </div>
@@ -768,13 +786,13 @@ const Register = () => {
                         type="text"
                         name="gstinNo"
                         value={formData.statutory.gstinNo}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="GSTIN Document"
                         name="gstinDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>
@@ -784,13 +802,13 @@ const Register = () => {
                         type="text"
                         name="tradeLicenseNo"
                         value={formData.statutory.tradeLicenseNo}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="Trade License Document"
                         name="tradeLicenseDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>
@@ -800,13 +818,13 @@ const Register = () => {
                         type="text"
                         name="iecNo"
                         value={formData.statutory.iecNo}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="IEC Document"
                         name="iecDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>
@@ -816,13 +834,13 @@ const Register = () => {
                         type="text"
                         name="aadharNo"
                         value={formData.statutory.aadharNo}
-                        onChange={(e) => handleInputChange(e, 'statutory')}
+                        onChange={e => handleInputChange(e, 'statutory')}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       />
                       <FileUpload
                         label="Aadhar Document"
                         name="aadharDoc"
-                        onChange={(e) => handleFileChange(e, 'statutory')}
+                        onChange={e => handleFileChange(e, 'statutory')}
                         accept=".pdf"
                       />
                     </div>

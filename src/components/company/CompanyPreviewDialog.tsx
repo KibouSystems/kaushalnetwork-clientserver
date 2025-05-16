@@ -1,15 +1,41 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { 
-  X, Building, MapPin, Globe, Users, Briefcase, Phone, Mail, Package, 
-  Calendar, BadgeCheck, Building2, Award, FileText, TrendingUp,
-  Users2, Boxes, Clock, BookOpen, Info, ChevronRight, ExternalLink,
-  Check, Shield, Star, Truck, Workflow, Zap, BarChart4, PieChart
+import {
+  X,
+  Building,
+  MapPin,
+  Globe,
+  Users,
+  Briefcase,
+  Phone,
+  Mail,
+  Package,
+  Calendar,
+  BadgeCheck,
+  Building2,
+  Award,
+  FileText,
+  TrendingUp,
+  Users2,
+  Boxes,
+  Clock,
+  BookOpen,
+  Info,
+  ChevronRight,
+  ExternalLink,
+  Check,
+  Shield,
+  Star,
+  Truck,
+  Workflow,
+  Zap,
+  BarChart4,
+  PieChart,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Company } from '../../types/company.types';
 import { Button } from '../ui/button';
-import { ChatTeardropDots, Envelope } from "@phosphor-icons/react";
+import { ChatTeardropDots, Envelope } from '@phosphor-icons/react';
 import axios from 'axios';
 import { TenderCard } from '../company/TenderCard';
 import { TenderDetailsModal } from '../company/TenderDetailsModal';
@@ -59,7 +85,11 @@ interface Tender {
   };
 }
 
-export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: CompanyPreviewDialogProps) {
+export default function CompanyPreviewDialog({
+  companyId,
+  isOpen,
+  onClose,
+}: CompanyPreviewDialogProps) {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [tenders, setTenders] = useState<Tender[]>([]);
@@ -72,7 +102,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       if (!companyId || !isOpen) return;
-      
+
       try {
         setLoading(true);
         const response = await axios.get(
@@ -93,7 +123,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
   useEffect(() => {
     const fetchTenders = async () => {
       if (!company || !isOpen) return;
-      
+
       try {
         setLoadingTenders(true);
         const response = await axios.get(
@@ -126,7 +156,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
     { name: 'Business', icon: Briefcase },
     { name: 'Locations', icon: MapPin },
     { name: 'Contact', icon: Phone },
-    { name: 'Tenders', icon: Calendar }
+    { name: 'Tenders', icon: Calendar },
   ];
 
   if (loading) {
@@ -145,7 +175,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 400 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 400 }}
               className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative z-10 flex items-center justify-center p-12"
             >
               <div className="text-center">
@@ -174,7 +204,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 400 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 400 }}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden relative z-10"
           >
             {/* Enhanced Banner Section with Dynamic Overlay */}
@@ -186,8 +216,8 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                   <div className="absolute top-40 right-20 w-80 h-80 rounded-full bg-indigo-300/10 blur-3xl"></div>
                 </div>
               </div>
-            
-              <button 
+
+              <button
                 onClick={onClose}
                 className="absolute right-4 top-4 bg-white/10 backdrop-blur-md rounded-full p-2 text-white hover:bg-white/20 transition-colors z-20"
               >
@@ -200,13 +230,20 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                   <div className="relative">
                     <div className="w-32 h-32 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-white">
                       <img
-                        src={company?.logoUrl && (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://')) 
-                          ? company.logoUrl 
-                          : `http://localhost:3000/${company?.logoUrl}`}
+                        src={
+                          company?.logoUrl &&
+                          (company.logoUrl.startsWith('http://') ||
+                            company.logoUrl.startsWith('https://'))
+                            ? company.logoUrl
+                            : `http://localhost:3000/${company?.logoUrl}`
+                        }
                         alt={company?.companyName}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(company.companyName) + "&background=0D8ABC&color=fff";
+                        onError={e => {
+                          (e.target as HTMLImageElement).src =
+                            'https://ui-avatars.com/api/?name=' +
+                            encodeURIComponent(company.companyName) +
+                            '&background=0D8ABC&color=fff';
                         }}
                       />
                       {/* Glossy overlay effect */}
@@ -260,7 +297,11 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                 <div className="ml-auto bg-white/10 backdrop-blur-md rounded-lg p-3 flex items-center gap-6 border border-white/20">
                   <div className="text-center px-4">
                     <p className="text-xs text-blue-200 font-medium">Experience</p>
-                    <p className="text-xl font-bold text-white">{new Date().getFullYear() - (company.incorporationYear || new Date().getFullYear())}+ yrs</p>
+                    <p className="text-xl font-bold text-white">
+                      {new Date().getFullYear() -
+                        (company.incorporationYear || new Date().getFullYear())}
+                      + yrs
+                    </p>
                   </div>
                   <div className="h-10 w-px bg-blue-300/20"></div>
                   <div className="text-center px-4">
@@ -274,7 +315,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                   </div>
                 </div>
               </div>
-              
+
               {/* Enhanced background overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
             </div>
@@ -291,9 +332,11 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                       onClick={() => setSelectedTab(index)}
                       className={`
                         flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap transition-all
-                        ${isActive 
-                          ? 'text-blue-700 border-b-2 border-blue-600 bg-blue-50/50' 
-                          : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}
+                        ${
+                          isActive
+                            ? 'text-blue-700 border-b-2 border-blue-600 bg-blue-50/50'
+                            : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                        }
                       `}
                     >
                       <tab.icon className="w-5 h-5" />
@@ -302,7 +345,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                   );
                 })}
               </div>
-              
+
               {/* Scrollable content area with enhanced styling */}
               <div className="flex-1 overflow-y-auto bg-gray-50/50">
                 {/* Overview Tab - Enhanced */}
@@ -326,60 +369,94 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                               About Company
                             </h2>
                             <div className="flex items-center bg-blue-50 px-2 py-1 rounded-md text-xs text-blue-700">
-                              <Clock className="w-3 h-3 mr-1" /> 
+                              <Clock className="w-3 h-3 mr-1" />
                               Updated {Math.floor(Math.random() * 20) + 1} days ago
                             </div>
                           </div>
                           <p className="text-gray-700 leading-relaxed">
                             {company?.aboutCompany || <MissingField text="Company Description" />}
                           </p>
-                          
+
                           {/* Key Metrics - New Addition */}
                           <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t">
-                            <MetricCard 
-                              icon={Truck} 
-                              label="Delivery Time" 
+                            <MetricCard
+                              icon={Truck}
+                              label="Delivery Time"
                               value={`${Math.floor(Math.random() * 10) + 2}-${Math.floor(Math.random() * 10) + 12} days`}
                             />
-                            <MetricCard 
-                              icon={Workflow} 
-                              label="Production Capacity" 
-                              value={`${Math.floor(Math.random() * 1000) + 100}/month`} 
+                            <MetricCard
+                              icon={Workflow}
+                              label="Production Capacity"
+                              value={`${Math.floor(Math.random() * 1000) + 100}/month`}
                             />
-                            <MetricCard 
-                              icon={Zap} 
-                              label="Response Time" 
+                            <MetricCard
+                              icon={Zap}
+                              label="Response Time"
                               value={`${Math.floor(Math.random() * 12) + 1} hours`}
                             />
                           </div>
                         </div>
-                        
+
                         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <BarChart4 className="w-5 h-5 mr-2 text-indigo-600" />
                             Business Information
                           </h3>
                           <div className="grid grid-cols-2 gap-y-6 gap-x-8">
-                            <EnhancedInfoItem icon={Building2} label="Legal Name" value={company?.legalName} />
-                            <EnhancedInfoItem icon={Briefcase} label="Company Type" value={company?.companyType} />
-                            <EnhancedInfoItem icon={Users} label="Employees" value={`${company?.minEmployeeCount || 0} - ${company?.maxEmployeeCount || 0}`} />
-                            <EnhancedInfoItem icon={Clock} label="Year Est." value={company?.incorporationYear?.toString()} />
-                            <EnhancedInfoItem icon={Boxes} label="Business Type" value={company?.businessType} />
-                            <EnhancedInfoItem icon={TrendingUp} label="Sector" value={company?.sector} />
-                            
+                            <EnhancedInfoItem
+                              icon={Building2}
+                              label="Legal Name"
+                              value={company?.legalName}
+                            />
+                            <EnhancedInfoItem
+                              icon={Briefcase}
+                              label="Company Type"
+                              value={company?.companyType}
+                            />
+                            <EnhancedInfoItem
+                              icon={Users}
+                              label="Employees"
+                              value={`${company?.minEmployeeCount || 0} - ${company?.maxEmployeeCount || 0}`}
+                            />
+                            <EnhancedInfoItem
+                              icon={Clock}
+                              label="Year Est."
+                              value={company?.incorporationYear?.toString()}
+                            />
+                            <EnhancedInfoItem
+                              icon={Boxes}
+                              label="Business Type"
+                              value={company?.businessType}
+                            />
+                            <EnhancedInfoItem
+                              icon={TrendingUp}
+                              label="Sector"
+                              value={company?.sector}
+                            />
+
                             {/* Use correct field names from API response */}
-                            {company.gstin ? 
-                              <EnhancedInfoItem icon={FileText} label="GST Number" value={company.gstin} /> : 
+                            {company.gstin ? (
+                              <EnhancedInfoItem
+                                icon={FileText}
+                                label="GST Number"
+                                value={company.gstin}
+                              />
+                            ) : (
                               <EnhancedInfoItem icon={FileText} label="GST Number" missing />
-                            }
-                            {company.pan ? 
-                              <EnhancedInfoItem icon={FileText} label="PAN Number" value={company.pan} /> : 
+                            )}
+                            {company.pan ? (
+                              <EnhancedInfoItem
+                                icon={FileText}
+                                label="PAN Number"
+                                value={company.pan}
+                              />
+                            ) : (
                               <EnhancedInfoItem icon={FileText} label="PAN Number" missing />
-                            }
+                            )}
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Right Sidebar with Contact and Highlights */}
                       <div className="space-y-6">
                         {/* Contact Card - Enhanced */}
@@ -392,19 +469,20 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                           </div>
                           <div className="p-4 space-y-3">
                             <ContactItem icon={Mail} value={company?.email} />
-                            <ContactItem icon={Phone} value={`${company?.countryCode || ''} ${company?.contactNumber || ''}`} />
+                            <ContactItem
+                              icon={Phone}
+                              value={`${company?.countryCode || ''} ${company?.contactNumber || ''}`}
+                            />
                             <ContactItem icon={Globe} value={company?.websiteUrl} isLink />
                             <ContactItem icon={MapPin} value={company.registeredOfficeAddress} />
-                            
-                            <Button 
-                              className="w-full mt-3 bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
-                            >
+
+                            <Button className="w-full mt-3 bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2">
                               <Envelope className="w-4 h-4" />
                               Send Inquiry
                             </Button>
                           </div>
                         </div>
-                        
+
                         {/* Business Highlights - New Addition */}
                         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                           <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-4 text-white">
@@ -421,14 +499,16 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                             <HighlightItem text="Bulk Orders Accepted" />
                           </div>
                         </div>
-                        
+
                         {/* Membership Badge - New Addition */}
                         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-4 text-center">
                           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-400 rounded-full mx-auto mb-3">
                             <Shield className="w-8 h-8 text-white" />
                           </div>
                           <h3 className="text-amber-800 font-bold">Premium Member</h3>
-                          <p className="text-sm text-amber-700 mt-1">Since {company.incorporationYear || '2020'}</p>
+                          <p className="text-sm text-amber-700 mt-1">
+                            Since {company.incorporationYear || '2020'}
+                          </p>
                           <div className="flex justify-center gap-1 mt-2">
                             {[...Array(5)].map((_, i) => (
                               <Star key={i} className="w-4 h-4 text-amber-500" fill="#f59e0b" />
@@ -437,7 +517,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Data Visualization - New Addition */}
                     <div className="grid grid-cols-3 gap-6">
                       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm col-span-2">
@@ -446,29 +526,32 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                           Business Performance
                         </h3>
                         <div className="h-52 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                          <p className="text-gray-500">Performance metrics visualization would appear here</p>
+                          <p className="text-gray-500">
+                            Performance metrics visualization would appear here
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Markets</h3>
                         <ul className="space-y-2">
-                          {['Domestic', 'North America', 'Europe', 'Asia Pacific']
-                            .map((market, i) => (
+                          {['Domestic', 'North America', 'Europe', 'Asia Pacific'].map(
+                            (market, i) => (
                               <li key={i} className="flex items-center">
                                 <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                  <div 
-                                    className="bg-blue-600 h-2.5 rounded-full" 
+                                  <div
+                                    className="bg-blue-600 h-2.5 rounded-full"
                                     style={{ width: `${Math.floor(Math.random() * 70) + 30}%` }}
                                   ></div>
                                 </div>
                                 <span className="ml-2 text-sm text-gray-600">{market}</span>
                               </li>
-                            ))}
+                            )
+                          )}
                         </ul>
                       </div>
                     </div>
-                    
+
                     {/* Founder & Team - Enhanced if available */}
                     {company.aboutFounderAndTeam && (
                       <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
@@ -476,12 +559,14 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                           <Users2 className="w-5 h-5 mr-2 text-blue-600" />
                           Leadership & Team
                         </h2>
-                        <p className="text-gray-700 leading-relaxed">{company.aboutFounderAndTeam}</p>
+                        <p className="text-gray-700 leading-relaxed">
+                          {company.aboutFounderAndTeam}
+                        </p>
                       </div>
                     )}
                   </div>
                 )}
-                
+
                 {/* Products & Services Tab */}
                 {selectedTab === 1 && (
                   <div className="space-y-6">
@@ -493,8 +578,8 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                       <div className="p-6">
                         <div className="grid grid-cols-2 gap-6">
                           {company.deliverableNames?.split(',').map((item, index) => (
-                            <div 
-                              key={index} 
+                            <div
+                              key={index}
                               className="group relative bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                             >
                               <div className="p-4">
@@ -526,9 +611,9 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                       <div className="p-6">
                         {company.brands && company.brands.length > 0 ? (
                           <div className="grid grid-cols-3 gap-6">
-                            {company.brands.map((brand) => (
-                              <div 
-                                key={brand.id} 
+                            {company.brands.map(brand => (
+                              <div
+                                key={brand.id}
                                 className="group flex flex-col items-center p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                               >
                                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
@@ -541,20 +626,21 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                             ))}
                           </div>
                         ) : (
-                          <div className="text-center py-6 text-gray-500">
-                            No brands available
-                          </div>
+                          <div className="text-center py-6 text-gray-500">No brands available</div>
                         )}
                       </div>
                     </div>
-                    
+
                     {/* Certifications */}
                     {company.certifications && company.certifications.length > 0 ? (
                       <div className="bg-white rounded-xl p-6 border border-gray-200">
                         <h2 className="text-xl font-bold text-gray-900 mb-4">Certifications</h2>
                         <div className="flex flex-wrap gap-2">
                           {company.certifications.map((cert, index) => (
-                            <span key={index} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm">
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm"
+                            >
                               {cert}
                             </span>
                           ))}
@@ -569,7 +655,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                     )}
                   </div>
                 )}
-                
+
                 {/* Business Tab - Fixed with proper null checks and error handling */}
                 {selectedTab === 2 && (
                   <div className="p-8 space-y-6">
@@ -577,34 +663,96 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
                       <h2 className="text-xl font-bold text-gray-900 mb-4">Business Information</h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ContactItem icon={TrendingUp} label="Sector" value={company.sector || 'Not specified'} />
-                        <ContactItem icon={Briefcase} label="Industry" value={company.industry || 'Not specified'} />
-                        <ContactItem icon={Building2} label="Entity Type" value={company.entityType || 'Not specified'} />
-                        <ContactItem icon={Boxes} label="Business Type" value={company.businessType || 'Not specified'} />
-                        <ContactItem icon={Clock} label="Incorporation Year" value={company.incorporationYear ? company.incorporationYear.toString() : 'Not specified'} />
-                        <ContactItem icon={Users} label="Employee Count" value={`${company.minEmployeeCount || 0} - ${company.maxEmployeeCount || 0}`} />
+                        <ContactItem
+                          icon={TrendingUp}
+                          label="Sector"
+                          value={company.sector || 'Not specified'}
+                        />
+                        <ContactItem
+                          icon={Briefcase}
+                          label="Industry"
+                          value={company.industry || 'Not specified'}
+                        />
+                        <ContactItem
+                          icon={Building2}
+                          label="Entity Type"
+                          value={company.entityType || 'Not specified'}
+                        />
+                        <ContactItem
+                          icon={Boxes}
+                          label="Business Type"
+                          value={company.businessType || 'Not specified'}
+                        />
+                        <ContactItem
+                          icon={Clock}
+                          label="Incorporation Year"
+                          value={
+                            company.incorporationYear
+                              ? company.incorporationYear.toString()
+                              : 'Not specified'
+                          }
+                        />
+                        <ContactItem
+                          icon={Users}
+                          label="Employee Count"
+                          value={`${company.minEmployeeCount || 0} - ${company.maxEmployeeCount || 0}`}
+                        />
                       </div>
                     </div>
 
                     {/* Financial Details */}
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
-                      <h2 className="text-xl font-bold text-gray-900 mb-4">Financial & Registration Details</h2>
+                      <h2 className="text-xl font-bold text-gray-900 mb-4">
+                        Financial & Registration Details
+                      </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Use correct field names from API response */}
-                        <ContactItem icon={FileText} label="GST Number" value={company.gstin || 'Not available'} />
-                        <ContactItem icon={FileText} label="PAN Number" value={company.pan || 'Not available'} />
-                        <ContactItem icon={FileText} label="MSME Registration" value={company.msmeRegistrationNumber || 'Not available'} />
-                        <ContactItem icon={FileText} label="CIN Number" value={company.cin || 'Not available'} />
-                        {company.tradeLicenseNumber && 
-                          <ContactItem icon={FileText} label="Trade License" value={company.tradeLicenseNumber} />
-                        }
-                        {company.iecNumber && 
-                          <ContactItem icon={FileText} label="IEC Number" value={company.iecNumber} />
-                        }
-                        {company.aadharNumber && 
-                          <ContactItem icon={FileText} label="Aadhaar" value={company.aadharNumber} />
-                        }
-                        <ContactItem icon={Award} label="Annual Turnover" value={company.annualTurnover || 'Not available'} />
+                        <ContactItem
+                          icon={FileText}
+                          label="GST Number"
+                          value={company.gstin || 'Not available'}
+                        />
+                        <ContactItem
+                          icon={FileText}
+                          label="PAN Number"
+                          value={company.pan || 'Not available'}
+                        />
+                        <ContactItem
+                          icon={FileText}
+                          label="MSME Registration"
+                          value={company.msmeRegistrationNumber || 'Not available'}
+                        />
+                        <ContactItem
+                          icon={FileText}
+                          label="CIN Number"
+                          value={company.cin || 'Not available'}
+                        />
+                        {company.tradeLicenseNumber && (
+                          <ContactItem
+                            icon={FileText}
+                            label="Trade License"
+                            value={company.tradeLicenseNumber}
+                          />
+                        )}
+                        {company.iecNumber && (
+                          <ContactItem
+                            icon={FileText}
+                            label="IEC Number"
+                            value={company.iecNumber}
+                          />
+                        )}
+                        {company.aadharNumber && (
+                          <ContactItem
+                            icon={FileText}
+                            label="Aadhaar"
+                            value={company.aadharNumber}
+                          />
+                        )}
+                        <ContactItem
+                          icon={Award}
+                          label="Annual Turnover"
+                          value={company.annualTurnover || 'Not available'}
+                        />
                       </div>
                     </div>
 
@@ -615,37 +763,49 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         <div>
                           <h3 className="font-medium text-gray-700 mb-3">Major Markets</h3>
                           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            {Array.isArray(company.majorMarkets) && company.majorMarkets.length > 0 ? (
+                            {Array.isArray(company.majorMarkets) &&
+                            company.majorMarkets.length > 0 ? (
                               <div className="flex flex-wrap gap-2">
                                 {company.majorMarkets.map((market, index) => (
-                                  <span key={index} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+                                  >
                                     {market}
                                   </span>
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-gray-500 italic">Major markets information not available</p>
+                              <p className="text-gray-500 italic">
+                                Major markets information not available
+                              </p>
                             )}
                           </div>
                         </div>
-                        
+
                         <div>
                           <h3 className="font-medium text-gray-700 mb-3">Business Activities</h3>
                           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            {Array.isArray(company.businessActivities) && company.businessActivities.length > 0 ? (
+                            {Array.isArray(company.businessActivities) &&
+                            company.businessActivities.length > 0 ? (
                               <div className="flex flex-wrap gap-2">
                                 {company.businessActivities.map((activity, index) => (
-                                  <span key={index} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm">
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm"
+                                  >
                                     {activity}
                                   </span>
                                 ))}
                               </div>
                             ) : (
-                              <p className="text-gray-500 italic">Business activities information not available</p>
+                              <p className="text-gray-500 italic">
+                                Business activities information not available
+                              </p>
                             )}
                           </div>
                         </div>
-                        
+
                         {/* Specialty/Expertise */}
                         <div>
                           <h3 className="font-medium text-gray-700 mb-3">Expertise</h3>
@@ -653,7 +813,9 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                             {company.expertise ? (
                               <p className="text-gray-700">{company.expertise}</p>
                             ) : (
-                              <p className="text-gray-500 italic">Expertise information not available</p>
+                              <p className="text-gray-500 italic">
+                                Expertise information not available
+                              </p>
                             )}
                           </div>
                         </div>
@@ -678,14 +840,17 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Branches */}
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
                       <h2 className="text-xl font-bold text-gray-900 mb-4">Branch Locations</h2>
                       {company.branches && company.branches.length > 0 ? (
                         <div className="grid grid-cols-2 gap-4">
-                          {company.branches.map((branch) => (
-                            <div key={branch.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          {company.branches.map(branch => (
+                            <div
+                              key={branch.id}
+                              className="p-4 bg-gray-50 rounded-lg border border-gray-200"
+                            >
                               <div className="flex items-start gap-3">
                                 <Building2 className="w-5 h-5 text-blue-500 mt-1" />
                                 <div>
@@ -700,14 +865,19 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         <p className="text-gray-500 italic">No branches available</p>
                       )}
                     </div>
-                    
+
                     {/* Operating Locations */}
                     {company.operatingLocations && company.operatingLocations.length > 0 ? (
                       <div className="bg-white rounded-xl p-6 border border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">Operating Locations</h2>
+                        <h2 className="text-xl font-bold text-gray-900 mb-4">
+                          Operating Locations
+                        </h2>
                         <div className="flex flex-wrap gap-2">
                           {company.operatingLocations.map((location, index) => (
-                            <span key={index} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm">
+                            <span
+                              key={index}
+                              className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                            >
                               {location}
                             </span>
                           ))}
@@ -731,37 +901,52 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                       <h2 className="text-xl font-bold text-gray-900 mb-4">Contact Information</h2>
                       <div className="grid grid-cols-2 gap-4">
                         <ContactItem icon={Mail} value={company?.email || 'Not available'} />
-                        <ContactItem icon={Phone} value={company?.contactNumber ? 
-                          `${company?.countryCode || ''} ${company.contactNumber}` : 'Not available'} />
-                        <ContactItem icon={Globe} value={company?.websiteUrl || 'Not available'} isLink={!!company?.websiteUrl} />
-                        <ContactItem icon={MapPin} value={company?.registeredOfficeAddress || 'Not available'} />
+                        <ContactItem
+                          icon={Phone}
+                          value={
+                            company?.contactNumber
+                              ? `${company?.countryCode || ''} ${company.contactNumber}`
+                              : 'Not available'
+                          }
+                        />
+                        <ContactItem
+                          icon={Globe}
+                          value={company?.websiteUrl || 'Not available'}
+                          isLink={!!company?.websiteUrl}
+                        />
+                        <ContactItem
+                          icon={MapPin}
+                          value={company?.registeredOfficeAddress || 'Not available'}
+                        />
                       </div>
                     </div>
-                    
+
                     {/* Primary Contact Person - Simplified */}
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
                       <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         Primary Contact Person <MissingField text="(missing)" />
                       </h2>
-                      
+
                       <div className="mt-4 text-gray-500 italic">
                         Contact person details are not available for this company.
                       </div>
                     </div>
-                    
+
                     {/* Contact Actions */}
                     <div className="bg-white rounded-xl p-6 border border-gray-200">
                       <h2 className="text-xl font-bold text-gray-900 mb-4">Contact Options</h2>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {['Send Message', 'Request Callback', 'Schedule Meeting', 'Send RFQ'].map((action) => (
-                          <Button 
-                            key={action}
-                            variant="outline"
-                            className="py-6 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-blue-700"
-                          >
-                            {action}
-                          </Button>
-                        ))}
+                        {['Send Message', 'Request Callback', 'Schedule Meeting', 'Send RFQ'].map(
+                          action => (
+                            <Button
+                              key={action}
+                              variant="outline"
+                              className="py-6 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-blue-700"
+                            >
+                              {action}
+                            </Button>
+                          )
+                        )}
                       </div>
                     </div>
                   </div>
@@ -774,7 +959,9 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                       <div className="flex justify-between items-center mb-6">
                         <div>
                           <h2 className="text-xl font-bold text-gray-900">Active Tenders</h2>
-                          <p className="text-gray-500 mt-1">Browse and respond to available opportunities</p>
+                          <p className="text-gray-500 mt-1">
+                            Browse and respond to available opportunities
+                          </p>
                         </div>
                         <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
                           {tenders.length} {tenders.length === 1 ? 'tender' : 'tenders'}
@@ -787,11 +974,11 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         </div>
                       ) : tenders.length > 0 ? (
                         <div className="grid md:grid-cols-2 gap-6">
-                          {tenders.map((tender) => (
+                          {tenders.map(tender => (
                             <TenderCard
                               key={tender.id}
                               tender={tender}
-                              onViewDetails={(tender) => setSelectedTender(tender)}
+                              onViewDetails={tender => setSelectedTender(tender)}
                             />
                           ))}
                         </div>
@@ -799,7 +986,9 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                         <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                           <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                           <h3 className="text-lg font-medium text-gray-900">No active tenders</h3>
-                          <p className="text-gray-500 mt-2">This company hasn't posted any tenders yet.</p>
+                          <p className="text-gray-500 mt-2">
+                            This company hasn't posted any tenders yet.
+                          </p>
                         </div>
                       )}
                     </div>
@@ -812,7 +1001,7 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
             <div className="border-t border-gray-200 bg-white p-4 flex items-center justify-between shadow-md">
               <div className="flex items-center">
                 <div className="mr-4 flex items-center space-x-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
+                  {[1, 2, 3, 4, 5].map(star => (
                     <Star key={star} className="w-4 h-4 text-amber-400" fill="#FBBF24" />
                   ))}
                 </div>
@@ -820,17 +1009,17 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
                   Top Rated Supplier in {company.industry}
                 </span>
               </div>
-              
+
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={onClose}
                   className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   Close
                 </Button>
-                <Button 
+                <Button
                   size="sm"
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 flex items-center gap-2"
                   onClick={handleViewProfile}
@@ -856,8 +1045,8 @@ export default function CompanyPreviewDialog({ companyId, isOpen, onClose }: Com
 }
 
 // Enhanced helper components for better visual presentation
-const ActionButton = ({ icon: Icon, label }: { icon: any, label: string }) => (
-  <Button 
+const ActionButton = ({ icon: Icon, label }: { icon: any; label: string }) => (
+  <Button
     variant="outline"
     className="py-7 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium bg-white border-gray-200 shadow-sm"
   >
@@ -868,7 +1057,7 @@ const ActionButton = ({ icon: Icon, label }: { icon: any, label: string }) => (
   </Button>
 );
 
-const MetricCard = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
+const MetricCard = ({ icon: Icon, label, value }: { icon: any; label: string; value: string }) => (
   <div className="bg-blue-50/50 rounded-lg p-3 text-center">
     <Icon className="w-5 h-5 mb-1 mx-auto text-blue-600" />
     <p className="text-xs text-gray-500">{label}</p>
@@ -899,10 +1088,10 @@ const ContactItem = ({ icon: Icon, value, isLink = false }) => (
     </div>
     <div className="flex-1 truncate">
       {isLink && value && value !== 'Not available' ? (
-        <a 
-          href={value.startsWith('http') ? value : `https://${value}`} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href={value.startsWith('http') ? value : `https://${value}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-blue-600 hover:underline truncate block"
         >
           {value}

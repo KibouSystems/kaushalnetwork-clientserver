@@ -25,11 +25,13 @@ export const TenderCard = ({ tender, onViewDetails }: TenderCardProps) => (
             <p className="text-gray-600 mt-1 text-sm">{tender.objective}</p>
           </div>
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-          tender.pricingCategory === 'PERUNIT' 
-            ? 'bg-blue-50 text-blue-700'
-            : 'bg-purple-50 text-purple-700'
-        }`}>
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            tender.pricingCategory === 'PERUNIT'
+              ? 'bg-blue-50 text-blue-700'
+              : 'bg-purple-50 text-purple-700'
+          }`}
+        >
           {tender.pricingCategory}
         </span>
       </div>
@@ -54,7 +56,7 @@ export const TenderCard = ({ tender, onViewDetails }: TenderCardProps) => (
       </div>
 
       <div className="border-t pt-4 mt-4">
-        <Button 
+        <Button
           onClick={() => onViewDetails(tender)}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white"
         >

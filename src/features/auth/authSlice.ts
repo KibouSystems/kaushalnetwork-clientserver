@@ -25,7 +25,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axiosInstance.post('/company-user/login', credentials);
       const { token, user } = response.data;
-      
+
       if (token) {
         tokenManager.setToken(token);
         // Set admin status in cookie
@@ -41,39 +41,30 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const getMe = createAsyncThunk(
-  'auth/getMe',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get('/company-user/me');
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user details');
-    }
+export const getMe = createAsyncThunk('auth/getMe', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get('/company-user/me');
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || 'Failed to fetch user details');
   }
-);
+});
 
-export const checkAuth = createAsyncThunk(
-  'auth/check',
-  async (_, { dispatch }) => {
-    if (tokenManager.isAuthenticated()) {
-      await dispatch(getMe());
-    }
+export const checkAuth = createAsyncThunk('auth/check', async (_, { dispatch }) => {
+  if (tokenManager.isAuthenticated()) {
+    await dispatch(getMe());
   }
-);
+});
 
-export const logoutUser = createAsyncThunk(
-  'auth/logout',
-  async () => {
-    // Clear auth_token cookie
-    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    // Clear admin_view cookie
-    Cookies.remove('admin_view');
-    // Clear localStorage if needed
-    localStorage.removeItem('auth_token');
-    return null;
-  }
-);
+export const logoutUser = createAsyncThunk('auth/logout', async () => {
+  // Clear auth_token cookie
+  document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  // Clear admin_view cookie
+  Cookies.remove('admin_view');
+  // Clear localStorage if needed
+  localStorage.removeItem('auth_token');
+  return null;
+});
 
 // Add a check auth helper
 export const checkAuthToken = () => {
@@ -86,9 +77,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUser.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
@@ -107,7 +98,7 @@ const authSlice = createSlice({
       .addCase(getMe.fulfilled, (state, action) => {
         state.user = action.payload;
       })
-      .addCase(logoutUser.fulfilled, (state) => {
+      .addCase(logoutUser.fulfilled, state => {
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;

@@ -59,9 +59,12 @@ const Navbar: React.FC = () => {
       const token = Cookies.get('auth_token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:3000/api/v0/company/company-user-view', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const response = await axios.get(
+            'http://localhost:3000/api/v0/company/company-user-view',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setIsVerified(response.data.verified);
         } catch (error) {
           console.error('Error checking verification:', error);
@@ -136,21 +139,16 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-2 lg:space-x-4 items-center">
-
           {isAdminView ? (
-            <Button
-              variant="ghost"
-              onClick={handleAdminNavigation}
-            >
+            <Button variant="ghost" onClick={handleAdminNavigation}>
               Admin view
             </Button>
-          ) : Cookies.get('auth_token') && (
-            <Button
-              variant="ghost"
-              onClick={handleUserViewNavigation}
-            >
-              User View
-            </Button>
+          ) : (
+            Cookies.get('auth_token') && (
+              <Button variant="ghost" onClick={handleUserViewNavigation}>
+                User View
+              </Button>
+            )
           )}
 
           {/* Network Button */}
@@ -219,29 +217,23 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden flex flex-col items-start space-y-2 px-4 pb-4">
-          <Button
-            variant="ghost"
-            className="w-full text-left"
-            onClick={handleSuperAdminNavigation}
-          >
+          <Button variant="ghost" className="w-full text-left" onClick={handleSuperAdminNavigation}>
             Super Admin
           </Button>
           {isAdminView ? (
-            <Button
-              variant="ghost"
-              className="w-full text-left"
-              onClick={handleAdminNavigation}
-            >
+            <Button variant="ghost" className="w-full text-left" onClick={handleAdminNavigation}>
               Admin view
             </Button>
-          ) : Cookies.get('auth_token') && (
-            <Button
-              variant="ghost"
-              className="w-full text-left"
-              onClick={handleUserViewNavigation}
-            >
-              User View
-            </Button>
+          ) : (
+            Cookies.get('auth_token') && (
+              <Button
+                variant="ghost"
+                className="w-full text-left"
+                onClick={handleUserViewNavigation}
+              >
+                User View
+              </Button>
+            )
           )}
 
           {isAuthenticated && (
@@ -278,7 +270,11 @@ const Navbar: React.FC = () => {
             </Button>
           ) : (
             <>
-              <Button variant="outline" className="w-full text-left" onClick={() => navigate('/login')}>
+              <Button
+                variant="outline"
+                className="w-full text-left"
+                onClick={() => navigate('/login')}
+              >
                 Login
               </Button>
               <Button
@@ -296,7 +292,8 @@ const Navbar: React.FC = () => {
         <div className="bg-amber-50 border-t border-amber-200">
           <div className="max-w-7xl mx-auto px-4 py-2 text-sm text-amber-800 flex items-center justify-center gap-2">
             <AlertCircle className="w-4 h-4" />
-            Your account is pending verification. Some features will be limited until verification is complete.
+            Your account is pending verification. Some features will be limited until verification
+            is complete.
           </div>
         </div>
       )}

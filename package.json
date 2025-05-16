@@ -9,7 +9,11 @@
     "preview": "vite preview",
     "docker:dev": "docker-compose up app-dev",
     "docker:build": "docker-compose build app-prod",
-    "docker:prod": "docker-compose up app-prod"
+    "docker:prod": "docker-compose up app-prod",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+
+
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",
@@ -17,6 +21,7 @@
     "@types/react-select": "^5.0.1",
     "axios": "^1.9.0",
     "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "firebase": "^11.6.0",
     "framer-motion": "^12.6.5",
     "js-cookie": "^3.0.5",

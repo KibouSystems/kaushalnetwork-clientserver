@@ -13,7 +13,7 @@ interface ChatModalProps {
 }
 
 export default function ChatModal({ isOpen, onClose, recipientName, recipientId }: ChatModalProps) {
-  const [messages, setMessages] = useState<Array<{text: string; isSent: boolean}>>([]);
+  const [messages, setMessages] = useState<Array<{ text: string; isSent: boolean }>>([]);
   const [newMessage, setNewMessage] = useState('');
   const [socket, setSocket] = useState<Socket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,7 @@ export default function ChatModal({ isOpen, onClose, recipientName, recipientId 
     }
 
     const newSocket = io('http://localhost:3001', {
-      headers: { token }
+      headers: { token },
     });
 
     newSocket.on('connect', () => {
@@ -71,9 +71,11 @@ export default function ChatModal({ isOpen, onClose, recipientName, recipientId 
         <div className="h-96 overflow-y-auto p-4 bg-gray-50">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.isSent ? 'justify-end' : 'justify-start'} mb-4`}>
-              <div className={`rounded-lg px-4 py-2 max-w-[70%] ${
-                msg.isSent ? 'bg-blue-600 text-white' : 'bg-white shadow-sm text-gray-800'
-              }`}>
+              <div
+                className={`rounded-lg px-4 py-2 max-w-[70%] ${
+                  msg.isSent ? 'bg-blue-600 text-white' : 'bg-white shadow-sm text-gray-800'
+                }`}
+              >
                 {msg.text}
               </div>
             </div>
@@ -86,8 +88,8 @@ export default function ChatModal({ isOpen, onClose, recipientName, recipientId 
             <input
               type="text"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onChange={e => setNewMessage(e.target.value)}
+              onKeyPress={e => e.key === 'Enter' && handleSendMessage()}
               placeholder="Type your message..."
               className="flex-1 px-4 py-2 border rounded-full focus:ring-2 focus:ring-blue-500"
             />

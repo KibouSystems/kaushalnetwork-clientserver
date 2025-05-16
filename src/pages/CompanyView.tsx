@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { 
-  Building2, 
-  Users, 
-  FileText, 
-  Globe, 
-  MapPin, 
-  Briefcase, 
+import {
+  Building2,
+  Users,
+  FileText,
+  Globe,
+  MapPin,
+  Briefcase,
   Building,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react';
 
 interface CompanyView {
@@ -22,10 +22,6 @@ export default function CompanyView() {
   const [company, setCompany] = useState<CompanyView | null>(null);
   const [loading, setLoading] = useState(true);
 
-
-
- 
-  
   useEffect(() => {
     const fetchCompanyData = async () => {
       try {
@@ -36,11 +32,11 @@ export default function CompanyView() {
         // issueeeeeeeeeeeeeeeeeeee-----------------------
         const response = await axios.get('http://localhost:3000/api/v0/company/company-user-view', {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setCompany(response.data);
-         console.log(company?.logoUrl);
+        console.log(company?.logoUrl);
       } catch (error) {
         toast.error('Failed to fetch company data');
         console.error('Error:', error);
@@ -77,11 +73,10 @@ export default function CompanyView() {
           <div className="px-8 py-6 -mt-16">
             <div className="flex items-end space-x-5">
               <div className="relative">
-               {company?.logoUrl}
+                {company?.logoUrl}
 
                 <img
                   src="http://localhost:3000/uploads/1747147674266_ganesh.jpg"
-                  
                   alt={company?.companyName}
                   className="h-24 w-24 rounded-xl border-4 border-white shadow-lg bg-white object-cover"
                 />
@@ -108,28 +103,26 @@ export default function CompanyView() {
           {/* Info Cards - Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Company Information */}
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Company Information
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InfoItem icon={Building} label="Legal Name" value={company?.legalName} />
                   <InfoItem icon={Briefcase} label="Company Type" value={company?.companyType} />
                   <InfoItem icon={Globe} label="Website" value={company?.websiteUrl} isLink />
-                  <InfoItem 
-                    icon={Users} 
-                    label="Team Size" 
-                    value={`${company?.minEmployeeCount} - ${company?.maxEmployeeCount}`} 
+                  <InfoItem
+                    icon={Users}
+                    label="Team Size"
+                    value={`${company?.minEmployeeCount} - ${company?.maxEmployeeCount}`}
                   />
-                  <InfoItem 
-                    icon={MapPin} 
-                    label="Location" 
-                    value={company?.registeredOfficeAddress} 
+                  <InfoItem
+                    icon={MapPin}
+                    label="Location"
+                    value={company?.registeredOfficeAddress}
                     className="md:col-span-2"
                   />
                 </div>
@@ -137,14 +130,14 @@ export default function CompanyView() {
             </motion.div>
 
             {/* Branches */}
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl p-6 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <h2 className="text-xl font-semibold mb-4">Branches</h2>
               <div className="grid gap-4">
-                {company.branches.map((branch) => (
+                {company.branches.map(branch => (
                   <div key={branch.id} className="p-4 bg-gray-50 rounded-lg">
                     <p className="text-gray-700">{branch.branchAddress}</p>
                   </div>
@@ -153,14 +146,14 @@ export default function CompanyView() {
             </motion.div>
 
             {/* Brands */}
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl p-6 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               <h2 className="text-xl font-semibold mb-4">Brands</h2>
               <div className="grid grid-cols-3 gap-4">
-                {company.brands.map((brand) => (
+                {company.brands.map(brand => (
                   <div key={brand.id} className="p-4 bg-gray-50 rounded-lg text-center">
                     <Building2 className="w-8 h-8 mx-auto mb-2 text-blue-500" />
                     <p className="font-medium">{brand.brandName}</p>
@@ -172,7 +165,7 @@ export default function CompanyView() {
 
           {/* Documents - Right Column */}
           <div className="space-y-6">
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl p-6 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -199,10 +192,10 @@ const InfoItem = ({ icon: Icon, label, value, isLink = false, className = '' }) 
     <div className="flex-1 min-w-0">
       <p className="text-sm text-gray-500 mb-1">{label}</p>
       {isLink && value ? (
-        <a 
-          href={value} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-blue-600 hover:underline truncate block"
         >
           {value}

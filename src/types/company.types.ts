@@ -36,6 +36,6 @@ export interface CompanyData {
   aboutCompany: string | null;
   aboutFounderAndTeam: string | null;
   expertise: string | null;
-  branches: Array<{ id: number; branchAddress: string; }>;
-  brands: Array<{ id: number; brandName: string; }>;
+  branches: Array<{ id: number; branchAddress: string }>;
+  brands: Array<{ id: number; brandName: string }>;
 }

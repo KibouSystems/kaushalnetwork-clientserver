@@ -8,7 +8,7 @@ import axios from 'axios';
 
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import KaushalUpdates from '../components/Landing_Page_component/KaushalUpdates';
 import ForMSMEs from '../components/Landing_Page_component/ForMSMEs';
 import WhyJoinKaushalNetwork from '../components/Landing_Page_component/WhyJoinKaushalNetwork';
@@ -20,7 +20,7 @@ const LandingPage = () => {
     sector: '',
     location: '',
     companyType: '',
-    deliverableNames: ''
+    deliverableNames: '',
   });
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -82,7 +82,7 @@ const LandingPage = () => {
             <p className="text-xl text-gray-600 mb-8">
               A one-stop networking platform to find clients, partners, and opportunities.
             </p>
-            <Button 
+            <Button
               className="bg-blue-600 text-white px-8 py-6 text-lg rounded-full hover:bg-blue-700 transform hover:scale-105 transition-all"
               onClick={handleGetStarted}
             >
@@ -123,14 +123,14 @@ const LandingPage = () => {
                   type="text"
                   placeholder="Search companies..."
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
                 />
               </div>
-              
+
               <div>
                 <select
                   className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
                 >
                   <option value="">Select Sector</option>
                   <option value="IT">IT</option>
@@ -144,7 +144,7 @@ const LandingPage = () => {
               <div>
                 <select
                   className="w-full p-3 rounded-xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
                 >
                   <option value="">Company Type</option>
                   <option value="MSME">MSME</option>
@@ -161,34 +161,38 @@ const LandingPage = () => {
                 <motion.div
                   className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                 />
               </div>
-            ) : searchResults.length > 0 && (
-              <div className="mt-8 space-y-4">
-                <h5 className="font-semibold text-gray-700">Quick Results:</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {searchResults.slice(0, 3).map((company: any) => (
-                    <div
-                      key={company.id}
-                      className="p-4 rounded-lg border border-gray-200 hover:border-blue-400 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/company/${company.id}`)}
-                    >
-                      <h6 className="font-semibold text-blue-600">{company.companyName}</h6>
-                      <p className="text-sm text-gray-600">{company.sector}</p>
-                    </div>
-                  ))}
-                  {searchResults.length > 3 && (
-                    <Button
-                      variant="outline"
-                      className="col-span-full"
-                      onClick={() => navigate('/network', { state: { searchParams: queryParams } })}
-                    >
-                      View All Results ({searchResults.length})
-                    </Button>
-                  )}
+            ) : (
+              searchResults.length > 0 && (
+                <div className="mt-8 space-y-4">
+                  <h5 className="font-semibold text-gray-700">Quick Results:</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {searchResults.slice(0, 3).map((company: any) => (
+                      <div
+                        key={company.id}
+                        className="p-4 rounded-lg border border-gray-200 hover:border-blue-400 transition-colors cursor-pointer"
+                        onClick={() => navigate(`/company/${company.id}`)}
+                      >
+                        <h6 className="font-semibold text-blue-600">{company.companyName}</h6>
+                        <p className="text-sm text-gray-600">{company.sector}</p>
+                      </div>
+                    ))}
+                    {searchResults.length > 3 && (
+                      <Button
+                        variant="outline"
+                        className="col-span-full"
+                        onClick={() =>
+                          navigate('/network', { state: { searchParams: queryParams } })
+                        }
+                      >
+                        View All Results ({searchResults.length})
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )
             )}
           </section>
 

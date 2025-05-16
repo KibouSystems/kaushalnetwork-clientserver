@@ -41,7 +41,7 @@ export default function TenderForm() {
     locationOfService: '',
     deliveryTerms: '',
     paymentTerms: '',
-    otherConditions: ''
+    otherConditions: '',
   });
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function TenderForm() {
     try {
       const token = Cookies.get('auth_token');
       const response = await axios.get('http://localhost:3000/api/v0/company/admin-view', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setCompanyDetails(response.data);
     } catch (error) {
@@ -64,7 +64,7 @@ export default function TenderForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!companyDetails?.verified) {
       toast.error('Your company account is not verified yet. Please wait for verification.');
       return;
@@ -72,16 +72,12 @@ export default function TenderForm() {
 
     try {
       const token = Cookies.get('auth_token');
-      await axios.post(
-        'http://localhost:3000/api/v0/tender',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      await axios.post('http://localhost:3000/api/v0/tender', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       toast.success('Tender created successfully');
       // Reset form
       setFormData({
@@ -96,7 +92,7 @@ export default function TenderForm() {
         locationOfService: '',
         deliveryTerms: '',
         paymentTerms: '',
-        otherConditions: ''
+        otherConditions: '',
       });
     } catch (error) {
       toast.error('Failed to create tender');
@@ -115,12 +111,15 @@ export default function TenderForm() {
           <h2 className="text-xl font-semibold text-yellow-700">Account Verification Pending</h2>
         </div>
         <p className="text-yellow-600 mb-4">
-          Your company account is currently under verification. You will be able to post tenders once your account is verified.
+          Your company account is currently under verification. You will be able to post tenders
+          once your account is verified.
         </p>
         <div className="bg-white p-4 rounded-md">
           <h3 className="font-medium text-gray-700 mb-2">Company Details:</h3>
           <p className="text-gray-600">Name: {companyDetails.companyName}</p>
-          <p className="text-gray-600">Status: {companyDetails.verified ? 'Verified' : 'Pending Verification'}</p>
+          <p className="text-gray-600">
+            Status: {companyDetails.verified ? 'Verified' : 'Pending Verification'}
+          </p>
         </div>
       </div>
     );
@@ -129,7 +128,7 @@ export default function TenderForm() {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Tender</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Basic Info */}
@@ -139,7 +138,7 @@ export default function TenderForm() {
               <input
                 type="text"
                 value={formData.tenderName}
-                onChange={(e) => setFormData({...formData, tenderName: e.target.value})}
+                onChange={e => setFormData({ ...formData, tenderName: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 required
               />
@@ -153,7 +152,12 @@ export default function TenderForm() {
               <label className="block text-sm font-medium text-gray-700">Pricing Category</label>
               <select
                 value={formData.pricingCategory}
-                onChange={(e) => setFormData({...formData, pricingCategory: e.target.value as 'PERUNIT' | 'FIXED'})}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    pricingCategory: e.target.value as 'PERUNIT' | 'FIXED',
+                  })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="PERUNIT">Per Unit</option>

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
-import { MessageSquare, User, Calendar } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
+import { MessageSquare, User, Calendar } from 'lucide-react';
 
 interface BuzzPost {
   id: number;
   title: string;
   textContent: string;
-  companyUser: {
+  CompanyUser: {
     id: number;
     username: string;
     name: string;
@@ -40,6 +40,7 @@ const CompanyBuzzList: React.FC = () => {
         );
 
         setPosts(response.data);
+        console.warn('Fetched posts:', response.data);
       } catch (error) {
         console.error('Error fetching buzz posts:', error);
         toast.error('Failed to fetch posts');
@@ -67,7 +68,7 @@ const CompanyBuzzList: React.FC = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
+        {posts.map(post => (
           <div
             key={post.id}
             className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
@@ -77,9 +78,9 @@ const CompanyBuzzList: React.FC = () => {
               <div>
                 <h3 className="font-semibold text-lg text-gray-900">{post.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <span>{post.companyUser.name}</span>
+                  <span>{post.CompanyUser.name}</span>
                   <span>•</span>
-                  <span>{post.companyUser.designation}</span>
+                  <span>{post.CompanyUser.designation}</span>
                 </div>
               </div>
             </div>
@@ -92,7 +93,7 @@ const CompanyBuzzList: React.FC = () => {
                 <span>Post #{post.id}</span>
               </div>
               <a
-                href={`mailto:${post.companyUser.email}`}
+                href={`mailto:${post.CompanyUser.email}`}
                 className="text-blue-600 hover:text-blue-700"
               >
                 Contact Author

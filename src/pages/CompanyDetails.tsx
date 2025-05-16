@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  Building2, Users, MapPin, Globe, Calendar, BadgeCheck, 
-  Mail, Phone, Award, BriefcaseIcon, FileText, TrendingUp,
-  Users2, Boxes, Clock, BookOpen, Package
+import {
+  Building2,
+  Users,
+  MapPin,
+  Globe,
+  Calendar,
+  BadgeCheck,
+  Mail,
+  Phone,
+  Award,
+  BriefcaseIcon,
+  FileText,
+  TrendingUp,
+  Users2,
+  Boxes,
+  Clock,
+  BookOpen,
+  Package,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import axios from 'axios';
@@ -51,41 +65,41 @@ interface MissingFields {
   panNumber?: string;
   annualTurnover?: string;
   registrationNumber?: string;
-  
+
   // 🔴 Business Information
   majorMarkets?: string[];
   importExportCode?: string;
   businessActivities?: string[];
-  
+
   // 🔴 Additional Details
   certifications?: string[];
   qualityStandards?: string[];
   machineryEquipment?: string[];
   infrastructureDetails?: string[];
-  
+
   // 🔴 Key Statistics
   totalEmployees?: number;
   factorySize?: string;
   monthlyCapacity?: string;
   annualProduction?: string;
-  
+
   // 🔴 Media & Documents
   productImages?: string[];
   factoryImages?: string[];
   catalogues?: string[];
   brochures?: string[];
-  
+
   // 🔴 Company History
   milestones?: Array<{
     year: number;
     achievement: string;
   }>;
   awards?: string[];
-  
+
   // 🔴 Location Details
   registrationState?: string;
   operatingLocations?: string[];
-  
+
   // 🔴 Contact Person Details
   primaryContact?: {
     name: string;
@@ -142,9 +156,11 @@ export default function CompanyDetails() {
       try {
         const [companyResponse, tendersResponse] = await Promise.all([
           axios.get(`http://localhost:3000/api/v0/company/user-view?id=${id}`),
-          axios.get(`http://localhost:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`)
+          axios.get(
+            `http://localhost:3000/api/v0/tender/user-view/all?companyName=${encodeURIComponent(company?.companyName || '')}`
+          ),
         ]);
-        
+
         setCompany(companyResponse.data);
         setTenders(tendersResponse.data);
       } catch (error) {
@@ -186,8 +202,8 @@ export default function CompanyDetails() {
                 src={company?.logoUrl}
                 alt={company?.companyName}
                 className="w-36 h-36 rounded-2xl border-4 border-white shadow-lg object-cover bg-white"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://via.placeholder.com/150?text=Logo";
+                onError={e => {
+                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Logo';
                 }}
               />
               <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-28 h-3 bg-black/10 rounded-full blur-sm"></div>
@@ -217,8 +233,8 @@ export default function CompanyDetails() {
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Actions */}
             <div className="grid grid-cols-4 gap-4">
-              {['Chat', 'Mail', 'Schedule Meet', 'Send Query'].map((action) => (
-                <Button 
+              {['Chat', 'Mail', 'Schedule Meet', 'Send Query'].map(action => (
+                <Button
                   key={action}
                   variant="outline"
                   className="py-6 hover:bg-blue-50 hover:border-blue-300 transition-all font-semibold text-blue-700"
@@ -229,7 +245,7 @@ export default function CompanyDetails() {
             </div>
 
             {/* About Section */}
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl p-8 shadow-sm space-y-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -241,14 +257,27 @@ export default function CompanyDetails() {
               <div className="grid grid-cols-2 gap-6">
                 <InfoItem icon={Building2} label="Legal Name" value={company?.legalName} />
                 <InfoItem icon={BriefcaseIcon} label="Company Type" value={company?.companyType} />
-                <InfoItem icon={Users} label="Employee Count" value={`${company?.minEmployeeCount || 0} - ${company?.maxEmployeeCount || 0}`} />
-                <InfoItem icon={Clock} label="Year of Establishment" value={company?.incorporationYear?.toString()} />
+                <InfoItem
+                  icon={Users}
+                  label="Employee Count"
+                  value={`${company?.minEmployeeCount || 0} - ${company?.maxEmployeeCount || 0}`}
+                />
+                <InfoItem
+                  icon={Clock}
+                  label="Year of Establishment"
+                  value={company?.incorporationYear?.toString()}
+                />
                 <InfoItem icon={Boxes} label="Business Type" value={company?.businessType} />
                 <InfoItem icon={TrendingUp} label="Sector" value={company?.sector} />
                 {/* Missing fields in red */}
                 <InfoItem icon={FileText} label="GST Number" value={company?.gstNumber} missing />
                 <InfoItem icon={FileText} label="PAN Number" value={company?.panNumber} missing />
-                <InfoItem icon={Award} label="Annual Turnover" value={company?.annualTurnover} missing />
+                <InfoItem
+                  icon={Award}
+                  label="Annual Turnover"
+                  value={company?.annualTurnover}
+                  missing
+                />
               </div>
             </motion.div>
 
@@ -260,8 +289,8 @@ export default function CompanyDetails() {
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-6">
                   {(company?.deliverableNames?.split(',') || []).map((item, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="group relative bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                     >
                       <div className="p-4">
@@ -293,9 +322,9 @@ export default function CompanyDetails() {
               <div className="p-6">
                 {company?.brands && company.brands.length > 0 ? (
                   <div className="grid grid-cols-3 gap-6">
-                    {company.brands.map((brand) => (
-                      <div 
-                        key={brand.id} 
+                    {company.brands.map(brand => (
+                      <div
+                        key={brand.id}
                         className="group flex flex-col items-center p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                       >
                         <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -308,9 +337,7 @@ export default function CompanyDetails() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No brands available
-                  </div>
+                  <div className="text-center py-8 text-gray-500">No brands available</div>
                 )}
               </div>
             </motion.div>
@@ -323,9 +350,9 @@ export default function CompanyDetails() {
               <div className="p-6">
                 {company?.branches && company.branches.length > 0 ? (
                   <div className="grid grid-cols-2 gap-6">
-                    {company.branches.map((branch) => (
-                      <div 
-                        key={branch.id} 
+                    {company.branches.map(branch => (
+                      <div
+                        key={branch.id}
                         className="group flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all duration-300"
                       >
                         <MapPin className="w-6 h-6 text-blue-500 mt-1 flex-shrink-0" />
@@ -345,7 +372,7 @@ export default function CompanyDetails() {
             </motion.div>
 
             {/* Tenders */}
-            <motion.div 
+            <motion.div
               className="bg-white rounded-xl p-8 shadow-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -353,7 +380,9 @@ export default function CompanyDetails() {
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Active Tenders</h2>
-                  <p className="text-gray-500 mt-1">Browse and respond to available opportunities</p>
+                  <p className="text-gray-500 mt-1">
+                    Browse and respond to available opportunities
+                  </p>
                 </div>
                 <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
                   {tenders.length} {tenders.length === 1 ? 'tender' : 'tenders'}
@@ -362,11 +391,11 @@ export default function CompanyDetails() {
 
               {tenders.length > 0 ? (
                 <div className="grid md:grid-cols-2 gap-6">
-                  {tenders.map((tender) => (
+                  {tenders.map(tender => (
                     <TenderCard
                       key={tender.id}
                       tender={tender}
-                      onViewDetails={(tender) => setSelectedTender(tender)}
+                      onViewDetails={tender => setSelectedTender(tender)}
                     />
                   ))}
                 </div>
@@ -395,14 +424,20 @@ export default function CompanyDetails() {
               <div className="space-y-4">
                 <InfoItem icon={MapPin} label="Address" value={company?.registeredOfficeAddress} />
                 <InfoItem icon={Mail} label="Email" value={company?.email} />
-                <InfoItem icon={Phone} label="Phone" value={`${company?.countryCode || ''} ${company?.contactNumber || ''}`} />
+                <InfoItem
+                  icon={Phone}
+                  label="Phone"
+                  value={`${company?.countryCode || ''} ${company?.contactNumber || ''}`}
+                />
                 <InfoItem icon={Globe} label="Website" value={company?.websiteUrl} isLink />
               </div>
             </motion.div>
 
             {/* Experience & Expertise */}
             <motion.div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">Experience & Expertise <MissingField text="(missing)" /></h2>
+              <h2 className="text-xl font-bold mb-4 text-gray-900">
+                Experience & Expertise <MissingField text="(missing)" />
+              </h2>
               <div className="space-y-4 text-red-500">
                 <p>Experience details missing</p>
                 <p>Expertise areas missing</p>
@@ -414,7 +449,7 @@ export default function CompanyDetails() {
               <h2 className="text-xl font-bold mb-4 text-gray-900">Branches</h2>
               {company?.branches && company.branches.length > 0 ? (
                 <div className="space-y-2">
-                  {company.branches.map((branch) => (
+                  {company.branches.map(branch => (
                     <div key={branch.id} className="p-3 bg-gray-50 rounded-lg">
                       <p className="text-gray-700">{branch.branchAddress}</p>
                     </div>
@@ -427,7 +462,9 @@ export default function CompanyDetails() {
 
             {/* Clientele */}
             <motion.div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">Major Clients <MissingField text="(missing)" /></h2>
+              <h2 className="text-xl font-bold mb-4 text-gray-900">
+                Major Clients <MissingField text="(missing)" />
+              </h2>
               <div className="text-red-500">
                 <p>Client list missing</p>
               </div>
@@ -520,11 +557,18 @@ const InfoItem = ({ icon: Icon, label, value, isLink = false, missing = false })
       {missing ? (
         <span className="text-red-500 italic text-sm">🔴 {label} (missing)</span>
       ) : isLink && value ? (
-        <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
           {value}
         </a>
       ) : (
-        <p className="font-medium text-gray-900">{value || <span className="text-red-500">Not Available</span>}</p>
+        <p className="font-medium text-gray-900">
+          {value || <span className="text-red-500">Not Available</span>}
+        </p>
       )}
     </div>
   </div>

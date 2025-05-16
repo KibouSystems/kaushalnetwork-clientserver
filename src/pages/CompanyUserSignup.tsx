@@ -5,7 +5,7 @@ import React from 'react';
 export default function CompanyUserSignup() {
   const handleSignInWithGoogle = () =>
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    signInWithPopup(auth, googleAuthProvider).then((result) => {
+    signInWithPopup(auth, googleAuthProvider).then(result => {
       // Token and user and Credentials where not in use so commented uncomment when needed
       const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential?.accessToken;

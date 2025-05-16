@@ -11,8 +11,8 @@ import {
   Buildings,
   MapPin,
   Briefcase,
-  Users
-} from "@phosphor-icons/react";
+  Users,
+} from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import ChatModal from '../../components/chat/ChatModal';
 import CompanyPreviewDialog from '../../components/company/CompanyPreviewDialog';
@@ -34,11 +34,11 @@ const useDebounce = (value: any, delay: number) => {
   return debouncedValue;
 };
 
-const arr_of_img = ["https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740",
-  "https://img.freepik.com/free-vector/logo-wavy-triangular-shape_1017-1714.jpg?ga=GA1.1.188395480.1746186161&semt=ais_hybrid&w=740",
-  "https://img.freepik.com/free-vector/hub-logo-template_23-2149852444.jpg?ga=GA1.1.188395480.1746186161&semt=ais_hybrid&w=740"
-
-]
+const arr_of_img = [
+  'https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg?semt=ais_hybrid&w=740',
+  'https://img.freepik.com/free-vector/logo-wavy-triangular-shape_1017-1714.jpg?ga=GA1.1.188395480.1746186161&semt=ais_hybrid&w=740',
+  'https://img.freepik.com/free-vector/hub-logo-template_23-2149852444.jpg?ga=GA1.1.188395480.1746186161&semt=ais_hybrid&w=740',
+];
 export default function NetworkPage() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -48,12 +48,12 @@ export default function NetworkPage() {
     sector: '',
     location: '',
     companyType: '',
-    deliverableNames: ''
+    deliverableNames: '',
   });
   // Add pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const companiesPerPage = 5;
-  
+
   const abortControllerRef = useRef<AbortController | null>(null);
   const debouncedParams = useDebounce(queryParams, 2000);
   const [selectedChat, setSelectedChat] = useState<{ id: number; name: string } | null>(null);
@@ -63,7 +63,7 @@ export default function NetworkPage() {
   const indexOfLastCompany = currentPage * companiesPerPage;
   const indexOfFirstCompany = indexOfLastCompany - companiesPerPage;
   const currentCompanies = companies.slice(indexOfFirstCompany, indexOfLastCompany);
-  
+
   // Calculate total pages
   const totalPages = Math.ceil(companies.length / companiesPerPage);
 
@@ -99,7 +99,7 @@ export default function NetworkPage() {
           `http://localhost:3000/api/v0/company/all?${params.toString()}`,
           { signal: abortControllerRef.current.signal }
         );
-        
+
         setCompanies(response.data);
       } catch (error: any) {
         if (error.name === 'CanceledError') {
@@ -125,8 +125,7 @@ export default function NetworkPage() {
   // Make sure the handleCardClick function is properly implemented
   const handleCardClick = (company: Company, e: React.MouseEvent) => {
     // Prevent triggering when clicking buttons or links
-    if ((e.target as HTMLElement).closest('button') || 
-        (e.target as HTMLElement).closest('a')) {
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) {
       return;
     }
     setPreviewCompany(company);
@@ -140,7 +139,7 @@ export default function NetworkPage() {
 
   const CompanyCard = ({ company }: { company: Company }) => (
     <motion.div
-      onClick={(e) => handleCardClick(company, e)}
+      onClick={e => handleCardClick(company, e)}
       initial={{ opacity: 0, y: 20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -151,13 +150,17 @@ export default function NetworkPage() {
         <div className="mr-4">
           <div className="w-20 h-20 bg-white rounded-md border border-gray-200 overflow-hidden flex items-center justify-center">
             <img
-              src={company.logoUrl && (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://')) 
-                ? company.logoUrl 
-                : `http://localhost:3000/${company.logoUrl}`}
+              src={
+                company.logoUrl &&
+                (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://'))
+                  ? company.logoUrl
+                  : `http://localhost:3000/${company.logoUrl}`
+              }
               alt={company.companyName}
               className="object-cover max-h-full max-w-full"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
+              onError={e => {
+                (e.target as HTMLImageElement).src =
+                  arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
               }}
             />
           </div>
@@ -179,7 +182,7 @@ export default function NetworkPage() {
               {company.companyType}
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm my-2">
             <div className="flex items-start">
               <MapPin className="w-4 h-4 text-gray-500 mr-1 mt-0.5 flex-shrink-0" />
@@ -193,7 +196,7 @@ export default function NetworkPage() {
 
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <div className="flex space-x-3">
-              <button 
+              <button
                 onClick={() => setSelectedChat({ id: company.id, name: company.companyName })}
                 className="flex items-center text-sm text-gray-600 hover:text-blue-600"
               >
@@ -225,7 +228,9 @@ export default function NetworkPage() {
           <div className="flex justify-between items-end">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-1">Business Directory</h1>
-              <p className="text-gray-600">Find and connect with verified business partners across India</p>
+              <p className="text-gray-600">
+                Find and connect with verified business partners across India
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Button className="bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 py-1 px-3 text-sm font-medium">
@@ -237,7 +242,7 @@ export default function NetworkPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Enhanced Filters Section */}
         <div className="bg-white rounded-md shadow-md border border-gray-200 mb-6">
           <div className="p-4 border-b border-gray-200 bg-gray-50">
@@ -253,16 +258,18 @@ export default function NetworkPage() {
                     type="text"
                     placeholder="Enter keywords..."
                     className="w-full pl-9 pr-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                    onChange={(e) => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
+                    onChange={e => setQueryParams(prev => ({ ...prev, keyword: e.target.value }))}
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Industry Sector</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Industry Sector
+                </label>
                 <select
                   className="w-full py-2 px-3 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, sector: e.target.value }))}
                 >
                   <option value="">All Sectors</option>
                   <option value="IT">Information Technology</option>
@@ -274,22 +281,24 @@ export default function NetworkPage() {
                   <option value="Logistics">Logistics</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
                 <input
                   type="text"
                   placeholder="City, State or Country"
                   className="w-full px-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, location: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, location: e.target.value }))}
                 />
               </div>
-              
+
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Business Type</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Business Type
+                </label>
                 <select
                   className="w-full py-2 px-3 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
+                  onChange={e => setQueryParams(prev => ({ ...prev, companyType: e.target.value }))}
                 >
                   <option value="">All Types</option>
                   <option value="MSME">MSME</option>
@@ -301,24 +310,34 @@ export default function NetworkPage() {
                   <option value="Others">Others</option>
                 </select>
               </div>
-              
+
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Products/Services</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Products/Services
+                </label>
                 <input
                   type="text"
                   placeholder="Enter products or services"
                   className="w-full px-3 py-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  onChange={(e) => setQueryParams(prev => ({ ...prev, deliverableNames: e.target.value }))}
+                  onChange={e =>
+                    setQueryParams(prev => ({ ...prev, deliverableNames: e.target.value }))
+                  }
                 />
               </div>
             </div>
-            
+
             <div className="mt-4 flex justify-between items-center pt-3 border-t border-gray-100">
               <div className="flex items-center gap-2">
-                <Button variant="outline" className="py-1 px-4 text-sm border-gray-300 text-gray-600">
+                <Button
+                  variant="outline"
+                  className="py-1 px-4 text-sm border-gray-300 text-gray-600"
+                >
                   Clear All
                 </Button>
-                <Button variant="outline" className="py-1 px-4 text-sm border-gray-300 text-gray-600">
+                <Button
+                  variant="outline"
+                  className="py-1 px-4 text-sm border-gray-300 text-gray-600"
+                >
                   Save Search
                 </Button>
               </div>
@@ -333,10 +352,12 @@ export default function NetworkPage() {
         {!loading && companies.length > 0 && (
           <div className="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-gray-200 mb-4">
             <div className="text-sm text-gray-600">
-              <span className="font-semibold text-gray-900">{companies.length}</span> businesses found
+              <span className="font-semibold text-gray-900">{companies.length}</span> businesses
+              found
               {totalPages > 1 && (
                 <span className="ml-2">
-                  (Showing {indexOfFirstCompany + 1}-{Math.min(indexOfLastCompany, companies.length)} of {companies.length})
+                  (Showing {indexOfFirstCompany + 1}-
+                  {Math.min(indexOfLastCompany, companies.length)} of {companies.length})
                 </span>
               )}
             </div>
@@ -351,21 +372,35 @@ export default function NetworkPage() {
               </div>
               <div className="flex border rounded overflow-hidden">
                 <button className="p-1.5 bg-gray-50 border-r">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 text-gray-600"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
                     <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" />
                     <path d="M2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2z" />
                   </svg>
                 </button>
                 <button className="p-1.5 bg-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 text-blue-600"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
             </div>
           </div>
         )}
-        
+
         {/* Results Grid */}
         {loading ? (
           <div className="bg-white rounded-md shadow-md border border-gray-200 p-12 text-center">
@@ -376,11 +411,8 @@ export default function NetworkPage() {
         ) : (
           <AnimatePresence>
             {companies.length > 0 ? (
-              <motion.div
-                layout
-                className="grid gap-4"
-              >
-                {currentCompanies.map((company) => (
+              <motion.div layout className="grid gap-4">
+                {currentCompanies.map(company => (
                   <CompanyCard key={company.id} company={company} />
                 ))}
               </motion.div>
@@ -395,14 +427,15 @@ export default function NetworkPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">No results found</h3>
                 <p className="text-gray-600 max-w-md mx-auto mb-6">
-                  We couldn't find businesses matching your search criteria. Try adjusting your filters or browsing our categories.
+                  We couldn't find businesses matching your search criteria. Try adjusting your
+                  filters or browsing our categories.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  {["IT", "Manufacturing", "Healthcare", "Finance", "Retail"].map(sector => (
-                    <Button 
+                  {['IT', 'Manufacturing', 'Healthcare', 'Finance', 'Retail'].map(sector => (
+                    <Button
                       key={sector}
-                      variant="outline" 
-                      className="border-gray-200 text-gray-700" 
+                      variant="outline"
+                      className="border-gray-200 text-gray-700"
                       onClick={() => setQueryParams(prev => ({ ...prev, sector, keyword: '' }))}
                     >
                       {sector}
@@ -413,7 +446,7 @@ export default function NetworkPage() {
             )}
           </AnimatePresence>
         )}
-        
+
         {/* Enhanced Pagination - Show when we have companies and more than one page */}
         {!loading && companies.length > 0 && totalPages > 1 && (
           <div className="mt-6">
@@ -425,17 +458,22 @@ export default function NetworkPage() {
                     onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={`p-2 rounded border ${
-                      currentPage === 1 
+                      currentPage === 1
                         ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                         : 'border-gray-300 text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                   </button>
                 </li>
-                
+
                 {/* Page numbers */}
                 {getPageNumbers().map(number => (
                   <li key={number}>
@@ -451,26 +489,31 @@ export default function NetworkPage() {
                     </button>
                   </li>
                 ))}
-                
+
                 {/* Next page button */}
                 <li>
                   <button
                     onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className={`p-2 rounded border ${
-                      currentPage === totalPages 
+                      currentPage === totalPages
                         ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                         : 'border-gray-300 text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
                 </li>
               </ul>
             </nav>
-            
+
             {/* Page info */}
             <div className="text-center mt-2 text-sm text-gray-500">
               Page {currentPage} of {totalPages}
@@ -478,7 +521,7 @@ export default function NetworkPage() {
           </div>
         )}
       </div>
-      
+
       {/* Modals */}
       {selectedChat && (
         <ChatModal
@@ -495,4 +538,4 @@ export default function NetworkPage() {
       />
     </div>
   );
-};
+}

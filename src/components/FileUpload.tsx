@@ -15,7 +15,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ label, name, accept, onChange, 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    
+
     if (file) {
       // Check file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
@@ -24,7 +24,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ label, name, accept, onChange, 
         e.target.value = '';
         return;
       }
-      
+
       setFileName(file.name);
       setError('');
       onChange(e);
@@ -39,7 +39,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ label, name, accept, onChange, 
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div className="relative">
-        <div 
+        <div
           className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 ${
             error ? 'border-red-300' : fileName ? 'border-green-300' : 'border-gray-300'
           } border-dashed rounded-lg hover:border-blue-500 transition-colors`}
@@ -53,7 +53,9 @@ const FileUpload: React.FC<FileUploadProps> = ({ label, name, accept, onChange, 
                   type="button"
                   onClick={() => {
                     setFileName('');
-                    const input = document.querySelector(`input[name="${name}"]`) as HTMLInputElement;
+                    const input = document.querySelector(
+                      `input[name="${name}"]`
+                    ) as HTMLInputElement;
                     if (input) input.value = '';
                   }}
                   className="text-red-500 hover:text-red-700"
@@ -77,9 +79,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ label, name, accept, onChange, 
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">
-                  {accept.split(',').join(' or ')} up to 10MB
-                </p>
+                <p className="text-xs text-gray-500">{accept.split(',').join(' or ')} up to 10MB</p>
               </>
             )}
           </div>

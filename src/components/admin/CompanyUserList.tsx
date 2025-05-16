@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
-import toast from "react-hot-toast";
-import { User } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import toast from 'react-hot-toast';
+import { User } from 'lucide-react';
 
 interface CompanyUser {
   id: number;
@@ -20,21 +20,21 @@ const CompanyUserList: React.FC = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const token = Cookies.get("auth_token");
+      const token = Cookies.get('auth_token');
       if (!token) {
-        toast.error("Auth token not found.");
+        toast.error('Auth token not found.');
         return;
       }
       try {
-        const response = await axios.get("http://localhost:3000/api/v0/company-user/all", {
+        const response = await axios.get('http://localhost:3000/api/v0/company-user/all', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         setUsers(response.data);
       } catch (error: any) {
-        console.error("Error fetching users:", error);
-        toast.error("Failed to fetch users.");
+        console.error('Error fetching users:', error);
+        toast.error('Failed to fetch users.');
       } finally {
         setLoading(false);
       }
@@ -61,21 +61,32 @@ const CompanyUserList: React.FC = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-blue-50 to-purple-50">
             <tr>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Username</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Designation</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Country Code</th>
-              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Contact Number</th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                ID
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Username
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Designation
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Email
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Country Code
+              </th>
+              <th className="py-3 px-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Contact Number
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {users.map((user) => (
-              <tr
-                key={user.id}
-                className="hover:bg-blue-50 transition-colors duration-150"
-              >
+            {users.map(user => (
+              <tr key={user.id} className="hover:bg-blue-50 transition-colors duration-150">
                 <td className="py-2 px-4 font-mono text-xs text-gray-500">{user.id}</td>
                 <td className="py-2 px-4">{user.username}</td>
                 <td className="py-2 px-4">{user.name}</td>
