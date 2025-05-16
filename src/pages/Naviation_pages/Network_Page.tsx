@@ -249,177 +249,89 @@ export default function NetworkPage() {
       }`}
     >
       <div className={`h-1.5 ${company.verified ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
-
-      {activeView === 'list' ? (
-        <div className="flex flex-col sm:flex-row p-4">
-          <div className="sm:mr-4 mb-4 sm:mb-0 flex justify-center">
-            <div className="w-20 h-20 bg-white rounded-lg border border-gray-200 overflow-hidden flex items-center justify-center flex-shrink-0">
-              <img
-                src={
-                  company.logoUrl &&
-                  (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://'))
-                    ? company.logoUrl
-                    : `http://localhost:3000/${company.logoUrl}`
-                }
-                alt={company.companyName}
-                className="object-cover max-h-full max-w-full"
-                onError={e => {
-                  (e.target as HTMLImageElement).src =
-                    arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <div className="flex flex-wrap justify-between items-start gap-2">
-              <div>
-                <div className="flex items-center">
-                  <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
-                    {company.companyName}
-                  </h3>
-                  {company.verified && (
-                    <span className="ml-2 bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full flex items-center">
-                      <Check weight="bold" className="w-3 h-3 mr-1" />
-                      Verified
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center text-xs font-medium text-gray-600 mb-2">
-                  <Buildings className="w-3 h-3 mr-1 text-gray-400" />
-                  <span className="truncate">{company.sector}</span>
-                  <span className="mx-1">•</span>
-                  <span className="truncate">{company.industry}</span>
-                </div>
-              </div>
-              <div className="px-2 py-1 rounded-md bg-gray-50 border border-gray-200 text-xs font-medium text-gray-700">
-                {company.companyType}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm my-2">
-              <div className="flex items-start">
-                <MapPin className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700 truncate">{company.registeredOfficeAddress}</span>
-              </div>
-              <div className="flex items-start">
-                <Briefcase className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700 truncate">{company.deliverableNames}</span>
-              </div>
-            </div>
-
-            <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-3">
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => handleChatClick(company)}
-                  className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  <ChatTeardropDots className="w-4 h-4 mr-1" />
-                  <span className="hidden sm:inline">Chat</span>
-                </button>
-                <button
-                  onClick={() => notifyFutureFeature('Email functionality')}
-                  className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  <Envelope className="w-4 h-4 mr-1" />
-                  <span className="hidden sm:inline">Mail</span>
-                </button>
-                <button
-                  onClick={() => notifyFutureFeature('Save to favorites')}
-                  className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                >
-                  <Heart className="w-4 h-4 mr-1" />
-                  <span className="hidden sm:inline">Save</span>
-                </button>
-              </div>
-              <Button
-                size="sm"
-                onClick={() => navigate(`/company/${company.id}`)}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-3"
-              >
-                View Profile
-              </Button>
-            </div>
+      <div className="flex flex-col sm:flex-row p-4">
+        <div className="sm:mr-4 mb-4 sm:mb-0 flex justify-center">
+          <div className="w-20 h-20 bg-white rounded-lg border border-gray-200 overflow-hidden flex items-center justify-center flex-shrink-0">
+            <img
+              src={
+                company.logoUrl &&
+                (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://'))
+                  ? company.logoUrl
+                  : `http://localhost:3000/${company.logoUrl}`
+              }
+              alt={company.companyName}
+              className="object-cover max-h-full max-w-full"
+              onError={e => {
+                (e.target as HTMLImageElement).src =
+                  arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
+              }}
+            />
           </div>
         </div>
-      ) : (
-        // Grid view layout
-        <div className="p-4">
-          <div className="flex justify-center mb-4">
-            <div className="w-20 h-20 bg-white rounded-full border border-gray-200 overflow-hidden flex items-center justify-center">
-              <img
-                src={
-                  company.logoUrl &&
-                  (company.logoUrl.startsWith('http://') || company.logoUrl.startsWith('https://'))
-                    ? company.logoUrl
-                    : `http://localhost:3000/${company.logoUrl}`
-                }
-                alt={company.companyName}
-                className="object-cover max-h-full max-w-full"
-                onError={e => {
-                  (e.target as HTMLImageElement).src =
-                    arr_of_img[Math.floor(Math.random() * arr_of_img.length)];
-                }}
-              />
+        <div className="flex-1 overflow-hidden">
+          <div className="flex flex-wrap justify-between items-start gap-2">
+            <div>
+              <div className="flex items-center">
+                <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
+                  {company.companyName}
+                </h3>
+                {company.verified && (
+                  <span className="ml-2 bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full flex items-center">
+                    <Check weight="bold" className="w-3 h-3 mr-1" />
+                    Verified
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center text-xs font-medium text-gray-600 mb-2">
+                <Buildings className="w-3 h-3 mr-1 text-gray-400" />
+                <span className="truncate">{company.sector}</span>
+                <span className="mx-1">•</span>
+                <span className="truncate">{company.industry}</span>
+              </div>
             </div>
-          </div>
-
-          <div className="text-center mb-3">
-            <h3 className="font-bold text-gray-900 mb-1">{company.companyName}</h3>
-            <div className="flex items-center justify-center text-xs text-gray-600 mb-2">
-              <Buildings className="w-3 h-3 mr-1" />
-              <span className="truncate">{company.sector}</span>
-            </div>
-            {company.verified && (
-              <span className="inline-block bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full">
-                Verified
-              </span>
-            )}
-          </div>
-
-          <div className="mb-4 text-center">
-            <span className="px-2 py-1 rounded-md bg-gray-50 border border-gray-200 text-xs font-medium text-gray-700 inline-block">
+            <div className="px-2 py-1 rounded-md bg-gray-50 border border-gray-200 text-xs font-medium text-gray-700">
               {company.companyType}
-            </span>
-          </div>
-
-          <div className="space-y-2 text-xs text-center">
-            <div className="flex items-center justify-center">
-              <MapPin className="w-3 h-3 text-gray-400 mr-1 flex-shrink-0" />
-              <span className="text-gray-700 truncate">{company.registeredOfficeAddress.substring(0, 25)}...</span>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-gray-100 flex flex-col gap-2">
-            <Button
-              size="sm"
-              onClick={() => navigate(`/company/${company.id}`)}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-xs w-full"
-            >
-              View Profile
-            </Button>
-            <div className="flex justify-center space-x-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm my-2">
+            <div className="flex items-start">
+              <MapPin className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-700 truncate">{company.registeredOfficeAddress}</span>
+            </div>
+            <div className="flex items-start">
+              <Briefcase className="w-4 h-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
+              <span className="text-gray-700 truncate">{company.deliverableNames}</span>
+            </div>
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-3">
+            <div className="flex space-x-3">
               <button
                 onClick={() => handleChatClick(company)}
-                className="text-gray-500 hover:text-blue-600 transition-colors"
+                className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
               >
-                <ChatTeardropDots className="w-4 h-4" />
+                <ChatTeardropDots className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Chat</span>
               </button>
               <button
                 onClick={() => notifyFutureFeature('Email functionality')}
-                className="text-gray-500 hover:text-blue-600 transition-colors"
+                className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
               >
-                <Envelope className="w-4 h-4" />
+                <Envelope className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Mail</span>
               </button>
               <button
                 onClick={() => notifyFutureFeature('Save to favorites')}
-                className="text-gray-500 hover:text-blue-600 transition-colors"
+                className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
               >
-                <Heart className="w-4 h-4" />
+                <Heart className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Save</span>
               </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </motion.div>
   );
 
@@ -465,7 +377,7 @@ export default function NetworkPage() {
                 </div>
                 <Button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="bg-white text-blue-700 hover:bg-blue-50 transition-all flex items-center gap-2 px-5 py-3 font-medium rounded-full shadow-md"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2 px-5 py-3 font-medium rounded-full shadow-md"
                 >
                   <FunnelSimple className="w-5 h-5" />
                   <span className="hidden sm:inline">Advanced Filters</span>
